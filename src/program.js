@@ -1,4 +1,4 @@
-import { Env, VAR, ATOM, COMPOUND, flattenConjunction, unify, freshTerm } from './kernel/term.js';
+import { Env, VAR, ATOM, COMPOUND, deref, flattenConjunction, unify, freshTerm } from './kernel/term.js';
 import { parseProgramText } from './kernel/parser.js';
 import { primitiveKeys } from './builtins.js';
 import { key, is, text } from './common.js';
@@ -38,7 +38,39 @@ export class Program {
         this.groups.get(id).push(clause);
       }
     }
+    this.indexes = new Map();
+    for (const [id, clauses] of this.groups) {
+      const positions = [];
+      for (let position = 0; position < clauses[0].head.arity; position++) {
+        const atoms = new Map(), other = [];
+        for (const clause of clauses) {
+          const argument = clause.head.args[position];
+          if (argument.type !== ATOM) { other.push(clause); continue; }
+          if (!atoms.has(argument.name)) atoms.set(argument.name, []);
+          atoms.get(argument.name).push(clause);
+        }
+        positions.push({ atoms, other });
+      }
+      this.indexes.set(id, positions);
+    }
     this.strata = stratify(this.clauses);
+  }
+  candidates(goal, env = new Env()) {
+    const id = key(goal);
+    const clauses = this.groups.get(id) ?? [];
+    let chosen = null, matches = null, count = clauses.length;
+    for (const [position, index] of (this.indexes.get(id) ?? []).entries()) {
+      const argument = deref(goal.args[position], env);
+      if (argument.type !== ATOM) continue;
+      const bucket = index.atoms.get(argument.name) ?? [];
+      if (bucket.length + index.other.length < count) {
+        chosen = index; matches = bucket; count = bucket.length + index.other.length;
+      }
+    }
+    if (!chosen) return clauses;
+    if (!chosen.other.length) return matches;
+    // Retain source order, including clauses with variable or structured heads.
+    return [...matches, ...chosen.other].sort((a, b) => a.id - b.id);
   }
   static parse(source) { return new Program(source); }
 }
@@ -94,4 +126,3 @@ function stratify(clauses) {
   }
   throw new Error('unstratified negation or collection dependency');
 }
-

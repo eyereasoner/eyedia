@@ -45,6 +45,11 @@
     ]
   },
   {
+    "name": "path-discovery",
+    "description": "Configurable airport routes with bounded stopovers and cycle prevention",
+    "trusted": []
+  },
+  {
     "name": "lists",
     "description": "Concatenation, mapping and summation",
     "trusted": []

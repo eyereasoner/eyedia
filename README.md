@@ -137,12 +137,12 @@ checked before being returned.
 Clause numbers refer to the supplied program's normalized rules, in source
 order. Check a saved proof against the same source program that produced it.
 
-The [examples](examples/README.md) include 34 complete programs:
+The [examples](examples/README.md) include 35 complete programs:
 
 | Examples | What they demonstrate |
 | --- | --- |
 | `socrates`, `family`, `backward` | Basic inference, recursive relationships and mixed chaining |
-| `reachability`, `shortest-path` | Cyclic graph closure and weighted path selection |
+| `reachability`, `shortest-path`, `path-discovery` | Cyclic graph closure, weighted paths and airport routes with bounded stopovers |
 | `fibonacci`, `arithmetic`, `lists` | Recursive computation, exact integers and list operations |
 | `strings`, `unification`, `alternatives` | Unicode, structural matching and goal-directed choices |
 | `graphs`, `terms`, `witnesses` | Separate graph views, quoted data and structured witnesses |

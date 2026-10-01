@@ -22,6 +22,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [terms.pl](terms.pl) | Quoted graphs, triple terms and residual witnesses |
 | [reachability.pl](reachability.pl) | Finite closure in a graph containing a cycle |
 | [shortest-path.pl](shortest-path.pl) | Weighted paths and stratified minimum selection |
+| [path-discovery.pl](path-discovery.pl) | Full airport network with configurable endpoints and maximum stopovers |
 | [lists.pl](lists.pl) | Concatenation, mapping and summation |
 | [arithmetic.pl](arithmetic.pl) | Factorial, greatest common divisor and large integers |
 | [strings.pl](strings.pl) | Text construction and Unicode inspection |
@@ -62,6 +63,27 @@ for JSON output instead of Prolog facts.
 which halves the index at each recursive step and fits within the default
 reasoning limits. Its saved proof records the arithmetic and recursive clause
 instances without trusted obligations.
+
+`path-discovery.pl` contains 7,698 airport records and 37,505 directed
+connections. Its default query finds three routes from Ostend to Prague with
+at most two stopovers. Use any airport-name atoms and a nonnegative integer
+limit with `path_discovery(From, To, MaxStopovers, Path)`:
+
+```sh
+node bin/eyelang.js --goal "path_discovery('Liège Airport', 'Václav Havel Airport Prague', 1, Path)" examples/path-discovery.pl
+node bin/eyelang.js --proof --goal "path_discovery('Ostend-Bruges International Airport', 'Liège Airport', 0, Path)" examples/path-discovery.pl > /tmp/route-proof.pl
+node bin/eyelang.js --strict-proof --check-proof /tmp/route-proof.pl examples/path-discovery.pl
+```
+
+`--goal` replaces the default query. Zero stopovers allows only direct flights;
+N stopovers allows at most N+1 flights. Routes follow the recorded direction
+and never repeat an airport. Equal endpoints and unknown names return no
+routes. Negative or noninteger limits also return no routes. You can leave
+`From` or `To` as a variable to discover endpoints; keep `MaxStopovers` bound.
+List the available names with `--goal "airport(Id, Name)"`. These are historical
+network records, rather than current flight schedules. The search uses explicit
+disequalities to prevent cycles, so its proofs have no trusted obligations.
+Large bounds on a dense network may still reach the configured reasoning limits.
 
 Run `npm test` for the full suite or `npm run test:examples` for this corpus.
 Every example runs through the API and all three CLI modes. The test log prints

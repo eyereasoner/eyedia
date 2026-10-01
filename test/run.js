@@ -1,5 +1,6 @@
 // Load the suite in one process; CLI tests explicitly exercise subprocesses.
 import './core.test.js';
+import './path-discovery.test.js';
 import './proof.test.js';
 import './cli.test.js';
 import './terms.test.js';

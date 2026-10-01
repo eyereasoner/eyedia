@@ -18,5 +18,5 @@ step(t(alice, parent_of, carol), rule(4), '.'(=('S', alice), '.'(=('P', parent_o
 step(base(alice, parent_of, carol), fact(2), [], []).
 step(allowed(carol), rule(6), '.'(=('C', carol), []), '.'(t(carol, child_of, alice), '.'(\+(t(carol, blocked, true)), []))).
 step(\+(t(carol, blocked, true)), absent, [], []).
-step(children(alice, '.'(bob, '.'(carol, []))), rule(7), '.'(=('P', alice), '.'(=('Children', '.'(bob, '.'(carol, []))), '.'(=('__anon0', bob), '.'(=('C', EYE_43_23_32_34), [])))), '.'(base(alice, parent_of, bob), '.'(findall(EYE_43_23_32_34, t(EYE_43_23_32_34, child_of, alice), '.'(bob, '.'(carol, []))), []))).
-step(findall(EYE_43_23_32_34, t(EYE_43_23_32_34, child_of, alice), '.'(bob, '.'(carol, []))), collected, [], []).
+step(children(alice, '.'(bob, '.'(carol, []))), rule(7), '.'(=('P', alice), '.'(=('Children', '.'(bob, '.'(carol, []))), '.'(=('__anon0', bob), '.'(=('C', EYE_43_23_31_34), [])))), '.'(base(alice, parent_of, bob), '.'(findall(EYE_43_23_31_34, t(EYE_43_23_31_34, child_of, alice), '.'(bob, '.'(carol, []))), []))).
+step(findall(EYE_43_23_31_34, t(EYE_43_23_31_34, child_of, alice), '.'(bob, '.'(carol, []))), collected, [], []).

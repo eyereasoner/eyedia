@@ -95,7 +95,7 @@ export class Solver {
       const next = env.clone();
       if (unify(goal, fact.goal, next, { occursCheck: true })) yield { env: next, nodes: [fact] };
     }
-    for (const clause of this.program.groups.get(key(goal)) ?? []) {
+    for (const clause of this.program.candidates(goal, env)) {
       const names = new Map();
       const head = freshTerm(clause.head, ++this.serial, names);
       const body = clause.body.map((item) => freshTerm(item, this.serial, names));

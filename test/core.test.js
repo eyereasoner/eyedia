@@ -137,6 +137,23 @@ test('parsed programs can be reused without sharing derived state', () => {
   assert.deepEqual(run(program).answers, ['q(a)']);
   assert.deepEqual(run(program).answers, ['q(a)']);
 });
+test('atom clause indexing preserves source order, generic clauses and bound arguments', () => {
+  const source = `
+    p(a, first). p(X, generic_before). p(b, other).
+    p(a, second). p(X, generic_after). p(f(a), structured). p(1, numeric).
+  `;
+  assert.deepEqual(proven(source, { goal: 'p(a, Y)' }).answers, [
+    'p(a, first)', 'p(a, generic_before)', 'p(a, second)', 'p(a, generic_after)',
+  ]);
+  assert.deepEqual(proven(source, { goal: 'p(missing, Y)' }).answers, [
+    'p(missing, generic_before)', 'p(missing, generic_after)',
+  ]);
+  assert.equal(proven(source, { goal: 'p(X, Y)' }).answers.length, 7);
+  assert.equal(proven(source, { goal: 'p(f(a), Y)' }).answers.length, 3);
+  assert.equal(proven(source, { goal: 'p(1, Y)' }).answers.length, 3);
+  assert.deepEqual(proven(source, { goal: 'p(X, structured)' }).answers, ['p(f(a), structured)']);
+  assert.equal(proven(source, { goal: 'X=a, p(X, Y)' }).answers.length, 4);
+});
 test('proofs fail explicitly when mode tests lose their evaluation-time state', () => {
   assert.deepEqual(run('p(X) :- var(X), X=a.', { goal: 'p(X)' }).answers, ['p(a)']);
   assert.throws(() => run('p(X) :- var(X), X=a.', { goal: 'p(X)', proof: true }), /cannot certify/);
