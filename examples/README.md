@@ -17,7 +17,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [socrates.pl](socrates.pl) | A first forward inference |
 | [family.pl](family.pl) | Recursive family relationships |
 | [backward.pl](backward.pl) | Backward definitions inside forward bodies |
-| [fibonacci.pl](fibonacci.pl) | Recursive backward arithmetic |
+| [fibonacci.pl](fibonacci.pl) | Fast doubling for exact Fibonacci numbers, including F(10000) |
 | [graphs.pl](graphs.pl) | Base data, negation and collection |
 | [terms.pl](terms.pl) | Quoted graphs, triple terms and residual witnesses |
 | [reachability.pl](reachability.pl) | Finite closure in a graph containing a cycle |
@@ -57,6 +57,11 @@ Every check file includes `condition/4` facts for C1-C5, verification counts and
 a `verdict/1` fact. Reports with failures include `failure/3`; reports with
 trusted boundaries include `obligation/3`. Add `--json` to the check command
 for JSON output instead of Prolog facts.
+
+`fibonacci.pl` computes F(10000), a 2090-digit integer. It uses fast doubling,
+which halves the index at each recursive step and fits within the default
+reasoning limits. Its saved proof records the arithmetic and recursive clause
+instances without trusted obligations.
 
 Run `npm test` for the full suite or `npm run test:examples` for this corpus.
 Every example runs through the API and all three CLI modes. The test log prints

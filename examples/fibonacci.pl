@@ -1,5 +1,9 @@
-% Compound terms and arithmetic give the Horn core general computation.
-fib(0, 0).
-fib(1, 1).
-fib(N, F) :- N > 1, N1 is N-1, N2 is N-2, fib(N1, A), fib(N2, B), F is A+B.
-?- fib(10, F).
+% Fast doubling computes F(N) and F(N+1) together in logarithmic depth.
+% F(2K) = F(K)*(2*F(K+1)-F(K)); F(2K+1) = F(K)^2+F(K+1)^2.
+% Integer arithmetic keeps even very large results exact.
+fib(N, F) :- N >= 0, fib_pair(N, F, _).
+fib_pair(0, 0, 1).
+fib_pair(N, A, B) :- N > 0, Half is N//2, fib_pair(Half, X, Y), C is X*(2*Y-X), D is X*X+Y*Y, parity_pair(N, C, D, A, B).
+parity_pair(N, C, D, A, B) :- 0 =:= N mod 2, A=C, B=D.
+parity_pair(N, C, D, A, B) :- 1 =:= N mod 2, A=D, B is C+D.
+?- fib(10000, F).

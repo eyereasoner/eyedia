@@ -103,6 +103,12 @@ partial closure is not returned as a completed result. Backward search is ordina
 depth-first Prolog search. Use forward rules for finite recursive closure;
 left-recursive backward programs need reformulation and can hit the depth bound.
 
+Recursion limits depend on the algorithm used by the program. The Fibonacci
+example uses fast doubling to compute F(10000) exactly with logarithmic recursion
+depth. The direct two-call recurrence needs linear depth and repeats exponentially
+many subcomputations; increasing `--max-depth` alone does not make large indices
+practical.
+
 Proof documents contain claims, source-clause display records and inference
 records:
 

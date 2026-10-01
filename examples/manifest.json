@@ -16,7 +16,7 @@
   },
   {
     "name": "fibonacci",
-    "description": "Recursive backward arithmetic",
+    "description": "Exact Fibonacci numbers using fast doubling",
     "trusted": []
   },
   {

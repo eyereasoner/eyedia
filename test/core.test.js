@@ -35,7 +35,20 @@ test('lists, quoted formulas, triple terms and existential conclusion sharing', 
   assert.deepEqual(proven('in(a). pair(X,Y,Y) :+ in(X).').answers, ['pair(a, sk_0, sk_0)']);
 });
 test('recursive arithmetic and embedded query', () => {
-  assert.deepEqual(proven(example('fibonacci')).answers, ['fib(10, 55)']);
+  assert.deepEqual(proven(example('fibonacci'), { goal: 'fib(10, F)' }).answers, ['fib(10, 55)']);
+});
+test('large Fibonacci indices are exact and stay within small reasoning budgets', () => {
+  const program = Program.parse(example('fibonacci'));
+  let current = 0n, next = 1n;
+  const indices = new Set([0, 1, 2, 3, 10, 100, 1000, 10000]);
+  for (let n = 0; n <= 10000; n++) {
+    if (indices.has(n)) {
+      const result = proven(program, { goal: `fib(${n}, F)`, maxDepth: 32, maxInferences: 1000 });
+      assert.deepEqual(result.answers, [`fib(${n}, ${current})`]);
+    }
+    [current, next] = [next, current + next];
+  }
+  assert.deepEqual(run(program, { goal: 'fib(-1, F)' }).answers, []);
 });
 test('base graph isolation, stratified absence and completed collection', () => {
   const source = example('graphs');
