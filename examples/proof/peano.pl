@@ -1,0 +1,43 @@
+add(s(s(s(zero))), zero, s(s(s(zero)))).
+add(s(s(zero)), s(zero), s(s(s(zero)))).
+add(s(zero), s(s(zero)), s(s(s(zero)))).
+add(zero, s(s(s(zero))), s(s(s(zero)))).
+multiply(s(s(zero)), s(s(s(zero))), s(s(s(s(s(s(zero))))))).
+factorial(s(s(s(zero))), s(s(s(s(s(s(zero))))))).
+
+clause(1, add(var('A'), zero, var('A')), true).
+clause(2, add(var('A'), s(var('B')), s(var('C'))), add(var('A'), var('B'), var('C'))).
+clause(3, multiply(var('__anon0'), zero, zero), true).
+clause(4, multiply(var('A'), s(var('B')), var('C')), ','(multiply(var('A'), var('B'), var('D')), add(var('A'), var('D'), var('C')))).
+clause(5, factorial(zero, s(zero)), true).
+clause(6, factorial(s(var('N')), var('F')), ','(factorial(var('N'), var('Before')), multiply(s(var('N')), var('Before'), var('F')))).
+
+step(add(s(s(s(zero))), zero, s(s(s(zero)))), fact(1), '.'(=('A', s(s(s(zero)))), []), []).
+step(add(s(s(zero)), s(zero), s(s(s(zero)))), rule(2), '.'(=('A', s(s(zero))), '.'(=('B', zero), '.'(=('C', s(s(zero))), []))), '.'(add(s(s(zero)), zero, s(s(zero))), [])).
+step(add(s(s(zero)), zero, s(s(zero))), fact(1), '.'(=('A', s(s(zero))), []), []).
+step(add(s(zero), s(s(zero)), s(s(s(zero)))), rule(2), '.'(=('A', s(zero)), '.'(=('B', s(zero)), '.'(=('C', s(s(zero))), []))), '.'(add(s(zero), s(zero), s(s(zero))), [])).
+step(add(s(zero), s(zero), s(s(zero))), rule(2), '.'(=('A', s(zero)), '.'(=('B', zero), '.'(=('C', s(zero)), []))), '.'(add(s(zero), zero, s(zero)), [])).
+step(add(s(zero), zero, s(zero)), fact(1), '.'(=('A', s(zero)), []), []).
+step(add(zero, s(s(s(zero))), s(s(s(zero)))), rule(2), '.'(=('A', zero), '.'(=('B', s(s(zero))), '.'(=('C', s(s(zero))), []))), '.'(add(zero, s(s(zero)), s(s(zero))), [])).
+step(add(zero, s(s(zero)), s(s(zero))), rule(2), '.'(=('A', zero), '.'(=('B', s(zero)), '.'(=('C', s(zero)), []))), '.'(add(zero, s(zero), s(zero)), [])).
+step(add(zero, s(zero), s(zero)), rule(2), '.'(=('A', zero), '.'(=('B', zero), '.'(=('C', zero), []))), '.'(add(zero, zero, zero), [])).
+step(add(zero, zero, zero), fact(1), '.'(=('A', zero), []), []).
+step(multiply(s(s(zero)), s(s(s(zero))), s(s(s(s(s(s(zero))))))), rule(4), '.'(=('A', s(s(zero))), '.'(=('B', s(s(zero))), '.'(=('C', s(s(s(s(s(s(zero))))))), '.'(=('D', s(s(s(s(zero))))), [])))), '.'(multiply(s(s(zero)), s(s(zero)), s(s(s(s(zero))))), '.'(add(s(s(zero)), s(s(s(s(zero)))), s(s(s(s(s(s(zero))))))), []))).
+step(multiply(s(s(zero)), s(s(zero)), s(s(s(s(zero))))), rule(4), '.'(=('A', s(s(zero))), '.'(=('B', s(zero)), '.'(=('C', s(s(s(s(zero))))), '.'(=('D', s(s(zero))), [])))), '.'(multiply(s(s(zero)), s(zero), s(s(zero))), '.'(add(s(s(zero)), s(s(zero)), s(s(s(s(zero))))), []))).
+step(multiply(s(s(zero)), s(zero), s(s(zero))), rule(4), '.'(=('A', s(s(zero))), '.'(=('B', zero), '.'(=('C', s(s(zero))), '.'(=('D', zero), [])))), '.'(multiply(s(s(zero)), zero, zero), '.'(add(s(s(zero)), zero, s(s(zero))), []))).
+step(multiply(s(s(zero)), zero, zero), fact(3), '.'(=('__anon0', s(s(zero))), []), []).
+step(add(s(s(zero)), s(s(zero)), s(s(s(s(zero))))), rule(2), '.'(=('A', s(s(zero))), '.'(=('B', s(zero)), '.'(=('C', s(s(s(zero)))), []))), '.'(add(s(s(zero)), s(zero), s(s(s(zero)))), [])).
+step(add(s(s(zero)), s(s(s(s(zero)))), s(s(s(s(s(s(zero))))))), rule(2), '.'(=('A', s(s(zero))), '.'(=('B', s(s(s(zero)))), '.'(=('C', s(s(s(s(s(zero)))))), []))), '.'(add(s(s(zero)), s(s(s(zero))), s(s(s(s(s(zero)))))), [])).
+step(add(s(s(zero)), s(s(s(zero))), s(s(s(s(s(zero)))))), rule(2), '.'(=('A', s(s(zero))), '.'(=('B', s(s(zero))), '.'(=('C', s(s(s(s(zero))))), []))), '.'(add(s(s(zero)), s(s(zero)), s(s(s(s(zero))))), [])).
+step(factorial(s(s(s(zero))), s(s(s(s(s(s(zero))))))), rule(6), '.'(=('N', s(s(zero))), '.'(=('F', s(s(s(s(s(s(zero))))))), '.'(=('Before', s(s(zero))), []))), '.'(factorial(s(s(zero)), s(s(zero))), '.'(multiply(s(s(s(zero))), s(s(zero)), s(s(s(s(s(s(zero))))))), []))).
+step(factorial(s(s(zero)), s(s(zero))), rule(6), '.'(=('N', s(zero)), '.'(=('F', s(s(zero))), '.'(=('Before', s(zero)), []))), '.'(factorial(s(zero), s(zero)), '.'(multiply(s(s(zero)), s(zero), s(s(zero))), []))).
+step(factorial(s(zero), s(zero)), rule(6), '.'(=('N', zero), '.'(=('F', s(zero)), '.'(=('Before', s(zero)), []))), '.'(factorial(zero, s(zero)), '.'(multiply(s(zero), s(zero), s(zero)), []))).
+step(factorial(zero, s(zero)), fact(5), [], []).
+step(multiply(s(zero), s(zero), s(zero)), rule(4), '.'(=('A', s(zero)), '.'(=('B', zero), '.'(=('C', s(zero)), '.'(=('D', zero), [])))), '.'(multiply(s(zero), zero, zero), '.'(add(s(zero), zero, s(zero)), []))).
+step(multiply(s(zero), zero, zero), fact(3), '.'(=('__anon0', s(zero)), []), []).
+step(multiply(s(s(s(zero))), s(s(zero)), s(s(s(s(s(s(zero))))))), rule(4), '.'(=('A', s(s(s(zero)))), '.'(=('B', s(zero)), '.'(=('C', s(s(s(s(s(s(zero))))))), '.'(=('D', s(s(s(zero)))), [])))), '.'(multiply(s(s(s(zero))), s(zero), s(s(s(zero)))), '.'(add(s(s(s(zero))), s(s(s(zero))), s(s(s(s(s(s(zero))))))), []))).
+step(multiply(s(s(s(zero))), s(zero), s(s(s(zero)))), rule(4), '.'(=('A', s(s(s(zero)))), '.'(=('B', zero), '.'(=('C', s(s(s(zero)))), '.'(=('D', zero), [])))), '.'(multiply(s(s(s(zero))), zero, zero), '.'(add(s(s(s(zero))), zero, s(s(s(zero)))), []))).
+step(multiply(s(s(s(zero))), zero, zero), fact(3), '.'(=('__anon0', s(s(s(zero)))), []), []).
+step(add(s(s(s(zero))), s(s(s(zero))), s(s(s(s(s(s(zero))))))), rule(2), '.'(=('A', s(s(s(zero)))), '.'(=('B', s(s(zero))), '.'(=('C', s(s(s(s(s(zero)))))), []))), '.'(add(s(s(s(zero))), s(s(zero)), s(s(s(s(s(zero)))))), [])).
+step(add(s(s(s(zero))), s(s(zero)), s(s(s(s(s(zero)))))), rule(2), '.'(=('A', s(s(s(zero)))), '.'(=('B', s(zero)), '.'(=('C', s(s(s(s(zero))))), []))), '.'(add(s(s(s(zero))), s(zero), s(s(s(s(zero))))), [])).
+step(add(s(s(s(zero))), s(zero), s(s(s(s(zero))))), rule(2), '.'(=('A', s(s(s(zero)))), '.'(=('B', zero), '.'(=('C', s(s(s(zero)))), []))), '.'(add(s(s(s(zero))), zero, s(s(s(zero)))), [])).

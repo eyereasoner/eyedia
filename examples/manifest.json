@@ -191,5 +191,55 @@
     "name": "sudoku",
     "description": "A finite 4x4 grid solved with ordinary clauses",
     "trusted": []
+  },
+  {
+    "name": "good-cobbler",
+    "description": "Structured descriptions and trade-specific classification",
+    "trusted": []
+  },
+  {
+    "name": "peano",
+    "description": "Symbolic natural-number arithmetic and relational addition",
+    "trusted": []
+  },
+  {
+    "name": "expression-eval",
+    "description": "Recursive expression graphs used by forward inference",
+    "trusted": []
+  },
+  {
+    "name": "modexp",
+    "description": "Exact modular exponentiation by repeated squaring",
+    "trusted": []
+  },
+  {
+    "name": "concept-alignment",
+    "description": "Vocabulary alignment and reporting rollups",
+    "trusted": []
+  },
+  {
+    "name": "interval-relations",
+    "description": "All thirteen interval relations and endpoint completion",
+    "trusted": []
+  },
+  {
+    "name": "bayes-diagnosis",
+    "description": "Exact likelihood weights and normalized printer-fault scores",
+    "trusted": [
+      "collected"
+    ]
+  },
+  {
+    "name": "policy-risk",
+    "description": "Ranked clause findings with explanations and mitigations",
+    "trusted": [
+      "absent",
+      "collected"
+    ]
+  },
+  {
+    "name": "queens",
+    "description": "Configurable N-queens search with diagonal constraints",
+    "trusted": []
   }
 ]

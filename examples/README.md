@@ -49,6 +49,15 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [variable-predicates.pl](variable-predicates.pl) | Relations selected and renamed through data bindings |
 | [record-scopes.pl](record-scopes.pl) | Distinct per-rule structured witnesses |
 | [sudoku.pl](sudoku.pl) | A finite 4x4 grid solved with ordinary clauses |
+| [good-cobbler.pl](good-cobbler.pl) | Trade-specific classification from structured descriptions |
+| [peano.pl](peano.pl) | Symbolic arithmetic and relational addition |
+| [expression-eval.pl](expression-eval.pl) | Recursive expression graphs used in forward inference |
+| [modexp.pl](modexp.pl) | Exact modular exponentiation by repeated squaring |
+| [concept-alignment.pl](concept-alignment.pl) | Vocabulary alignment and reporting rollups |
+| [interval-relations.pl](interval-relations.pl) | All thirteen interval relations and endpoint completion |
+| [bayes-diagnosis.pl](bayes-diagnosis.pl) | Normalized probabilities for illustrative printer faults |
+| [policy-risk.pl](policy-risk.pl) | Ranked findings with explanations and suggested mitigations |
+| [queens.pl](queens.pl) | Configurable N-queens search with diagonal constraints |
 
 `integrity.pl` intentionally exits with code 65 because it concludes `false`.
 Its proof-check report is valid: the certificate explains why the constraint was
@@ -84,6 +93,38 @@ List the available names with `--goal "airport(Id, Name)"`. These are historical
 network records, rather than current flight schedules. The search uses explicit
 disequalities to prevent cycles, so its proofs have no trusted obligations.
 Large bounds on a dense network may still reach the configured reasoning limits.
+
+`peano.pl` represents natural numbers as `zero`, `s(zero)`, and so on. Its
+addition query enumerates every split of a known sum. `expression-eval.pl`
+evaluates a graph for `(2*3)+(10-4)` and emits `result(example, 12)`.
+`concept-alignment.pl` rolls up five concepts to a shared reporting class,
+including a source concept reached through multiple broader links.
+
+`modexp.pl` handles billion-sized exponents by repeated squaring without
+constructing the full power. Supply an integer base, a nonnegative integer
+exponent and a positive integer modulus. `queens.pl` returns the first solution
+for an 8x8 board by default; replacing the query enumerates other board sizes:
+
+```sh
+node bin/eyelang.js --goal "mod_pow(7, 1000000000, 1000000007, Result)" examples/modexp.pl
+node bin/eyelang.js --goal "queens(4, Columns)" examples/queens.pl
+node bin/eyelang.js --goal "add(A, B, s(s(s(zero))))" examples/peano.pl
+```
+
+`interval-relations.pl` uses half-open intervals with integer-minute endpoints.
+It completes endpoints from durations and classifies each valid interval pair
+into exactly one of thirteen relations. Empty and reversed intervals are
+excluded from classification.
+
+`bayes-diagnosis.pl` models printer faults using illustrative priors and two
+conditionally independent observations. It keeps exact integer likelihood
+weights and their collected total alongside a floating-point probability.
+`policy-risk.pl` reports a rank, clause, clamped score, severity, reason and
+mitigation. Rank 1 has the highest score; equal scores share a rank. Output
+follows inference order, with ranks recorded explicitly. Adding the missing
+safeguards removes the affected findings. Both examples expose their collection
+obligations, and policy findings also expose absence obligations. The other
+seven new examples pass strict proof checking.
 
 Run `npm test` for the full suite or `npm run test:examples` for this corpus.
 Every example runs through the API and all three CLI modes. The test log prints
