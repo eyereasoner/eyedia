@@ -43,7 +43,17 @@ Terms support variables, atoms, arbitrary-size integers, floats, compounds,
 lists and open lists. Double-quoted text is a list of characters.
 Output uses canonical Prolog functional notation, including
 `'.'(Head, Tail)` for list cells, so it can be parsed without custom operators.
-Unification operates on finite trees and rejects cyclic bindings.
+A list whose elements are all one-character atoms is the character-list reading
+of double-quoted text and is written back that way, so `[a, b]` prints as
+`"ab"` and `[a, b|T]` as `"ab"||T`. Unification operates on finite trees and
+rejects cyclic bindings.
+
+Integers are unbounded and never pass through a floating-point value, so
+`truncate/1`, `round/1`, `ceiling/1`, `floor/1` and `abs/1` return an exact
+integer argument unchanged, and `/` on two integers is exact when the division
+is. Arithmetic comparison is exact across the integer/float boundary, and so is
+the standard order of terms, which orders numbers by value and places a float
+before an integer of the same value.
 
 The core controls are conjunction, disjunction, `call/1`, `once/1`, `\+/1`
 and `findall/3`. Negation requires a ground goal. Forward rules with negation
@@ -100,8 +110,11 @@ creates a reusable parsed program; each run has its own inference state.
 Options include `goal`, `goals`, `proof`, `maxDepth` (256), `maxIterations`
 (1000 per stratum) and `maxInferences` (1000000). Exceeding a bound throws;
 partial closure is not returned as a completed result. Backward search is ordinary
-depth-first Prolog search. Use forward rules for finite recursive closure;
-left-recursive backward programs need reformulation and can hit the depth bound.
+depth-first Prolog search and recurses on the host stack, so a `maxDepth` raised
+much above a thousand can exhaust that stack before the bound is reached; the
+engine reports this in its own terms rather than leaking a host error.
+Use forward rules for finite recursive closure; left-recursive backward programs
+need reformulation and can hit the depth bound.
 
 Recursion limits depend on the algorithm used by the program. The Fibonacci
 example uses fast doubling to compute F(10000) exactly with logarithmic recursion
@@ -208,6 +221,11 @@ attributed variables, constraint libraries, tabling, filesystem/network
 built-ins, RDF parsers, streaming adapters and browser packaging are outside
 this profile. Applications supply external data as Prolog facts. Undefined
 user predicates fail under the closed-world convention.
+
+Because there are no directives, the operator table is fixed: no program can
+change how the rest of itself, or any program it is loaded beside, is read.
+A source using `op/3`, `set_prolog_flag/2` or `char_conversion/2` is refused
+rather than parsed under different rules.
 
 Read [the eyelang essay](ESSAY.md) for the motivation behind the language,
 and [DESIGN.md](DESIGN.md) for the language profile and implementation model.

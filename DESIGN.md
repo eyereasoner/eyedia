@@ -65,8 +65,28 @@ or caller-supplied data.
 | `test/examples.test.js` | Saved-artifact verification and complete CLI runs |
 
 Branch-local maps hold substitutions; unification does not change terms.
-An occurs check enforces finite trees. Fresh names are rendered injectively so
-an internal `X#1` cannot be confused with a source variable named `X_1`.
+A substitution is a layer over the one it was cloned from, flattened once a
+chain grows long, because most unification attempts fail and would otherwise
+pay for a full copy of the bindings. An occurs check enforces finite trees.
+Fresh names are rendered injectively so an internal `X#1` cannot be confused
+with a source variable named `X_1`.
+
+Numeric semantics keep integers exact: an integer operand never passes through
+a floating-point value, mixed comparisons are decided without rounding either
+side, and the standard order of terms is the ISO one, by value before type.
+The writer emits a single canonical spelling per term rather than the layout
+variants of a general `writeq/1`, so output reads back as the same term without
+operator declarations.
+
+Proof nodes carry the terms they were built from and are resolved once, by
+whoever consumes a complete answer, so a conjunction does not re-copy the proof
+forest for each of its goals.
+
+The reader is a tokenizer and a recursive-descent parser over a fixed operator
+table. Excluding directives removes the only mechanisms that could change
+parsing mid-file, so a source text has one reading and `test/syntax.test.js`
+can state it case by case. A `?- Goal.` is always a goal to run: nothing that
+follows it can turn it into something else.
 
 Forward dependency analysis matches full head and body terms. Two relations
 using the same predicate name can therefore occupy distinct strata when their

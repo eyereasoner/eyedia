@@ -26,17 +26,53 @@ export const emptyList = () => atom('[]');
 export const cons = (head, tail) => compound('.', [head, tail]);
 
 
+// A substitution is cloned on every unification attempt and most of those
+// attempts fail, so a clone starts as an empty layer over its parent instead of
+// copying the whole map. Lookups walk the layers; flattening once a chain
+// reaches FLATTEN_LAYERS keeps that walk short while still copying far less
+// often than a clone-per-binding would. Layers are write-once per name, so the
+// first value a walk finds is the binding.
+const FLATTEN_LAYERS = 16;
 export class Env {
-  constructor(bindings = []) { this.bindings = new Map(bindings); }
-  clone() { return new Env(this.bindings); }
+  constructor(parent = null) {
+    this.parent = parent;
+    this.own = null;
+    this.layers = parent === null ? 1 : parent.layers + 1;
+  }
+  clone() {
+    if (this.layers < FLATTEN_LAYERS) return new Env(this);
+    const flat = new Env();
+    flat.own = new Map();
+    for (let env = this; env !== null; env = env.parent) {
+      if (env.own !== null) for (const [name, value] of env.own) if (!flat.own.has(name)) flat.own.set(name, value);
+    }
+    return flat;
+  }
+  lookup(name) {
+    for (let env = this; env !== null; env = env.parent) {
+      if (env.own !== null) {
+        const value = env.own.get(name);
+        if (value !== undefined) return value;
+      }
+    }
+    return undefined;
+  }
+  bind(name, value) {
+    if (this.own === null) this.own = new Map();
+    this.own.set(name, value);
+  }
 }
 export function deref(term, env) {
-  while (term.type === VAR && env.bindings.has(term.name)) term = env.bindings.get(term.name);
+  while (term.type === VAR) {
+    const value = env.lookup(term.name);
+    if (value === undefined) return term;
+    term = value;
+  }
   return term;
 }
 export const isEmptyList = (term) => term?.type === ATOM && term.name === '[]';
 export const isCons = (term) => term?.type === COMPOUND && term.name === '.' && term.arity === 2;
-export const isConjunction = (term) => term?.type === COMPOUND && term.name === ',' && term.arity === 2;
+const isConjunction = (term) => term?.type === COMPOUND && term.name === ',' && term.arity === 2;
 function occurs(name, term, env) {
   const pending = [term];
   while (pending.length) {
@@ -46,6 +82,8 @@ function occurs(name, term, env) {
   }
   return false;
 }
+// Unification always applies the occurs check: eyelang terms are finite trees,
+// so a binding that would create a cycle fails instead of building one.
 export function unify(left, right, env) {
   const pending = [left, right];
   while (pending.length) {
@@ -55,7 +93,7 @@ export function unify(left, right, env) {
     if (b.type === VAR && a.type !== VAR) [a, b] = [b, a];
     if (a.type === VAR) {
       if (occurs(a.name, b, env)) return false;
-      env.bindings.set(a.name, b);
+      env.bind(a.name, b);
     } else {
       if (a.type !== b.type || a.arity !== b.arity) return false;
       if (a.type === NUMBER ? !sameNumberValue(a.name, b.name) : a.name !== b.name) return false;
@@ -84,28 +122,24 @@ export function freshTerm(term, suffix, variables = new Map()) {
     }
     fresh = new Term(term.type, term.name, args);
   }
-  if (term.module != null) fresh.module = term.module;
   return fresh;
 }
 
 export function copyResolved(term, env) {
   const makeCopy = (resolved) => {
     if (resolved.type === VAR) return variable(resolved.name);
-    const copied = resolved.type === COMPOUND && resolved.arity === 0
+    return resolved.type === COMPOUND && resolved.arity === 0
       ? atom(resolved.name)
       : new Term(resolved.type, resolved.name, new Array(resolved.args.length));
-    if (resolved.module != null) copied.module = resolved.module;
-    return copied;
   };
 
   const resolved = deref(term, env);
   const copied = makeCopy(resolved);
   if (resolved.type === VAR || resolved.args.length === 0) return copied;
 
-  // Deep lists and machine-state terms can contain thousands of nested cells.
-  // Copy them iteratively so readback never consumes the JavaScript call stack.
-  // Keep a source-to-copy map as well, both to preserve shared subterms and to
-  // terminate on rational trees when occurs_check is disabled.
+  // Deeply nested terms can contain thousands of cells. Copy them iteratively
+  // so readback never consumes the JavaScript call stack, and keep a
+  // source-to-copy map so shared subterms stay shared in the copy.
   const copies = new Map([[resolved, copied]]);
   const pending = [{ source: resolved, target: copied }];
   while (pending.length > 0) {
@@ -195,15 +229,12 @@ function compareCharacterText(left, right) {
   return li < left.length ? 1 : ri < right.length ? -1 : 0;
 }
 
-export function compareTerms(left, right, variableRanks = null) {
-  // ISO 7.2.1 deliberately leaves the order of distinct variables
-  // implementation dependent.  Do not attach a permanent ordinal to a
-  // logical variable: besides retaining implementation history, that would
-  // make the chosen order observable outside the operation that needs it.
-  // A caller that is constructing one sorted list can pass a shared Map so
-  // every comparison in that operation uses one consistent variable order.
-  const ranks = variableRanks ?? new Map();
-  return compareTermsWithRanks(left, right, ranks);
+// ISO 7.2.1 deliberately leaves the order of distinct variables implementation
+// dependent. Rank them by first encounter within this one comparison rather
+// than attaching a permanent ordinal to a logical variable, which would make
+// the chosen order observable outside the operation that needs it.
+export function compareTerms(left, right) {
+  return compareTermsWithRanks(left, right, new Map());
 }
 
 function variableRank(name, ranks) {
@@ -221,8 +252,7 @@ const TYPE_ORDER = { [VAR]: 0, [NUMBER]: 1, [ATOM]: 2, [STRING]: 3, [COMPOUND]: 
 const EMPTY_ENV = new Env();
 
 function compareTermsWithRanks(left, right, variableRanks) {
-  // Standard compare/3 is used alongside compare_si/3 in issue #105. Walk
-  // argument pairs explicitly so long lists do not exhaust the host stack.
+  // Walk argument pairs explicitly so long lists do not exhaust the host stack.
   const pending = [left, right];
   while (pending.length !== 0) {
     right = deref(pending.pop(), EMPTY_ENV);
@@ -231,11 +261,11 @@ function compareTermsWithRanks(left, right, variableRanks) {
     const rr = TYPE_ORDER[right.type] ?? 0;
     if (lr !== rr) return lr < rr ? -1 : 1;
     if (left.type === NUMBER) {
-      const leftInteger = isDecimalInteger(left.name);
-      const rightInteger = isDecimalInteger(right.name);
-      if (leftInteger !== rightInteger) return leftInteger ? 1 : -1;
+      // Numbers are ordered by value; a float precedes an integer of equal value.
       const cmp = compareNumberText(left.name, right.name);
       if (cmp) return cmp;
+      const leftInteger = isDecimalInteger(left.name);
+      if (leftInteger !== isDecimalInteger(right.name)) return leftInteger ? 1 : -1;
     } else if (left.type === VAR) {
       if (left.name === right.name) continue;
       const leftOrder = variableRank(left.name, variableRanks);
@@ -261,16 +291,7 @@ export function isDecimalInteger(text) {
   return RE_DECIMAL_INTEGER.test(text ?? '');
 }
 
-export function compareIntegerText(left, right) {
-  if (isDecimalInteger(left) && isDecimalInteger(right)) return compareIntegerValueText(left, right);
-  // Preserve the public helper's historical acceptance/error behavior for host
-  // BigInt spellings outside eyelang's decimal integer term syntax.
-  const a = BigInt(left);
-  const b = BigInt(right);
-  return a < b ? -1 : a > b ? 1 : 0;
-}
-
-export function parseFiniteNumber(text) {
+function parseFiniteNumber(text) {
   if (text == null || text === '') return null;
   if (!RE_FLOAT.test(text)) return null;
   const n = Number(text);
@@ -295,12 +316,27 @@ export function numberTextFromDouble(value) {
   return text;
 }
 
-export function compareNumberText(left, right) {
-  if (isDecimalInteger(left) && isDecimalInteger(right)) return compareIntegerText(left, right);
+// Compare an unbounded integer spelling against a float without rounding the
+// integer through a double: every integral double converts back exactly, and a
+// fractional double necessarily has magnitude below 2^53.
+function compareIntegerTextToFloat(integerText, value) {
+  const integer = BigInt(integerText);
+  const truncated = BigInt(Math.trunc(value));
+  if (integer < truncated) return -1;
+  if (integer > truncated) return 1;
+  return Number.isInteger(value) ? 0 : value > 0 ? -1 : 1;
+}
+
+function compareNumberText(left, right) {
+  const leftInteger = isDecimalInteger(left);
+  const rightInteger = isDecimalInteger(right);
+  if (leftInteger && rightInteger) return compareIntegerValueText(left, right);
   const a = parseFiniteNumber(left);
   const b = parseFiniteNumber(right);
-  if (a != null && b != null) return a < b ? -1 : a > b ? 1 : 0;
-  return left < right ? -1 : left > right ? 1 : 0;
+  if (a == null || b == null) return left < right ? -1 : left > right ? 1 : 0;
+  if (leftInteger) return compareIntegerTextToFloat(left, b);
+  if (rightInteger) return -compareIntegerTextToFloat(right, a);
+  return a < b ? -1 : a > b ? 1 : 0;
 }
 
 

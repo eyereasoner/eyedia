@@ -35,7 +35,7 @@ function routes(program, from, to, max) {
   return answers.sort();
 }
 
-test('full airport network: 11 queries, 8 independent graph comparisons and strict proof checks', (context) => {
+test('full airport network: 11 queries with proofs over 45k clauses', () => {
   const p = program();
   assert.equal(p.clauses.filter(({ head }) => head.name === 'airport').length, 7698);
   assert.equal(p.clauses.filter(({ head }) => head.name === 'flight').length, 37505);
@@ -57,7 +57,8 @@ test('full airport network: 11 queries, 8 independent graph comparisons and stri
   assert.equal(run(p, { goal: goal(ostend, prague, 2) }).answers.length, 3);
   assert.deepEqual(run(p, { goal: goal(ostend, prague, -1) }).answers, []);
   assert.deepEqual(run(p, { goal: goal(ostend, prague, '1.5') }).answers, []);
-  context.diagnostic(`Total duration includes one network parse, 8 queries with proof generation and automatic proof verification, 8 independent graph searches, ${strictChecks} additional strict C1-C5 checks, and 3 ordinary queries.`);
+  // Four of the eight route queries have answers, so four proofs are checked.
+  assert.equal(strictChecks, 4);
 });
 
 test('path discovery enumerates simple routes in a cyclic graph and handles arbitrary bounds', () => {

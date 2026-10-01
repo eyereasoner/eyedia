@@ -1,12 +1,11 @@
 import {
-  Env, VAR, COMPOUND, atom, compound, numberTerm, variable, unify,
+  Env, VAR, ATOM, COMPOUND, NUMBER, atom, compound, numberTerm, unify,
   freshTerm, copyResolved, properListItems, listFromItems, flattenConjunction,
-  compareTerms,
 } from './kernel/term.js';
 import { parseProgramText } from './kernel/parser.js';
 import { Program } from './program.js';
 import { primitive, primitiveKeys } from './builtins.js';
-import { is, key, text, variables, conjunction } from './common.js';
+import { is, key, text, conjunction } from './common.js';
 
 function template(term) {
   if (term.type === VAR) return compound('var', [atom(term.name)]);
@@ -91,7 +90,7 @@ export function checkProof(source, document, options = {}) {
       if (clause.body.length) return false;
       const head = freshTerm(clause.head, 'given');
       const env = new Env();
-      return unify(head, goal, env, { occursCheck: true }) && text(copyResolved(head, env)) === text(goal);
+      return unify(head, goal, env) && text(copyResolved(head, env)) === text(goal);
     });
   }
   for (const claim of claims) if (!flattenConjunction(claim).every((part) => steps.has(text(part)))) {
@@ -101,11 +100,10 @@ export function checkProof(source, document, options = {}) {
     const { goal, by, bindings, uses } = step;
     for (const use of uses) if (!covered(use)) fail('C4', `unjustified use ${text(use)}`, goal);
     if (is(by, 'rule', 1) || is(by, 'fact', 1)) {
-      const id = Number(by.args[0].name);
-      const clause = Number.isSafeInteger(id) && program.clauses[id - 1];
-      if (!clause || by.args[0].type !== 'number' || !/^\d+$/.test(by.args[0].name)) {
-        fail('C1', `unknown clause ${text(by)}`, goal); continue;
-      }
+      const cited = by.args[0];
+      const id = Number(cited.name);
+      const clause = cited.type === NUMBER && /^\d+$/.test(cited.name) && program.clauses[id - 1];
+      if (!clause) { fail('C1', `unknown clause ${text(by)}`, goal); continue; }
       if (by.name === 'fact' && (clause.forward || clause.body.length)) { fail('C1', 'fact justification cites a rule', goal); continue; }
       const names = new Map();
       const head = freshTerm(clause.head, `check${id}`, names);
@@ -114,19 +112,19 @@ export function checkProof(source, document, options = {}) {
       const seen = new Set();
       let valid = true;
       for (const binding of bindings) {
-        if (!is(binding, '=', 2) || binding.args[0].type !== 'atom' ||
+        if (!is(binding, '=', 2) || binding.args[0].type !== ATOM ||
             !names.has(binding.args[0].name) || seen.has(binding.args[0].name)) { valid = false; break; }
         seen.add(binding.args[0].name);
-        if (!unify(names.get(binding.args[0].name), binding.args[1], env, { occursCheck: true })) valid = false;
+        if (!unify(names.get(binding.args[0].name), binding.args[1], env)) valid = false;
       }
       const heads = clause.forward ? flattenConjunction(head) : [head];
       let resolution = false;
       for (const candidate of heads) {
         const next = env.clone();
-        if (!unify(candidate, goal, next, { occursCheck: true }) || body.length !== uses.length) continue;
+        if (!unify(candidate, goal, next) || body.length !== uses.length) continue;
         let matches = true;
         for (let i = 0; i < body.length; i++) {
-          if (!unify(body[i], uses[i], next, { occursCheck: true })) { matches = false; break; }
+          if (!unify(body[i], uses[i], next)) { matches = false; break; }
         }
         if (matches && text(copyResolved(candidate, next)) === text(goal) &&
             body.every((item, i) => text(copyResolved(item, next)) === text(uses[i]))) resolution = true;

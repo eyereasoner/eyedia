@@ -1,5 +1,5 @@
 import {
-  Env, VAR, ATOM, COMPOUND, compound, atom, numberTerm, variable,
+  Env, ATOM, COMPOUND, compound, atom, numberTerm,
   deref, unify, freshTerm, copyResolved, termIsGround, listFromItems,
   flattenConjunction,
 } from './kernel/term.js';
@@ -27,25 +27,25 @@ export class Solver {
     this.options = options;
     this.serial = 0;
     this.facts = new Map();
-    this.factKeys = new Set();
+    this.factKeys = new Set(program.groundFactKeys);
     this.derived = [];
     this.reported = new Map();
     this.stats = { inferences: 0, rounds: 0, derived: 0 };
     this.haltCode = null;
-    for (const clause of program.clauses) {
-      if (!clause.forward && !clause.body.length && termIsGround(clause.head)) this.factKeys.add(text(clause.head));
-    }
   }
   budget(depth) {
     if (depth > (this.options.maxDepth ?? 256)) throw new Error('backward reasoning exceeded maxDepth');
     if (++this.stats.inferences > (this.options.maxInferences ?? 1000000)) throw new Error('reasoning exceeded maxInferences');
   }
-  *solve(goals, env = new Env(), depth = 0) {
-    if (!goals.length) { yield { env, nodes: [] }; return; }
+  // Proof nodes keep the terms they were built from and are resolved once, by
+  // whoever consumes a complete answer. Resolving at every conjunct instead
+  // would deep-copy the whole forest once per goal in the body.
+  *solve(goals, env = new Env(), depth = 0, index = 0) {
+    if (index >= goals.length) { yield { env, nodes: [] }; return; }
     this.budget(depth);
-    for (const first of this.goal(goals[0], env, depth)) {
-      for (const rest of this.solve(goals.slice(1), first.env, depth)) {
-        yield { env: rest.env, nodes: [...first.nodes, ...rest.nodes].map((node) => resolveNode(node, rest.env)) };
+    for (const first of this.goal(goals[index], env, depth)) {
+      for (const rest of this.solve(goals, first.env, depth, index + 1)) {
+        yield { env: rest.env, nodes: [...first.nodes, ...rest.nodes] };
       }
     }
   }
@@ -56,13 +56,13 @@ export class Solver {
     if (is(goal, ',', 2)) { yield* this.solve(flattenConjunction(goal), env, depth); return; }
     if (is(goal, ';', 2)) {
       for (const branch of goal.args) for (const answer of this.solve([branch], env, depth + 1)) {
-        yield { env: answer.env, nodes: [primitiveNode(copyResolved(goal, answer.env), atom('control'), answer.nodes)] };
+        yield { env: answer.env, nodes: [primitiveNode(goal, atom('control'), answer.nodes)] };
       }
       return;
     }
     if (is(goal, 'call', 1) || is(goal, 'once', 1)) {
       for (const answer of this.solve([goal.args[0]], env, depth + 1)) {
-        yield { env: answer.env, nodes: [primitiveNode(copyResolved(goal, answer.env), atom('control'), answer.nodes)] };
+        yield { env: answer.env, nodes: [primitiveNode(goal, atom('control'), answer.nodes)] };
         if (goal.name === 'once') break;
       }
       return;
@@ -82,33 +82,29 @@ export class Solver {
         items.push(freshTerm(copyResolved(goal.args[0], answer.env), `collection${++this.serial}`));
       }
       const next = env.clone();
-      if (unify(goal.args[2], listFromItems(items), next, { occursCheck: true })) {
-        yield { env: next, nodes: [primitiveNode(copyResolved(goal, next), atom('collected'))] };
+      if (unify(goal.args[2], listFromItems(items), next)) {
+        yield { env: next, nodes: [primitiveNode(goal, atom('collected'))] };
       }
       return;
     }
     if (primitiveKeys.has(key(goal))) {
-      for (const next of primitive(goal, env)) yield { env: next, nodes: [primitiveNode(copyResolved(goal, next))] };
+      for (const next of primitive(goal, env)) yield { env: next, nodes: [primitiveNode(goal)] };
       return;
     }
     for (const fact of this.facts.get(key(goal)) ?? []) {
       const next = env.clone();
-      if (unify(goal, fact.goal, next, { occursCheck: true })) yield { env: next, nodes: [fact] };
+      if (unify(goal, fact.goal, next)) yield { env: next, nodes: [fact] };
     }
     for (const clause of this.program.candidates(goal, env)) {
       const names = new Map();
       const head = freshTerm(clause.head, ++this.serial, names);
       const body = clause.body.map((item) => freshTerm(item, this.serial, names));
       const next = env.clone();
-      if (!unify(goal, head, next, { occursCheck: true })) continue;
+      if (!unify(goal, head, next)) continue;
+      const by = compound(body.length ? 'rule' : 'fact', [numberTerm(clause.id)]);
+      const bindings = [...names];
       for (const answer of this.solve(body, next, depth + 1)) {
-        const node = {
-          goal: copyResolved(goal, answer.env),
-          by: compound(body.length ? 'rule' : 'fact', [numberTerm(clause.id)]),
-          bindings: [...names].map(([name, value]) => [name, copyResolved(value, answer.env)]),
-          children: answer.nodes,
-        };
-        yield { env: answer.env, nodes: [node] };
+        yield { env: answer.env, nodes: [{ goal, by, bindings, children: answer.nodes }] };
       }
     }
   }
@@ -165,6 +161,20 @@ export class Solver {
 }
 
 export function run(source, options = {}) {
+  try {
+    return reason(source, options);
+  } catch (error) {
+    // Backward search recurses on the host stack, so a maxDepth far above the
+    // default can exhaust it before the bound is reached. Report that boundary
+    // in the language's own terms instead of leaking the host's.
+    if (error instanceof RangeError && /call stack/i.test(error.message)) {
+      throw new Error('backward reasoning exhausted the host stack; lower maxDepth or reformulate the program');
+    }
+    throw error;
+  }
+}
+
+function reason(source, options) {
   const program = source instanceof Program ? source : Program.parse(source);
   const solver = new Solver(program, options);
   solver.forward();
@@ -182,14 +192,20 @@ export function run(source, options = {}) {
         const id = variant(conclusion);
         if (seen.has(id)) continue;
         seen.add(id);
-        roots.push(...answer.nodes);
+        for (const node of answer.nodes) roots.push(resolveNode(node, answer.env));
         claims.push(conclusion);
         bindings.push(Object.fromEntries([...variables(goal)].filter(([name]) => !name.startsWith('_')).map(([name, value]) => [name, text(value, answer.env)])));
       }
     }
   } else if (solver.haltCode == null && solver.reported.size) {
-    for (const report of solver.reported.values()) { claims.push(report.claim); roots.push(...report.children); }
-  } else { roots.push(...solver.derived); claims.push(...solver.derived.map((node) => node.goal)); }
+    for (const report of solver.reported.values()) {
+      claims.push(report.claim);
+      for (const child of report.children) roots.push(child);
+    }
+  } else {
+    // A large closure can hold more nodes than a spread argument list allows.
+    for (const node of solver.derived) { roots.push(node); claims.push(node.goal); }
+  }
   const answers = claims.map((claim) => text(claim));
   const proof = options.proof ? renderProof(program, claims, roots) : null;
   if (proof && claims.length) {

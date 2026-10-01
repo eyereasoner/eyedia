@@ -1,4 +1,4 @@
-import { Env, VAR, ATOM, COMPOUND, deref, flattenConjunction, unify, freshTerm } from './kernel/term.js';
+import { Env, VAR, ATOM, COMPOUND, deref, flattenConjunction, unify, freshTerm, termIsGround } from './kernel/term.js';
 import { parseProgramText } from './kernel/parser.js';
 import { primitiveKeys } from './builtins.js';
 import { key, is, text } from './common.js';
@@ -13,7 +13,7 @@ export class Program {
     this.queries = [];
     this.groups = new Map();
     this.forward = [];
-    for (const parsed of parseProgramText(String(source), { sourceMetadata: true })) {
+    for (const parsed of parseProgramText(String(source))) {
       if (parsed.kind === 'query') { this.queries.push(parsed.goal); continue; }
       if (!parsed.head || parsed.kind) throw new Error('only facts, :- rules, :+ rules and ?- queries are supported');
       if (is(parsed.head, ':-', 1) || is(parsed.head, '-->', 2)) throw new Error('directives and DCGs are outside eyelang');
@@ -52,6 +52,12 @@ export class Program {
         positions.push({ atoms, other });
       }
       this.indexes.set(id, positions);
+    }
+    // Ground source facts are compared against forward conclusions by text, so
+    // render them once here rather than on every run of this program.
+    this.groundFactKeys = new Set();
+    for (const clause of this.clauses) {
+      if (!clause.forward && !clause.body.length && termIsGround(clause.head)) this.groundFactKeys.add(text(clause.head));
     }
     this.strata = stratify(this.clauses);
   }
@@ -97,11 +103,22 @@ function stratify(clauses) {
   const ranks = new Map(clauses.map((clause) => [clause.id, 0]));
   const edges = [];
   const dynamic = new Set();
+  // A dependency can only resolve against a head with the same functor, so
+  // index the heads and compare complete terms within one bucket instead of
+  // unifying every body goal against every clause in the program.
+  const byHead = new Map();
+  for (const clause of clauses) {
+    for (const id of new Set(clause.heads.map(key))) {
+      if (!byHead.has(id)) byHead.set(id, []);
+      byHead.get(id).push(clause);
+    }
+  }
   for (const clause of clauses) {
     for (const goal of clause.body) for (const dep of dependencies(goal)) {
-      if (dep.goal.type === VAR) dynamic.add(clause.id);
-      for (const candidate of clauses) {
-        if (candidate.heads.some((head) => unify(freshTerm(dep.goal, 'dependency'), freshTerm(head, 'head'), new Env(), { occursCheck: true }))) {
+      const named = dep.goal.type !== VAR;
+      if (!named) dynamic.add(clause.id);
+      for (const candidate of named ? byHead.get(key(dep.goal)) ?? [] : clauses) {
+        if (candidate.heads.some((head) => unify(freshTerm(dep.goal, 'dependency'), freshTerm(head, 'head'), new Env()))) {
           edges.push({ head: clause.id, id: candidate.id, closed: dep.closed });
         }
       }

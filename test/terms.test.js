@@ -1,6 +1,6 @@
 import test from './progress.js';
 import assert from 'node:assert/strict';
-import { atom, compound, numberTerm, variable } from '../index.js';
+import { atom, compound, numberTerm, variable, run } from '../index.js';
 import { text } from '../src/common.js';
 import { Env, unify, copyResolved, compareTerms } from '../src/kernel/term.js';
 
@@ -23,4 +23,15 @@ test('numeric identity and order retain exact large integers', () => {
   assert.equal(unify(numberTerm('01'), numberTerm('1'), new Env()), true);
   assert.equal(unify(numberTerm('1.0'), numberTerm('1'), new Env()), false);
   assert.equal(compareTerms(numberTerm('9007199254740993'), numberTerm('9007199254740992')), 1);
+});
+test('standard order compares numbers by value before type', () => {
+  const order = (left, right) => run(`?- compare(O, ${left}, ${right}).`).bindings[0].O;
+  assert.equal(order('1.0', '0'), '>');
+  assert.equal(order('2', '1.5'), '>');
+  assert.equal(order('-1.5', '-2'), '>');
+  // Equal value, so the float precedes the integer.
+  assert.equal(order('1.0', '1'), '<');
+  assert.equal(order('1', '1.0'), '>');
+  assert.equal(order('9007199254740993', '9007199254740992.0'), '>');
+  assert.equal(order('foo', '1'), '>');
 });

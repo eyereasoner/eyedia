@@ -1,13 +1,13 @@
-// Lightweight lexical helpers shared by the interactive and ISO stream
-// readers. These locate token boundaries only; parser.js remains responsible
-// for accepting or rejecting the token itself.
+// Full-stop disambiguation. A `.` ends a term only when it is not part of a
+// longer graphic token, a character-code constant or a closing comment
+// delimiter. This locates the boundary only; parser.js remains responsible for
+// accepting or rejecting the token itself.
 
 const graphicTokenCharacters = new Set('#$&*+-./<=>?@^~\\:');
 
-export function continuesGraphicToken(source, index, convert = null) {
+function continuesGraphicToken(source, index) {
   if (index <= 0) return false;
-  const rawPrevious = source[index - 1];
-  const previous = convert == null ? rawPrevious : convert(rawPrevious);
+  const previous = source[index - 1];
   // Most full stops follow a non-graphic token. Reject those in O(1) before
   // doing the rarer character-code/comment disambiguation below; otherwise a
   // large source with many term-ending dots degenerates into repeated backward
@@ -33,24 +33,22 @@ export function continuesGraphicToken(source, index, convert = null) {
   return true;
 }
 
-export function isTerminatingFullStop(source, index, convert = null) {
-  const current = convert == null ? source[index] : convert(source[index]);
-  if (current !== '.') return false;
-  const rawNext = source[index + 1] ?? '';
-  const next = convert == null ? rawNext : convert(rawNext);
+export function isTerminatingFullStop(source, index) {
+  if (source[index] !== '.') return false;
+  const next = source[index + 1] ?? '';
   // A full stop cannot terminate a term when it can still extend the graphic
   // token immediately before it. This remains true at a line boundary and at
   // the current end of interactive input: `*.\n` is the graphic token `*.`
   // followed by layout, so read/1 must keep waiting for a separate end char.
   // Conversely `!.\n` terminates because ! is a solo token, not a graphic
   // token character accepted by continuesGraphicToken().
-  if (continuesGraphicToken(source, index, convert)) return false;
+  if (continuesGraphicToken(source, index)) return false;
   if (next === '' || next === '%' || next === '\n' || next === '\r') return true;
   if (/^[\u0000-\u0020\u007f]$/.test(next)) return true;
   return false;
 }
 
-export function quotedEscapeEnd(source, index) {
+function quotedEscapeEnd(source, index) {
   const escaped = source[index + 1] ?? '';
   if (!escaped) return index;
 
@@ -73,7 +71,7 @@ export function quotedEscapeEnd(source, index) {
   return index + 1;
 }
 
-export function characterCodeConstantEnd(source, apostropheIndex) {
+function characterCodeConstantEnd(source, apostropheIndex) {
   if (source[apostropheIndex] !== "'" || source[apostropheIndex - 1] !== '0') return null;
   // The 0 must begin a numeric token. In particular, do not reinterpret the
   // apostrophe in an identifier such as a0'x as character-code notation.

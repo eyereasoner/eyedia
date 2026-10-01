@@ -1,5 +1,5 @@
 import { Env, COMPOUND, VAR, compound, atom, variable, copyResolved } from './kernel/term.js';
-import { formatTermForWrite } from './kernel/write.js';
+import { writeCanonical } from './kernel/write.js';
 
 export const key = (term) => `${term.name}/${term.arity}`;
 export const is = (term, name, arity) => term?.name === name && term.arity === arity;
@@ -10,9 +10,7 @@ export function text(term, env = new Env()) {
     /^[A-Z_][A-Za-z0-9_]*$/.test(name) && !name.startsWith('EYE_') && name !== '_'
       ? name : 'EYE_' + Array.from(name, (ch) => ch.codePointAt(0).toString(16)).join('_'),
   ]));
-  return formatTermForWrite(term, env, {
-    quoted: true, ignoreOps: true, numbervars: false, doubleQuotes: 'chars', variableNames: names,
-  });
+  return writeCanonical(term, env, names);
 }
 export function variables(term, result = new Map()) {
   if (term.type === VAR) result.set(term.name, term);

@@ -1,6 +1,6 @@
-// Numeric value identity shared by term semantics and scalar indexes. Keep
-// integer and float terms distinct while ignoring insignificant spelling
-// differences within either ISO numeric type.
+// Numeric value identity for term semantics: keep integer and float terms
+// distinct while ignoring insignificant spelling differences within either ISO
+// numeric type, so 007 and 7 unify but 7 and 7.0 do not.
 const decimalInteger = (text) => /^-?\d+$/.test(text ?? '');
 
 const finiteFloat = (text) => {
@@ -41,14 +41,6 @@ export function compareIntegerValueText(left, right) {
   return 0;
 }
 
-function canonicalIntegerText(text) {
-  let index = text[0] === '-' ? 1 : 0;
-  while (index < text.length && text.charCodeAt(index) === 48) index++;
-  if (index === text.length) return '0';
-  const digits = text.slice(index);
-  return text[0] === '-' ? `-${digits}` : digits;
-}
-
 export function sameNumberValue(left, right) {
   const leftInteger = decimalInteger(left);
   const rightInteger = decimalInteger(right);
@@ -58,11 +50,4 @@ export function sameNumberValue(left, right) {
   const leftValue = finiteFloat(left);
   const rightValue = finiteFloat(right);
   return leftValue != null && rightValue != null && leftValue === rightValue;
-}
-
-export function numberValueKey(text) {
-  if (decimalInteger(text)) return `integer:${canonicalIntegerText(text)}`;
-  const value = finiteFloat(text);
-  if (value == null) return `invalid:${text}`;
-  return `float:${Object.is(value, -0) ? 0 : value}`;
 }

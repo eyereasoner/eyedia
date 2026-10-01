@@ -1,5 +1,5 @@
 import {
-  Env, VAR, ATOM, COMPOUND, NUMBER, compound, atom, numberTerm, variable,
+  VAR, ATOM, COMPOUND, NUMBER, compound, atom, numberTerm, variable,
   deref, unify, termIsGround, properListItems, listFromItems, compareTerms, copyResolved,
 } from './kernel/term.js';
 import { evaluateArithmetic, arithmeticValueTerm, compareArithmeticValues } from './kernel/iso-arithmetic.js';
@@ -25,12 +25,12 @@ export function* primitive(goal, env) {
   const args = goal.args;
   const resolved = args.map((arg) => deref(arg, env));
   const next = env.clone();
-  const bind = (a, b) => unify(a, b, next, { occursCheck: true });
+  const bind = (a, b) => unify(a, b, next);
   let success = false;
   if (id === 'true/0') success = true;
   else if (id === 'fail/0' || id === 'false/0') success = false;
   else if (id === '=/2') success = bind(args[0], args[1]);
-  else if (id === '\\=/2') success = !unify(args[0], args[1], env.clone(), { occursCheck: true });
+  else if (id === '\\=/2') success = !unify(args[0], args[1], env.clone());
   else if (id === '==/2' || id === '\\==/2') {
     const equal = compareTerms(copyResolved(args[0], env), copyResolved(args[1], env)) === 0;
     success = id === '==/2' ? equal : !equal;
