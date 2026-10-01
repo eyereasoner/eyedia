@@ -209,4 +209,5 @@ built-ins, RDF parsers, streaming adapters and browser packaging are outside
 this profile. Applications supply external data as Prolog facts. Undefined
 user predicates fail under the closed-world convention.
 
-See [DESIGN.md](DESIGN.md) for the language profile and implementation model.
+Read [the eyelang essay](ESSAY.md) for the motivation behind the language,
+and [DESIGN.md](DESIGN.md) for the language profile and implementation model.
