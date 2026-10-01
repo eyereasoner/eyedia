@@ -1,0 +1,12 @@
+cousin(dave, frank).
+cousin(dave, grace).
+cousin(eve, frank).
+cousin(eve, grace).
+cousin(frank, dave).
+cousin(frank, eve).
+cousin(grace, dave).
+cousin(grace, eve).
+cousin(heidi, judy).
+cousin(ivan, judy).
+cousin(judy, heidi).
+cousin(judy, ivan).

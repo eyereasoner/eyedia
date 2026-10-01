@@ -1,0 +1,26 @@
+import test from './progress.js';
+import assert from 'node:assert/strict';
+import { atom, compound, numberTerm, variable } from '../index.js';
+import { text } from '../src/common.js';
+import { Env, unify, copyResolved, compareTerms } from '../src/kernel/term.js';
+
+test('fresh variable rendering cannot collide with source variable names', () => {
+  assert.notEqual(text(variable('X#1')), text(variable('X_1')));
+  assert.notEqual(text(variable('X#1')), text(variable('EYE_58_23_31')));
+  assert.match(text(compound('p', [variable('X#1'), variable('X_1')])), /p\(EYE_58_23_31, X_1\)/);
+});
+test('branch environments isolate bindings and occurs checks use existing aliases', () => {
+  const env = new Env();
+  const x = variable('X'), y = variable('Y');
+  assert.equal(unify(x, y, env), true);
+  const branch = env.clone();
+  assert.equal(unify(y, atom('a'), branch), true);
+  assert.equal(copyResolved(x, env).type, 'var');
+  assert.equal(copyResolved(x, branch).name, 'a');
+  assert.equal(unify(y, compound('f', [x]), env.clone()), false);
+});
+test('numeric identity and order retain exact large integers', () => {
+  assert.equal(unify(numberTerm('01'), numberTerm('1'), new Env()), true);
+  assert.equal(unify(numberTerm('1.0'), numberTerm('1'), new Env()), false);
+  assert.equal(compareTerms(numberTerm('9007199254740993'), numberTerm('9007199254740992')), 1);
+});

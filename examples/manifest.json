@@ -1,0 +1,190 @@
+[
+  {
+    "name": "socrates",
+    "description": "A first forward inference",
+    "trusted": []
+  },
+  {
+    "name": "family",
+    "description": "Recursive family relationships",
+    "trusted": []
+  },
+  {
+    "name": "backward",
+    "description": "Backward definitions in forward bodies",
+    "trusted": []
+  },
+  {
+    "name": "fibonacci",
+    "description": "Recursive backward arithmetic",
+    "trusted": []
+  },
+  {
+    "name": "graphs",
+    "description": "Base data, negation and collection",
+    "trusted": [
+      "absent",
+      "collected"
+    ]
+  },
+  {
+    "name": "terms",
+    "description": "Quoted graphs, triple terms and residual witnesses",
+    "trusted": []
+  },
+  {
+    "name": "reachability",
+    "description": "Finite graph closure with cycles",
+    "trusted": []
+  },
+  {
+    "name": "shortest-path",
+    "description": "Weighted paths and stratified minimum selection",
+    "trusted": [
+      "absent"
+    ]
+  },
+  {
+    "name": "lists",
+    "description": "Concatenation, mapping and summation",
+    "trusted": []
+  },
+  {
+    "name": "arithmetic",
+    "description": "Factorial, greatest common divisor and large integers",
+    "trusted": []
+  },
+  {
+    "name": "strings",
+    "description": "Text construction and Unicode inspection",
+    "trusted": []
+  },
+  {
+    "name": "inventory",
+    "description": "An invoice from collected line totals",
+    "trusted": [
+      "collected"
+    ]
+  },
+  {
+    "name": "permissions",
+    "description": "Role permissions with exclusions",
+    "trusted": [
+      "absent"
+    ]
+  },
+  {
+    "name": "witnesses",
+    "description": "Structured witnesses and shared multi-head conclusions",
+    "trusted": []
+  },
+  {
+    "name": "state-transitions",
+    "description": "Account balances from an ordered event log",
+    "trusted": []
+  },
+  {
+    "name": "integrity",
+    "description": "A provable integrity violation",
+    "haltCode": 65,
+    "trusted": []
+  },
+  {
+    "name": "alternatives",
+    "description": "Alternative routes, disjunction and once",
+    "trusted": []
+  },
+  {
+    "name": "unification",
+    "description": "Open lists and repeated-variable constraints",
+    "trusted": []
+  },
+  {
+    "name": "schema-inference",
+    "description": "Subclass, subproperty, domain and range inference",
+    "trusted": []
+  },
+  {
+    "name": "equivalence",
+    "description": "Explicit identity closure and name propagation",
+    "trusted": []
+  },
+  {
+    "name": "annotation-evidence",
+    "description": "Authors and dates attached to quoted statements",
+    "trusted": []
+  },
+  {
+    "name": "nested-collections",
+    "description": "Inspection of lists containing records and lists",
+    "trusted": []
+  },
+  {
+    "name": "family-cousins",
+    "description": "Generation and branch propagation with cousin relationships",
+    "trusted": []
+  },
+  {
+    "name": "dog-license",
+    "description": "Licensing from a collected count of owned dogs",
+    "trusted": [
+      "collected"
+    ]
+  },
+  {
+    "name": "hanoi",
+    "description": "Recursive construction of a disk-move sequence",
+    "trusted": []
+  },
+  {
+    "name": "collatz",
+    "description": "Parity-based recursive trajectories",
+    "trusted": []
+  },
+  {
+    "name": "flat-map",
+    "description": "Predicate-based mapping with multiple or missing values",
+    "trusted": [
+      "collected"
+    ]
+  },
+  {
+    "name": "property-paths",
+    "description": "Composed and repeatable relationship paths",
+    "trusted": []
+  },
+  {
+    "name": "paraconsistent-animals",
+    "description": "Local summaries of conflicting observations",
+    "trusted": [
+      "absent"
+    ]
+  },
+  {
+    "name": "scoped-audit",
+    "description": "Presence and absence within separate quoted graphs",
+    "trusted": [
+      "absent"
+    ]
+  },
+  {
+    "name": "metric-classification",
+    "description": "Measurement normalization and numerical classification",
+    "trusted": []
+  },
+  {
+    "name": "variable-predicates",
+    "description": "Relations selected and renamed through data bindings",
+    "trusted": []
+  },
+  {
+    "name": "record-scopes",
+    "description": "Distinct per-rule structured witnesses",
+    "trusted": []
+  },
+  {
+    "name": "sudoku",
+    "description": "A finite 4x4 grid solved with ordinary clauses",
+    "trusted": []
+  }
+]
