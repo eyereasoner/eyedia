@@ -35,11 +35,12 @@ function routes(program, from, to, max) {
   return answers.sort();
 }
 
-test('full airport network supports different endpoints and stopover limits with strict proofs', () => {
+test('full airport network: 11 queries, 8 independent graph comparisons and strict proof checks', (context) => {
   const p = program();
   assert.equal(p.clauses.filter(({ head }) => head.name === 'airport').length, 7698);
   assert.equal(p.clauses.filter(({ head }) => head.name === 'flight').length, 37505);
   const ostend = 'Ostend-Bruges International Airport', prague = 'Václav Havel Airport Prague';
+  let strictChecks = 0;
   for (const [from, to, max] of [
     [ostend, prague, 0], [ostend, prague, 1], [ostend, prague, 2],
     ['Liège Airport', prague, 1], [prague, ostend, 2],
@@ -48,11 +49,15 @@ test('full airport network supports different endpoints and stopover limits with
   ]) {
     const result = run(p, { goal: goal(from, to, max), proof: true });
     assert.deepEqual(result.answers.slice().sort(), routes(p, from, to, max));
-    if (result.answers.length) assert.equal(checkProof(p, result.proof, { allowTrusted: false }).valid, true);
+    if (result.answers.length) {
+      assert.equal(checkProof(p, result.proof, { allowTrusted: false }).valid, true);
+      strictChecks++;
+    }
   }
   assert.equal(run(p, { goal: goal(ostend, prague, 2) }).answers.length, 3);
   assert.deepEqual(run(p, { goal: goal(ostend, prague, -1) }).answers, []);
   assert.deepEqual(run(p, { goal: goal(ostend, prague, '1.5') }).answers, []);
+  context.diagnostic(`Total duration includes one network parse, 8 queries with proof generation and automatic proof verification, 8 independent graph searches, ${strictChecks} additional strict C1-C5 checks, and 3 ordinary queries.`);
 });
 
 test('path discovery enumerates simple routes in a cyclic graph and handles arbitrary bounds', () => {
