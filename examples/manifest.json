@@ -241,5 +241,10 @@
     "name": "queens",
     "description": "Configurable N-queens search with diagonal constraints",
     "trusted": []
+  },
+  {
+    "name": "age",
+    "description": "Calendar-year and elapsed-day age thresholds at an explicit date",
+    "trusted": []
   }
 ]

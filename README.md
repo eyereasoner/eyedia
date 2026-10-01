@@ -137,7 +137,7 @@ checked before being returned.
 Clause numbers refer to the supplied program's normalized rules, in source
 order. Check a saved proof against the same source program that produced it.
 
-The [examples](examples/README.md) include 44 complete programs:
+The [examples](examples/README.md) include 45 complete programs:
 
 | Examples | What they demonstrate |
 | --- | --- |
@@ -150,7 +150,7 @@ The [examples](examples/README.md) include 44 complete programs:
 | `schema-inference`, `equivalence`, `annotation-evidence`, `property-paths` | Schema rules, identity closure, statement evidence and composed paths |
 | `nested-collections`, `flat-map`, `scoped-audit`, `variable-predicates` | Structured collections, mapping, scoped checks and relation renaming |
 | `family-cousins`, `dog-license`, `paraconsistent-animals`, `record-scopes` | Family branches, counted policies, conflicting observations and witness scope |
-| `hanoi`, `collatz`, `metric-classification`, `sudoku` | Recursive puzzles, numerical classification and a finite 4x4 grid solver |
+| `hanoi`, `collatz`, `metric-classification`, `sudoku`, `age` | Recursive puzzles, numerical classification, a finite 4x4 grid solver and calendar age checks |
 | `good-cobbler`, `peano`, `expression-eval` | Structured descriptions, symbolic arithmetic and expression graphs |
 | `modexp`, `queens`, `interval-relations` | Modular powers, constraint search and all thirteen interval relations |
 | `concept-alignment`, `bayes-diagnosis`, `policy-risk` | Reporting rollups, normalized fault scores and ranked policy findings |

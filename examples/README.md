@@ -58,6 +58,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [bayes-diagnosis.pl](bayes-diagnosis.pl) | Normalized probabilities for illustrative printer faults |
 | [policy-risk.pl](policy-risk.pl) | Ranked findings with explanations and suggested mitigations |
 | [queens.pl](queens.pl) | Configurable N-queens search with diagonal constraints |
+| [age.pl](age.pl) | Calendar-year and elapsed-day age checks at an explicit reference date |
 
 `integrity.pl` intentionally exits with code 65 because it concludes `false`.
 Its proof-check report is valid: the certificate explains why the constraint was
@@ -125,6 +126,23 @@ follows inference order, with ranks recorded explicitly. Adding the missing
 safeguards removes the affected findings. Both examples expose their collection
 obligations, and policy findings also expose absence obligations. The other
 seven new examples pass strict proof checking.
+
+`age.pl` checks whether a person's age strictly exceeds `years(N)` or `days(N)`.
+It uses `as_of(date(2026, 10, 1))` for reproducible output and proofs. Edit that
+fact to change the default date, or pass a reference date directly:
+
+```sh
+node bin/eyelang.js examples/age.pl
+node bin/eyelang.js --goal "age_above(pat_h, years(80), date(2024, 8, 22))" examples/age.pl
+node bin/eyelang.js --goal "age_days(pat_h, date(2026, 10, 1), Days)" examples/age.pl
+```
+
+Exactly on the threshold anniversary, `age_above/3` fails; it succeeds on the
+following day. A February 29 anniversary falls on February 28 in a non-leap
+year. Elapsed days follow the Gregorian calendar, including century leap-year
+rules. Invalid dates, future births, unknown people, and negative or noninteger
+thresholds return no answers. Reference dates are explicit source data rather
+than clock readings, and the example passes strict proof checking.
 
 Run `npm test` for the full suite or `npm run test:examples` for this corpus.
 Every example runs through the API and all three CLI modes. The test log prints
