@@ -45,6 +45,10 @@ export class Program {
         const id = callable(item) ? key(item) : null;
         if (id === null || id === ':/2' || reserved.has(id) ||
             ((primitiveKeys.has(id) || controls.has(id)) && !(forward && (item.name === 'true' || item.name === 'false')))) {
+          // A proof document parses as Prolog text, but its records and claims
+          // are data for the checker, so say what it is rather than which head
+          // came first.
+          if (/^step\(/m.test(source)) throw new Error('this is a proof document, not a program: check it with --check-proof PROOF PROGRAM');
           throw new Error(`unsupported or reserved head ${text(item)}`);
         }
       }

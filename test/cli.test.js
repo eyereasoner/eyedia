@@ -28,6 +28,12 @@ test('proof generation pipes into proof checking', () => {
   assert.equal(JSON.parse(json.stdout).conditions.length, 7);
   assert.equal(cli(['--check-proof', '-', 'examples/socrates.pl'], generated.stdout + 'bogus.').status, 1);
 });
+test('a proof document given as a program says how to check it instead', () => {
+  const ran = cli(['examples/proof/socrates.pl']);
+  assert.equal(ran.status, 1);
+  assert.match(ran.stderr, /this is a proof document, not a program: check it with --check-proof PROOF PROGRAM/);
+  assert.match(cli([], 'clause(a, b, c).').stderr, /unsupported or reserved head clause\(a, b, c\)/);
+});
 test('CLI reports help, errors, stats and fuse exit codes', () => {
   assert.match(cli(['--help']).stdout, /Usage: eyel/);
   assert.equal(cli(['--unknown']).status, 1);

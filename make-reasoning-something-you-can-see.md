@@ -56,8 +56,10 @@ step(human(socrates), fact(1), [], []).
 That document is itself ordinary Prolog text, written so that it parses back
 without any operator declaration or flag. You can read it, store it, send
 it to someone else, and — this is the part that matters — hand it to a checker
-that re-establishes every step against the program it came from. Save those two
-lines and try it:
+that re-establishes every step against the program it came from. It is data
+for that checker, not a program to run: `clause/3` and `step/4` are reserved
+for its records, so a program can never conclude something that reads as one.
+Save the two-line program from above and try it:
 
 ```sh
 printf 'human(socrates).\nmortal(X) :+ human(X).\n' > socrates.pl
