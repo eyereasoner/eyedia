@@ -208,6 +208,11 @@
     "trusted": []
   },
   {
+    "name": "lldm",
+    "description": "Leg length discrepancy measured from radiograph landmarks, with an alarm and its reason",
+    "trusted": []
+  },
+  {
     "name": "variable-predicates",
     "description": "Relations selected and renamed through data bindings",
     "trusted": []

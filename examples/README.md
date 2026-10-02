@@ -52,6 +52,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [scoped-audit.pl](scoped-audit.pl) | Presence and absence within separate quoted graphs |
 | [metric-classification.pl](metric-classification.pl) | Measurement normalization and numerical classification |
 | [control-system.pl](control-system.pl) | Feedforward and nonlinear feedback commands for two actuators |
+| [lldm.pl](lldm.pl) | Leg length discrepancy measured from radiograph landmarks, with an alarm and its reason |
 | [variable-predicates.pl](variable-predicates.pl) | Relations selected and renamed through data bindings |
 | [record-scopes.pl](record-scopes.pl) | Distinct per-rule structured witnesses |
 | [sudoku.pl](sudoku.pl) | A 9x9 Sudoku solved by backtracking, most constrained cells first |
@@ -224,6 +225,15 @@ compensation, the base-10 logarithm of a measured disturbance. The second is
 a proportional, nonlinear differential feedback controller on the error
 between a target and an output. The results are ordinary floats, and the proof
 recomputes every arithmetic step.
+
+`lldm.pl` measures a leg length discrepancy from four landmarks on a
+radiograph. Two landmarks fix a reference line, and each leg runs from one of
+the other two to its perpendicular projection on that line. With a 1.25 cm
+threshold the measured legs, 21.55 cm and 23.46 cm, raise an alarm, printed
+with the lengths, the discrepancy, the threshold and the reason. The reason
+names the side of the threshold that fired; the version this was adapted from
+gave the same reason for both. Every intermediate value is a separate `val/3`
+clause, so the strict certificate recomputes each one.
 
 `bayes-diagnosis.pl` models printer faults using illustrative priors and two
 conditionally independent observations. It keeps exact integer likelihood
