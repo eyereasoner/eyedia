@@ -350,5 +350,12 @@
     "name": "enigma1225",
     "description": "New Scientist Enigma 1225: the best board whose transpose is a row permutation of itself",
     "trusted": []
+  },
+  {
+    "name": "superdense-coding",
+    "description": "Superdense coding in discrete quantum theory, with interference as odd path counts",
+    "trusted": [
+      "collected"
+    ]
   }
 ]

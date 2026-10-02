@@ -78,6 +78,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [wolf-goat-cabbage.pl](wolf-goat-cabbage.pl) | The river crossing, with seven crossings shown to be minimal |
 | [monkey-bananas.pl](monkey-bananas.pl) | Every plan of up to five moves that gets the monkey the bananas |
 | [enigma1225.pl](enigma1225.pl) | New Scientist Enigma 1225: the best board whose transpose is a row permutation of itself |
+| [superdense-coding.pl](superdense-coding.pl) | Superdense coding in discrete quantum theory, with interference as odd path counts |
 
 `integrity.pl` intentionally exits with code 65 because it concludes `false`.
 Its proof-check report is valid: the certificate explains why the constraint was
@@ -221,7 +222,7 @@ rules. Invalid dates, future births, unknown people, and negative or noninteger
 thresholds return no answers. Reference dates are explicit source data rather
 than clock readings, and the example passes strict proof checking.
 
-The classics from `ackermann.pl` to `enigma1225.pl` are written without a
+The classics from `ackermann.pl` to `superdense-coding.pl` are written without a
 library. Relations such as `between/3`, `member/2` or `length/2` are defined in
 each program as ordinary clauses, and a search commits with `once/1`, or with
 guards that make its alternatives exclusive, where Prolog would use cut.
@@ -258,6 +259,17 @@ them in the standard order of terms. Here each cell is a number instead, and its
 class is its orbit under (I, J) -> (Perm(J), I), so every step is arithmetic and
 the certificate needs no trusted obligations. For every size from 4 to 9 it
 gives the same board as the original.
+
+`superdense-coding.pl` sends two classical bits through one qubit in discrete
+quantum theory, where amplitudes come from a finite field and the merge of
+alternative branches is exclusive: an answer survives when it is reached an odd
+number of times. The original toggles asserted facts to get that parity; here
+each of Alice's messages N and Bob's readings M collects its ways through the
+shared entangled pair and keeps the pair when their number is odd. Every
+message arrives as itself by exactly one way, and every wrong reading by two
+ways that cancel or by none, so Bob reads 0 to 3 exactly as Alice sent them.
+The parity depends on all the ways, so the certificate carries the four
+collections behind its answers as obligations.
 
 Certificates that lean on a completed search say so. In `kaprekar.pl` the whole
 verification sits inside one negation, so its certificate is two steps plus an

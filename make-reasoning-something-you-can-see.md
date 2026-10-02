@@ -349,7 +349,7 @@ language does not hand you a certificate it has not verified.
 
 ## The examples
 
-The [example collection](examples/README.md) is 64 complete programs. Each one
+The [example collection](examples/README.md) is 65 complete programs. Each one
 ships with its conclusions, its proof and its C1–C7 check report, all saved to
 disk:
 
@@ -377,7 +377,7 @@ examples/check/socrates.pl     C1-C7 proof-check report
 | `modexp`, `queens`, `interval-relations` | Modular powers, constraint search and all thirteen interval relations |
 | `concept-alignment`, `bayes-diagnosis`, `policy-risk` | Reporting rollups, normalized fault scores and ranked policy findings |
 | `ackermann`, `peasant`, `padovan`, `sieve`, `goldbach`, `kaprekar` | Exact hyperoperations, ancient arithmetic, number sequences and number-theory checks |
-| `easter`, `turing` | Calendar arithmetic and a Turing machine interpreter |
+| `easter`, `turing`, `superdense-coding` | Calendar arithmetic, a Turing machine interpreter and discrete quantum interference |
 | `zebra`, `four-color`, `wolf-goat-cabbage`, `monkey-bananas`, `enigma1225` | Classic constraint puzzles, planning problems and a combinatorial board puzzle |
 
 A few are worth singling out. [Ackermann](examples/ackermann.pl) computes
