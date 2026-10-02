@@ -33,6 +33,9 @@ npm test
 The executable becomes `eyel` when the package is installed. Run `eyel --help`
 for the full command line.
 
+Or in the browser: serve the checkout (`python3 -m http.server`) and open
+[playground.html](playground.html) to edit, run and check any example.
+
 ## From JavaScript
 
 ```js

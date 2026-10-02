@@ -344,7 +344,9 @@ hundred-thousand-step chain and produces a certificate in which every one of
 those 100,001 steps is independently verified.
 
 These are meant to be edited. Read one, change a fact, run it, look at what
-changed. Add a clause. Ask a narrower question. Each example is a small
+changed. The [playground](playground.html) does that in a browser: load any
+example, edit it, run it, check its proof, and copy a link that reopens exactly
+what you see. Add a clause. Ask a narrower question. Each example is a small
 repeatable experiment, and because the artifacts are saved, you can see exactly
 what your change did:
 
