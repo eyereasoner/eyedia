@@ -2,7 +2,7 @@
 import { readFile } from 'node:fs/promises';
 import { run, checkProof, checkReportTerms } from '../index.js';
 
-const help = `Usage: eyelang [--proof | --check-proof FILE] [--goal GOAL] [FILE ...]
+const help = `Usage: eyel [--proof | --check-proof FILE] [--goal GOAL] [FILE ...]
 Facts and rules use Prolog syntax; :+ rules run to a fixpoint.
   --proof             Print claims and clause/3, step/4 proof records
   --check-proof FILE  Print a Prolog C1-C5 check report (- for stdin)
@@ -72,6 +72,6 @@ try {
     }
   }
 } catch (error) {
-  process.stderr.write(`eyelang: ${error.message}\n`);
+  process.stderr.write(`eyel: ${error.message}\n`);
   process.exitCode = 1;
 }

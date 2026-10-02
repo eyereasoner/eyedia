@@ -1,6 +1,6 @@
-// Tokenizer and recursive-descent parser for the eyelang source language.
+// Tokenizer and recursive-descent parser for the eyel source language.
 // It reads ISO term syntax over a fixed operator table and produces Term
-// objects for the solver. The operator table is fixed because eyelang has no
+// objects for the solver. The operator table is fixed because eyel has no
 // directives: `op/3`, `set_prolog_flag/2` and `char_conversion/2` would be the
 // only ways to change parsing, and a program that uses one is rejected by the
 // language profile rather than parsed differently.
@@ -93,7 +93,7 @@ const infixOperator = (priority, specifier) => ({
 const INFIX_OPERATORS = new Map([
   [':-', infixOperator(1200, 'xfx')],
   ['-->', infixOperator(1200, 'xfx')],
-  // The eyelang forward-rule extension. A top-level Conclusion :+ Premise is
+  // The eyel forward-rule extension. A top-level Conclusion :+ Premise is
   // evaluated to a fixpoint by the forward solver.
   [':+', infixOperator(1200, 'xfx')],
   // Part 1 reserves `|` as list punctuation but permits a program to read it
@@ -104,7 +104,7 @@ const INFIX_OPERATORS = new Map([
   [',', infixOperator(1000, 'xfy')],
   ...['=', '=..', '\\=', '==', '\\==', '@<', '@=<', '@>', '@>=', 'is',
     '=:=', '=\\=', '<', '=<', '>', '>='].map((name) => [name, infixOperator(700, 'xfx')]),
-  // Part 2 writes module qualification this way. eyelang has no modules, but
+  // Part 2 writes module qualification this way. eyel has no modules, but
   // `:` remains ordinary term syntax in a data position.
   [':', infixOperator(600, 'xfy')],
   ...['+', '-', '/\\', '\\/'].map((name) => [name, infixOperator(500, 'yfx')]),
@@ -138,7 +138,7 @@ function isGraphicAtomCharacter(character) {
   if (graphicAtomChars.includes(character)) return true;
   if (code <= 0x7f || isWhitespaceCharacter(character) ||
       isUnicodeNameContinueCharacter(character)) return false;
-  // Non-ASCII symbols/punctuation are eyelang extended graphic characters.
+  // Non-ASCII symbols/punctuation are eyel extended graphic characters.
   // Surrogate code units are kept together by the maximal-token scan, so a
   // supplementary scalar remains one atom spelling even though source offsets
   // are UTF-16 based.

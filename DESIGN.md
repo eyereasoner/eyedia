@@ -1,6 +1,6 @@
 # Language profile
 
-Eyelang uses a small Prolog reasoning core. Function symbols and recursive Horn
+Eyel uses a small Prolog reasoning core. Function symbols and recursive Horn
 clauses support general symbolic computation. Compound terms carry application
 data without dedicated runtime classes. Forward materialization supplies finite
 recursive graph closure, and closed dependencies schedule absence and collection
@@ -60,7 +60,7 @@ or caller-supplied data.
 | `src/builtins.js` | Pure primitive profile |
 | `src/engine.js` | Backward resolution, forward fixpoints and proof recording |
 | `src/proof.js` | Certificate rendering and checking; no solver dependency |
-| `bin/eyelang.js` | Source loading and command-line interface |
+| `bin/eyel.js` | Source loading and command-line interface |
 | `tools/example-artifacts.js` | Example evaluation and artifact generation rules |
 | `test/examples.test.js` | Saved-artifact verification and complete CLI runs |
 

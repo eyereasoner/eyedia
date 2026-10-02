@@ -16,9 +16,9 @@ export class Program {
     for (const parsed of parseProgramText(String(source))) {
       if (parsed.kind === 'query') { this.queries.push(parsed.goal); continue; }
       if (!parsed.head || parsed.kind) throw new Error('only facts, :- rules, :+ rules and ?- queries are supported');
-      if (is(parsed.head, ':-', 1) || is(parsed.head, '-->', 2)) throw new Error('directives and DCGs are outside eyelang');
+      if (is(parsed.head, ':-', 1) || is(parsed.head, '-->', 2)) throw new Error('directives and DCGs are outside eyel');
       const forward = is(parsed.head, ':+', 2);
-      if (forward && parsed.body.length) throw new Error('guarded :+ rule declarations are outside eyelang');
+      if (forward && parsed.body.length) throw new Error('guarded :+ rule declarations are outside eyel');
       const head = forward ? parsed.head.args[0] : parsed.head;
       const body = (forward ? [parsed.head.args[1]] : parsed.body).flatMap(flattenConjunction);
       const heads = forward ? flattenConjunction(head) : [head];
@@ -82,7 +82,7 @@ export class Program {
 }
 
 export function validateControls(goal) {
-  if (excludedControls.has(key(goal))) throw new Error(`control outside eyelang: ${key(goal)}`);
+  if (excludedControls.has(key(goal))) throw new Error(`control outside eyel: ${key(goal)}`);
   if (is(goal, ',', 2) || is(goal, ';', 2)) goal.args.forEach(validateControls);
   else if (is(goal, 'call', 1) || is(goal, 'once', 1) || is(goal, '\\+', 1)) validateControls(goal.args[0]);
   else if (is(goal, 'findall', 3)) validateControls(goal.args[1]);

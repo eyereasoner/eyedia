@@ -1,11 +1,11 @@
-# eyelang: Make reasoning something you can see
+# eyel: Make reasoning something you can see
 
 There is a particular kind of satisfaction in understanding why something is
 true. You can follow the steps. You can point to the assumptions. You can change
 one fact and see what follows. The result becomes something you can work with:
 explain it to a colleague, challenge it, improve it, and build on it.
 
-Eyelang brings that experience to programming. You write facts and rules in
+Eyel brings that experience to programming. You write facts and rules in
 Prolog syntax, ask questions, and derive conclusions. When you need an
 explanation, the language can produce a proof. When you receive a proof, you can
 check it against the program that gives it meaning.
@@ -20,7 +20,7 @@ human(socrates).
 mortal(X) :+ human(X).
 ```
 
-Two lines express a fact and a rule. Eyelang derives `mortal(socrates)`. Its proof
+Two lines express a fact and a rule. Eyel derives `mortal(socrates)`. Its proof
 records the source fact, the rule, and the substitution that connects them. You
 can see the entire argument. You can understand the whole program before you
 have finished your first cup of coffee.
@@ -36,7 +36,7 @@ Writing a fact asks you to identify what you know. Writing a query asks you to
 state what you want to learn. A program becomes a place where a team's
 understanding can take a precise, inspectable form.
 
-Eyelang gives that understanding two ways to move. Forward rules, written with
+Eyel gives that understanding two ways to move. Forward rules, written with
 `:+`, materialize consequences until they reach a fixpoint. Backward rules,
 written with `:-`, define relations that are explored when a question calls
 them. A forward rule can use a backward definition, and a backward query can
@@ -63,7 +63,7 @@ The [expression evaluator](examples/expression-eval.pl) uses that same
 combination to evaluate a graph recursively and publish its result through a
 forward rule. A modest vocabulary reaches surprisingly far.
 
-This is one of eyelang's most encouraging qualities. Its core stays small while
+This is one of eyel's most encouraging qualities. Its core stays small while
 the programs become interesting. Lists, compound terms, variables, recursive
 clauses, and arithmetic provide materials you can combine into your own
 representations. An expression can be a graph of nodes. An event can carry an
@@ -96,7 +96,7 @@ can be expressed clearly, and the arithmetic and clause instances behind its
 answer can become part of a checkable derivation. You can learn the algorithm
 and inspect the evidence in the same place.
 
-Proof checking makes that evidence more useful. Eyelang's checker follows the
+Proof checking makes that evidence more useful. Eyel's checker follows the
 recorded derivation against the supplied source program. It checks rule
 resolution, acyclicity, justifications, coverage, and pure primitive results
 under conditions C1 through C5. It recomputes primitive operations and checks
@@ -113,7 +113,7 @@ conversation precise. You can ask whether the inference is valid, whether the
 rule expresses the intended policy, and whether the source fact is accurate.
 Those questions have identifiable places to land.
 
-Eyelang also gives absence and collection visible places in that conversation.
+Eyel also gives absence and collection visible places in that conversation.
 Their certificates carry explicit obligations, and strict checking rejects
 proofs that depend on them. A report can tell you exactly where a conclusion
 relies on a completed search for missing facts or collected answers. That
@@ -128,8 +128,8 @@ derivation to a generated report.
 You can try the whole cycle immediately:
 
 ```sh
-node bin/eyelang.js --proof examples/socrates.pl |
-  node bin/eyelang.js --strict-proof --check-proof - examples/socrates.pl
+node bin/eyel.js --proof examples/socrates.pl |
+  node bin/eyel.js --strict-proof --check-proof - examples/socrates.pl
 ```
 
 The repository runs with Node.js 18 or newer, without an install or build step.
@@ -158,6 +158,6 @@ valuable: it gives you a specific rule or assumption to revisit. As the model
 grows, you accumulate a body of executable knowledge that you can inspect,
 test, and explain.
 
-Eyelang's promise is practical and inviting: you can build programs whose
+Eyel's promise is practical and inviting: you can build programs whose
 conclusions come with a story precise enough to check. Start with a question
 you care about. Write down what you know. See what follows.

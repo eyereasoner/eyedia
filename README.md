@@ -1,9 +1,9 @@
-# eyelang
+# eyel
 
 A standalone, dependency-free **Prolog rule language** with forward and backward
 reasoning and checkable proofs.
 
-Eyelang turns explicit facts and rules into conclusions whose derivations can
+Eyel turns explicit facts and rules into conclusions whose derivations can
 be inspected and checked. Its compact core supports structured terms, recursive
 relations, arithmetic, stratified negation and collection. Data models and
 reusable operations are expressed with ordinary Prolog clauses.
@@ -11,13 +11,13 @@ reusable operations are expressed with ordinary Prolog clauses.
 Run with Node.js 18 or newer. No install or build step is needed:
 
 ```sh
-node bin/eyelang.js examples/socrates.pl
-node bin/eyelang.js --proof examples/socrates.pl
-node bin/eyelang.js --proof examples/socrates.pl | node bin/eyelang.js --check-proof - examples/socrates.pl
+node bin/eyel.js examples/socrates.pl
+node bin/eyel.js --proof examples/socrates.pl
+node bin/eyel.js --proof examples/socrates.pl | node bin/eyel.js --check-proof - examples/socrates.pl
 npm test
 ```
 
-The executable becomes `eyelang` when the package is installed.
+The executable becomes `eyel` when the package is installed.
 
 Facts and rules use Prolog syntax:
 
@@ -227,5 +227,5 @@ change how the rest of itself, or any program it is loaded beside, is read.
 A source using `op/3`, `set_prolog_flag/2` or `char_conversion/2` is refused
 rather than parsed under different rules.
 
-Read [the eyelang essay](ESSAY.md) for the motivation behind the language,
+Read [the eyel essay](ESSAY.md) for the motivation behind the language,
 and [DESIGN.md](DESIGN.md) for the language profile and implementation model.

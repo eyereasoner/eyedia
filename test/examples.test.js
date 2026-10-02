@@ -9,7 +9,7 @@ import { examplesRoot, manifest, evaluateExample } from '../tools/example-artifa
 const root = fileURLToPath(new URL('..', import.meta.url));
 const read = (path) => readFileSync(new URL(path, examplesRoot), 'utf8');
 function cli(args) {
-  const result = spawnSync(process.execPath, ['bin/eyelang.js', ...args], { cwd: root, encoding: 'utf8' });
+  const result = spawnSync(process.execPath, ['bin/eyel.js', ...args], { cwd: root, encoding: 'utf8' });
   if (result.error) throw result.error;
   assert.equal(result.stderr, '', result.stderr);
   return result;

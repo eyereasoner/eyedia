@@ -4,7 +4,7 @@ import { run, parseTermText, parseGoalText } from '../index.js';
 import { parseProgramText } from '../src/kernel/parser.js';
 import { text } from '../src/common.js';
 
-// eyelang has no directives, so no program can change how the rest of itself
+// eyel has no directives, so no program can change how the rest of itself
 // is read: the operator table is fixed and the accepted syntax is a property
 // of the parser alone. These cases pin that surface, each stating the
 // canonical functional notation a source spelling reads as.
@@ -117,7 +117,7 @@ test('directives and DCGs parse as terms and are refused by the profile', () => 
     'a --> b.',
   ]) {
     assert.equal(parseProgramText(source).length, 1, source);
-    assert.throws(() => run(source), /directives and DCGs are outside eyelang/, source);
+    assert.throws(() => run(source), /directives and DCGs are outside eyel/, source);
   }
   // op/3 cannot introduce syntax, so a program using a declared operator is a
   // syntax error rather than a silently different reading.

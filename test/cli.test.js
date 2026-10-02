@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const cli = (args = [], input) => {
-  const result = spawnSync(process.execPath, ['bin/eyelang.js', ...args], { cwd: root, input, encoding: 'utf8' });
+  const result = spawnSync(process.execPath, ['bin/eyel.js', ...args], { cwd: root, input, encoding: 'utf8' });
   if (result.error) throw result.error;
   return result;
 };
@@ -28,7 +28,7 @@ test('proof generation pipes into proof checking', () => {
   assert.equal(cli(['--check-proof', '-', 'examples/socrates.pl'], generated.stdout + 'bogus.').status, 1);
 });
 test('CLI reports help, errors, stats and fuse exit codes', () => {
-  assert.match(cli(['--help']).stdout, /Usage: eyelang/);
+  assert.match(cli(['--help']).stdout, /Usage: eyel/);
   assert.equal(cli(['--unknown']).status, 1);
   assert.equal(cli(['--max-depth', '0']).status, 1);
   assert.equal(cli(['--check-proof', '-'], '').status, 1);

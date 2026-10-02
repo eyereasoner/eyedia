@@ -1,11 +1,11 @@
 {
-  "name": "eyelang",
+  "name": "eyel",
   "version": "0.1.0",
   "description": "A standalone, dependency-free Prolog rule language with forward and backward reasoning and checkable proofs.",
   "type": "module",
   "main": "./index.js",
   "exports": "./index.js",
-  "bin": { "eyelang": "./bin/eyelang.js" },
+  "bin": { "eyel": "./bin/eyel.js" },
   "files": ["index.js", "src", "bin", "examples", "test", "tools", "README.md", "ESSAY.md", "DESIGN.md", "LICENSE.md"],
   "scripts": {
     "test": "node test/run.js",

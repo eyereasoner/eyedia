@@ -82,7 +82,7 @@ function occurs(name, term, env) {
   }
   return false;
 }
-// Unification always applies the occurs check: eyelang terms are finite trees,
+// Unification always applies the occurs check: eyel terms are finite trees,
 // so a binding that would create a cycle fails instead of building one.
 export function unify(left, right, env) {
   const pending = [left, right];

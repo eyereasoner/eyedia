@@ -3,9 +3,9 @@
 Run a source, generate its proof, or check its saved proof:
 
 ```sh
-node bin/eyelang.js examples/socrates.pl
-node bin/eyelang.js --proof examples/socrates.pl
-node bin/eyelang.js --check-proof examples/proof/socrates.pl examples/socrates.pl
+node bin/eyel.js examples/socrates.pl
+node bin/eyel.js --proof examples/socrates.pl
+node bin/eyel.js --check-proof examples/proof/socrates.pl examples/socrates.pl
 ```
 
 Each program has a matching conclusion file in `output/`, a certificate in
@@ -80,9 +80,9 @@ at most two stopovers. Use any airport-name atoms and a nonnegative integer
 limit with `path_discovery(From, To, MaxStopovers, Path)`:
 
 ```sh
-node bin/eyelang.js --goal "path_discovery('Liège Airport', 'Václav Havel Airport Prague', 1, Path)" examples/path-discovery.pl
-node bin/eyelang.js --proof --goal "path_discovery('Ostend-Bruges International Airport', 'Liège Airport', 0, Path)" examples/path-discovery.pl > /tmp/route-proof.pl
-node bin/eyelang.js --strict-proof --check-proof /tmp/route-proof.pl examples/path-discovery.pl
+node bin/eyel.js --goal "path_discovery('Liège Airport', 'Václav Havel Airport Prague', 1, Path)" examples/path-discovery.pl
+node bin/eyel.js --proof --goal "path_discovery('Ostend-Bruges International Airport', 'Liège Airport', 0, Path)" examples/path-discovery.pl > /tmp/route-proof.pl
+node bin/eyel.js --strict-proof --check-proof /tmp/route-proof.pl examples/path-discovery.pl
 ```
 
 `--goal` replaces the default query. Zero stopovers allows only direct flights;
@@ -107,9 +107,9 @@ exponent and a positive integer modulus. `queens.pl` returns the first solution
 for an 8x8 board by default; replacing the query enumerates other board sizes:
 
 ```sh
-node bin/eyelang.js --goal "mod_pow(7, 1000000000, 1000000007, Result)" examples/modexp.pl
-node bin/eyelang.js --goal "queens(4, Columns)" examples/queens.pl
-node bin/eyelang.js --goal "add(A, B, s(s(s(zero))))" examples/peano.pl
+node bin/eyel.js --goal "mod_pow(7, 1000000000, 1000000007, Result)" examples/modexp.pl
+node bin/eyel.js --goal "queens(4, Columns)" examples/queens.pl
+node bin/eyel.js --goal "add(A, B, s(s(s(zero))))" examples/peano.pl
 ```
 
 `interval-relations.pl` uses half-open intervals with integer-minute endpoints.
@@ -132,9 +132,9 @@ It uses `as_of(date(2026, 10, 1))` for reproducible output and proofs. Edit that
 fact to change the default date, or pass a reference date directly:
 
 ```sh
-node bin/eyelang.js examples/age.pl
-node bin/eyelang.js --goal "age_above(pat_h, years(80), date(2024, 8, 22))" examples/age.pl
-node bin/eyelang.js --goal "age_days(pat_h, date(2026, 10, 1), Days)" examples/age.pl
+node bin/eyel.js examples/age.pl
+node bin/eyel.js --goal "age_above(pat_h, years(80), date(2024, 8, 22))" examples/age.pl
+node bin/eyel.js --goal "age_days(pat_h, date(2026, 10, 1), Days)" examples/age.pl
 ```
 
 Exactly on the threshold anniversary, `age_above/3` fails; it succeeds on the
