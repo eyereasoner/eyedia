@@ -77,6 +77,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [four-color.pl](four-color.pl) | Four-colouring the map of the European Union |
 | [wolf-goat-cabbage.pl](wolf-goat-cabbage.pl) | The river crossing, with seven crossings shown to be minimal |
 | [monkey-bananas.pl](monkey-bananas.pl) | Every plan of up to five moves that gets the monkey the bananas |
+| [enigma1225.pl](enigma1225.pl) | New Scientist Enigma 1225: the best board whose transpose is a row permutation of itself |
 
 `integrity.pl` intentionally exits with code 65 because it concludes `false`.
 Its proof-check report is valid: the certificate explains why the constraint was
@@ -220,7 +221,7 @@ rules. Invalid dates, future births, unknown people, and negative or noninteger
 thresholds return no answers. Reference dates are explicit source data rather
 than clock readings, and the example passes strict proof checking.
 
-The classics from `ackermann.pl` to `monkey-bananas.pl` are written without a
+The classics from `ackermann.pl` to `enigma1225.pl` are written without a
 library. Relations such as `between/3`, `member/2` or `length/2` are defined in
 each program as ordinary clauses, and a search commits with `once/1`, or with
 guards that make its alternatives exclusive, where Prolog would use cut.
@@ -247,6 +248,16 @@ European Union so that no neighbours share a colour. `wolf-goat-cabbage.pl`
 shows that a safe crossing takes seven trips and that no shorter one exists,
 then prints both seven-trip plans. `monkey-bananas.pl` lists every plan of up
 to five moves that gets the monkey the bananas, shortest first.
+
+`enigma1225.pl` solves New Scientist Enigma 1225 for an 8x8 board. Permuting
+the rows by a permutation without fixed points must give the transpose, and no
+two rows may be alike. That forces cells into classes, which are numbered from
+the smallest class up, and the board scores the sum of its entries. The
+published Prolog solution finds the classes by unifying variables and sorts
+them in the standard order of terms. Here each cell is a number instead, and its
+class is its orbit under (I, J) -> (Perm(J), I), so every step is arithmetic and
+the certificate needs no trusted obligations. For every size from 4 to 9 it
+gives the same board as the original.
 
 Certificates that lean on a completed search say so. In `kaprekar.pl` the whole
 verification sits inside one negation, so its certificate is two steps plus an

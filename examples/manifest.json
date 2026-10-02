@@ -345,5 +345,10 @@
     "name": "monkey-bananas",
     "description": "Every plan of up to five moves that gets the monkey the bananas",
     "trusted": []
+  },
+  {
+    "name": "enigma1225",
+    "description": "New Scientist Enigma 1225: the best board whose transpose is a row permutation of itself",
+    "trusted": []
   }
 ]
