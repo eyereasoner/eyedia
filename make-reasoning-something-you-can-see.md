@@ -262,7 +262,7 @@ stable across runs.
 ## Proofs, and what checking one means
 
 A proof document holds claims, the source clauses it displays, and one
-inference record per step. `checkProof(source, document)` establishes five
+inference record per step. `checkProof(source, document)` establishes seven
 conditions:
 
 | | Condition | What it establishes |
@@ -272,6 +272,8 @@ conditions:
 | **C3** | justification | Every step's justification is known, well-formed and unique |
 | **C4** | coverage | Every claim and every premise is accounted for |
 | **C5** | re-decision | Pure primitive results are recomputed independently |
+| **C6** | boundary consistency | No trusted absence or collection is contradicted by the source or the certificate |
+| **C7** | relevance | Every claim answers a goal that was asked, and every step serves a claim |
 
 Two properties make this worth more than a log.
 
@@ -283,7 +285,8 @@ answer. Checking is a genuinely separate activity from reasoning, and
 **The source is the authority.** A certificate displays the clauses it used,
 but those display records cannot override the program. If they disagree with
 the source you check against, C1 fails. You cannot smuggle in a rule by writing
-it into the proof.
+it into the proof, and you cannot pad it either: C7 rejects a step that no
+claim uses and a claim that answers no goal.
 
 The report is itself ordinary Prolog data:
 
@@ -293,6 +296,8 @@ condition('C2', well_founded, ok, 2).
 condition('C3', justification, ok, 2).
 condition('C4', coverage, ok, 2).
 condition('C5', re_decision, ok, 0).
+condition('C6', boundary_consistency, ok, 0).
+condition('C7', relevance, ok, 3).
 steps(2).
 verified(2).
 recomputed(0).
@@ -311,7 +316,9 @@ count of zero means that condition had nothing to check. `--json` gives the
 same report as JSON.
 
 Clause numbers refer to the supplied program's rules in source order, so check
-a saved proof against the program that produced it.
+a saved proof against the program that produced it. A proof made with `--goal`
+answers that goal rather than the program's own, so pass the same `--goal` with
+`--check-proof`, or `goals` to `checkProof`, or C7 rejects its claims.
 
 ## Where it is honest about not knowing
 
@@ -324,7 +331,12 @@ demonstrate an absence the way it demonstrates a derivation.
 
 Eyel does not paper over this. Each one is recorded as an explicit `absent` or
 `collected` boundary, listed in the report as an obligation, and
-`--strict-proof` rejects any proof that leans on one. A valid proof carrying
+`--strict-proof` rejects any proof that leans on one. What the checker can do is
+refute a boundary, and that is C6. An absence fails when a source fact, a step
+of the same certificate or a recomputed primitive is a solution after all; a
+collection fails when such a solution is missing from its list. A boundary C6
+cannot decide, such as an absence over a conjunction with shared variables,
+simply stays an obligation. A valid proof carrying
 obligations is exactly that: valid *conditional on* those obligations, and the
 report tells you where. You get to decide whether that is good enough for the
 task in front of you.
@@ -338,14 +350,14 @@ language does not hand you a certificate it has not verified.
 ## The examples
 
 The [example collection](examples/README.md) is 63 complete programs. Each one
-ships with its conclusions, its proof and its C1–C5 check report, all saved to
+ships with its conclusions, its proof and its C1–C7 check report, all saved to
 disk:
 
 ```text
 examples/socrates.pl           Source program
 examples/output/socrates.pl    Conclusions
 examples/proof/socrates.pl     Conclusions with proof records
-examples/check/socrates.pl     C1-C5 proof-check report
+examples/check/socrates.pl     C1-C7 proof-check report
 ```
 
 | Examples | What they demonstrate |

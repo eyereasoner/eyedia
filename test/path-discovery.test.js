@@ -47,10 +47,11 @@ test('full airport network: 11 queries with proofs over 45k clauses', () => {
     [ostend, 'Liège Airport', 0], [ostend, ostend, 3],
     ['Unknown Airport', prague, 2],
   ]) {
-    const result = run(p, { goal: goal(from, to, max), proof: true });
+    const asked = goal(from, to, max);
+    const result = run(p, { goal: asked, proof: true });
     assert.deepEqual(result.answers.slice().sort(), routes(p, from, to, max));
     if (result.answers.length) {
-      assert.equal(checkProof(p, result.proof, { allowTrusted: false }).valid, true);
+      assert.equal(checkProof(p, result.proof, { allowTrusted: false, goals: [asked] }).valid, true);
       strictChecks++;
     }
   }
@@ -70,9 +71,10 @@ test('path discovery enumerates simple routes in a cyclic graph and handles arbi
     ${rules}
   `);
   for (const max of [0, 1, 2, 3, 10000]) {
-    const result = run(p, { goal: goal('A', 'D', max), proof: true });
+    const asked = goal('A', 'D', max);
+    const result = run(p, { goal: asked, proof: true });
     assert.deepEqual(result.answers.slice().sort(), routes(p, 'A', 'D', max));
-    if (result.answers.length) assert.equal(checkProof(p, result.proof, { allowTrusted: false }).valid, true);
+    if (result.answers.length) assert.equal(checkProof(p, result.proof, { allowTrusted: false, goals: [asked] }).valid, true);
   }
   assert.equal(run(p, { goal: goal('A', 'D', 2) }).answers.length, 3);
   assert.deepEqual(run(p, { goal: goal('D', 'A', 2) }).answers, []);

@@ -37,7 +37,7 @@ test('cyclic certificates cannot justify their own conclusions', () => {
 test('primitive results are recomputed with no theory clauses', () => {
   invalid('is(7, +(2,3)). step(is(7, +(2,3)),builtin,[],[]).', 'C5');
   invalid('evil. step(evil,builtin,[],[]).', 'C3', 'evil.');
-  const report = checkProof('', 'is(5, +(2,3)). step(is(5, +(2,3)),builtin,[],[]).');
+  const report = checkProof('', 'is(5, +(2,3)). step(is(5, +(2,3)),builtin,[],[]).', { goals: ['is(5, 2+3)'] });
   assert.equal(report.valid, true);
   assert.equal(report.redecided, 1);
 });
@@ -49,4 +49,19 @@ test('absence and collection obligations remain visible', () => {
   const document = run(s, { proof: true }).proof;
   assert.equal(checkProof(s, document).trusted.length, 1);
   assert.equal(checkProof(s, document, { allowTrusted: false }).valid, false);
+});
+test('absences and collections contradicted by evidence fail boundary consistency', () => {
+  const s = 'p(a). p(b). out(X) :+ p(X), \\+ blocked(X). all(L) :+ findall(X, p(X), L).';
+  const document = run(s, { proof: true }).proof;
+  assert.equal(checkProof(s, document).valid, true);
+  invalid(document, 'C6', s + ' blocked(a).');
+  invalid(document.replaceAll('[a, b]', '[a]'), 'C6');
+  invalid('q. step(q,rule(1),[],[\\+(1<2)]). step(\\+(1<2),absent,[],[]).', 'C6', 'q :+ \\+ 1<2.');
+});
+test('claims must answer the goal asked and every step must serve a claim', () => {
+  const asked = run(source, { goal: 'p(X)', proof: true }).proof;
+  assert.equal(checkProof(source, asked, { goals: ['p(X)'] }).valid, true);
+  invalid(asked, 'C7');
+  const orphan = checkProof(source, `${asked}step(q(a), rule(2), [=('X', a)], [p(a)]).\n`, { goals: ['p(X)'] });
+  assert.deepEqual(orphan.failures.map((failure) => failure.condition), ['C7']);
 });

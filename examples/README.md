@@ -9,7 +9,7 @@ node bin/eyel.js --check-proof examples/proof/socrates.pl examples/socrates.pl
 ```
 
 Each program has a matching conclusion file in `output/`, a certificate in
-`proof/`, and a Prolog C1-C5 verification report in `check/`. The names match the
+`proof/`, and a Prolog C1-C7 verification report in `check/`. The names match the
 source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 
 | Program | Demonstrates |
@@ -82,7 +82,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 Its proof-check report is valid: the certificate explains why the constraint was
 violated. Negation and collection examples list their `absent` and `collected`
 obligations in the check report; `--strict-proof` rejects those obligations.
-Every check file includes `condition/4` facts for C1-C5, verification counts and
+Every check file includes `condition/4` facts for C1-C7, verification counts and
 a `verdict/1` fact. Reports with failures include `failure/3`; reports with
 trusted boundaries include `obligation/3`. Add `--json` to the check command
 for JSON output instead of Prolog facts.

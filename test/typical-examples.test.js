@@ -7,7 +7,7 @@ const source = (name) => readFileSync(new URL(`../examples/${name}.pl`, import.m
 function proved(input, options = {}, strict = true) {
   const result = run(input, { ...options, proof: true });
   if (result.answers.length) {
-    const report = checkProof(input, result.proof, { allowTrusted: !strict });
+    const report = checkProof(input, result.proof, { allowTrusted: !strict, goals: options.goals ?? (options.goal == null ? undefined : [options.goal]) });
     assert.equal(report.valid, true, JSON.stringify(report.failures));
   }
   return result;

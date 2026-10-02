@@ -54,7 +54,7 @@ console.log(checkProof(source, result.proof).valid);    // true
   what the language is for, how to write it, what a checked proof does and does
   not establish, and how the engine works.
 - **[Examples](examples/README.md)** — 63 complete programs, each with its saved
-  conclusions, proof and C1-C5 check report.
+  conclusions, proof and C1-C7 check report.
 - **[Playground](https://eyereasoner.github.io/eyel/playground/)** — write a program in the browser, run it, check
   its proof, and share a link to exactly what you see.
 - **[src/builtins.js](src/builtins.js)** — the exact native predicate list.

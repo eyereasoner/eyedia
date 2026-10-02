@@ -327,7 +327,7 @@ function reason(source, options) {
   const proof = options.proof ? renderProof(program, claims, roots) : null;
   let proofReport = null;
   if (proof && claims.length) {
-    proofReport = checkProof(program, proof);
+    proofReport = checkProof(program, proof, { goals });
     if (!proofReport.valid) throw new Error(`cannot certify this result: ${proofReport.failures[0].detail}`);
   }
   return {

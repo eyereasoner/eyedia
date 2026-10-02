@@ -16,7 +16,7 @@ self.onmessage = ({ data }) => {
     if (check && result.answers.length) {
       // A generated proof is already checked once; a strict check is a
       // different question, so it gets its own run of the checker.
-      const verdict = strict ? checkProof(source, result.proof, { allowTrusted: false }) : result.proofReport;
+      const verdict = strict ? checkProof(source, result.proof, { allowTrusted: false, goals: options.goal ? [options.goal] : undefined }) : result.proofReport;
       report = { text: checkReportTerms(verdict), valid: verdict.valid, trusted: verdict.trusted.length };
     }
     self.postMessage({

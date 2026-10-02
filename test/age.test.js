@@ -6,7 +6,7 @@ import { Program, run, checkProof } from '../index.js';
 const source = readFileSync(new URL('../examples/age.pl', import.meta.url), 'utf8');
 function ask(program, goal) {
   const result = run(program, { goal, proof: true });
-  if (result.answers.length) assert.equal(checkProof(program, result.proof, { allowTrusted: false }).valid, true);
+  if (result.answers.length) assert.equal(checkProof(program, result.proof, { allowTrusted: false, goals: [goal] }).valid, true);
   return result.answers;
 }
 

@@ -6,7 +6,7 @@ import { run, checkProof, Program } from '../index.js';
 const example = (name) => readFileSync(new URL(`../examples/${name}.pl`, import.meta.url), 'utf8');
 function proven(source, options = {}) {
   const result = run(source, { ...options, proof: true });
-  const report = checkProof(source, result.proof);
+  const report = checkProof(source, result.proof, { goals: options.goals ?? (options.goal == null ? undefined : [options.goal]) });
   assert.equal(report.valid, true, JSON.stringify(report.failures));
   return result;
 }

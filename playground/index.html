@@ -276,7 +276,7 @@
         <label for="goal">Goal</label>
         <input id="goal" type="text" placeholder="optional, e.g. ancestor(alice, Who)" aria-label="Goal to ask after forward reasoning">
         <label class="option"><input id="proof" type="checkbox"> Show proof</label>
-        <label class="option"><input id="check" type="checkbox" checked> Check proof (C1–C5)</label>
+        <label class="option"><input id="check" type="checkbox" checked> Check proof (C1–C7)</label>
         <label class="option"><input id="strict" type="checkbox"> Strict</label>
         <label class="option"><input id="stats" type="checkbox"> Stats</label>
       </div>
@@ -545,7 +545,7 @@ true :+ ancestor(alice, Who).
       }
 
       let text = result.output || (flags.proof.checked ? '' : '% no conclusions\n');
-      if (result.report) text += `${text.endsWith('\n') || !text ? '' : '\n'}\n% C1-C5 check report\n${result.report.text}`;
+      if (result.report) text += `${text.endsWith('\n') || !text ? '' : '\n'}\n% C1-C7 check report\n${result.report.text}`;
       if (flags.stats.checked) text += `\n% stats\n${JSON.stringify(result.stats)}\n`;
       output.textContent = text;
 

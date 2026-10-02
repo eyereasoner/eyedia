@@ -21,9 +21,10 @@ const { run, checkProof, checkReportTerms } = await import('../index.js');
 const help = `Usage: eyel [--proof | --check-proof FILE] [--goal GOAL] [FILE ...]
 Facts and rules use Prolog syntax; :+ rules run to a fixpoint.
   --proof             Print claims and clause/3, step/4 proof records
-  --check-proof FILE  Print a Prolog C1-C5 check report (- for stdin)
+  --check-proof FILE  Print a Prolog C1-C7 check report (- for stdin)
   --json              Print the check report as JSON instead
-  --goal GOAL         Ask a backward goal after forward reasoning
+  --goal GOAL         Ask a backward goal after forward reasoning; with
+                      --check-proof, the goal the proof answers
   --strict-proof      Reject proofs relying on absence or collection
   --stats             Print reasoning statistics to stderr
   --max-depth N       Bound backward recursion (default 1000000)
@@ -68,7 +69,7 @@ try {
   }
   if (!printedHelp) {
     if (json && proofFile == null) throw new Error('--json requires --check-proof');
-    if (proofFile != null && (options.proof || options.goals)) throw new Error('--check-proof cannot be combined with --proof or --goal');
+    if (proofFile != null && options.proof) throw new Error('--check-proof cannot be combined with --proof');
     if (proofFile === '-' && (!files.length || files.includes('-'))) throw new Error('stdin holds the proof; name the program as files');
     if (!files.length) files.push('-');
     if (files.filter((file) => file === '-').length > 1) throw new Error('stdin can only be read once');
@@ -77,7 +78,7 @@ try {
     const source = sources.join('\n');
     if (proofFile != null) {
       const document = proofFile === '-' ? await stdin() : await readFile(proofFile, 'utf8');
-      const report = checkProof(source, document, { allowTrusted: !strict });
+      const report = checkProof(source, document, { allowTrusted: !strict, goals: options.goals });
       process.stdout.write(json ? JSON.stringify(report, null, 2) + '\n' : checkReportTerms(report));
       process.exitCode = report.valid ? 0 : 1;
     } else {

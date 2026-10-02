@@ -3,6 +3,8 @@ condition('C2', well_founded, ok, 913).
 condition('C3', justification, ok, 913).
 condition('C4', coverage, ok, 1478).
 condition('C5', re_decision, ok, 372).
+condition('C6', boundary_consistency, ok, 35).
+condition('C7', relevance, ok, 937).
 obligation(absent, theory_scoped, \+(has_factor(5, 3))).
 obligation(absent, theory_scoped, \+(has_factor(13, 3))).
 obligation(absent, theory_scoped, \+(has_factor(29, 3))).

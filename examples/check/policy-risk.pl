@@ -3,6 +3,8 @@ condition('C2', well_founded, ok, 57).
 condition('C3', justification, ok, 57).
 condition('C4', coverage, ok, 69).
 condition('C5', re_decision, ok, 18).
+condition('C6', boundary_consistency, ok, 7).
+condition('C7', relevance, ok, 61).
 obligation(absent, theory_scoped, \+(has_notice(c1))).
 obligation(absent, theory_scoped, \+(safeguard(c1, inform))).
 obligation(collected, theory_scoped, findall(EYE_45_59_45_5f_34_66_5f_37_34_5f_36_38_5f_36_35_5f_37_32_5f_32_33_5f_33_34_5f_33_35, higher(100, EYE_45_59_45_5f_34_66_5f_37_34_5f_36_38_5f_36_35_5f_37_32_5f_32_33_5f_33_34_5f_33_35), [])).

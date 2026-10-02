@@ -3,6 +3,8 @@ condition('C2', well_founded, ok, 95).
 condition('C3', justification, ok, 95).
 condition('C4', coverage, ok, 118).
 condition('C5', re_decision, ok, 1).
+condition('C6', boundary_consistency, ok, 28).
+condition('C7', relevance, ok, 96).
 obligation(collected, theory_scoped, findall([EYE_45_59_45_5f_35_30_5f_36_63_5f_36_31_5f_36_33_5f_36_35_5f_32_33_5f_33_32, EYE_45_59_45_5f_35_66_5f_35_66_5f_36_31_5f_36_65_5f_36_66_5f_36_65_5f_33_30_5f_32_33_5f_33_32], neighbours(EYE_45_59_45_5f_35_30_5f_36_63_5f_36_31_5f_36_33_5f_36_35_5f_32_33_5f_33_32, EYE_45_59_45_5f_35_66_5f_35_66_5f_36_31_5f_36_65_5f_36_66_5f_36_65_5f_33_31_5f_32_33_5f_33_32), [['Belgium', yellow], ['Netherlands', green], ['Luxemburg', green], ['France', blue], ['Germany', red], ['Italy', red], ['Denmark', green], ['Ireland', red], ['Greece', red], ['Spain', green], ['Portugal', red], ['Austria', yellow], ['Sweden', green], ['Finland', red], ['Cyprus', red], ['Malta', red], ['Poland', blue], ['Hungary', blue], ['Czech Republic', green], ['Slovakia', red], ['Slovenia', green], ['Estonia', red], ['Latvia', green], ['Lithuania', red], ['Bulgaria', green], ['Romania', red], ['Croatia', red]])).
 obligation(absent, theory_scoped, \+(conflict(red, [], ['Slovenia', 'Hungary']))).
 obligation(absent, theory_scoped, \+(conflict(red, [['Croatia', red]], ['Hungary', 'Bulgaria']))).

@@ -25,7 +25,7 @@ test('proof generation pipes into proof checking', () => {
   const json = cli(['--json', '--check-proof', '-', 'examples/socrates.pl'], generated.stdout);
   assert.equal(json.status, 0);
   assert.equal(JSON.parse(json.stdout).valid, true);
-  assert.equal(JSON.parse(json.stdout).conditions.length, 5);
+  assert.equal(JSON.parse(json.stdout).conditions.length, 7);
   assert.equal(cli(['--check-proof', '-', 'examples/socrates.pl'], generated.stdout + 'bogus.').status, 1);
 });
 test('CLI reports help, errors, stats and fuse exit codes', () => {
@@ -38,7 +38,7 @@ test('CLI reports help, errors, stats and fuse exit codes', () => {
   assert.equal(JSON.parse(result.stderr).derived, 1);
 });
 test('failed and strict proof checks print Prolog verdicts and exit unsuccessfully', () => {
-  const failed = cli(['--check-proof', '-', 'examples/socrates.pl'],
+  const failed = cli(['--check-proof', '-', '--goal', 'is(7, 2+3)', 'examples/socrates.pl'],
     'is(7,+(2,3)). step(is(7,+(2,3)),builtin,[],[]).');
   assert.equal(failed.status, 1);
   assert.equal(failed.stderr, '');
