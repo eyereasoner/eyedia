@@ -51,6 +51,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [paraconsistent-animals.pl](paraconsistent-animals.pl) | Local summaries of conflicting observations |
 | [scoped-audit.pl](scoped-audit.pl) | Presence and absence within separate quoted graphs |
 | [metric-classification.pl](metric-classification.pl) | Measurement normalization and numerical classification |
+| [control-system.pl](control-system.pl) | Feedforward and nonlinear feedback commands for two actuators |
 | [variable-predicates.pl](variable-predicates.pl) | Relations selected and renamed through data bindings |
 | [record-scopes.pl](record-scopes.pl) | Distinct per-rule structured witnesses |
 | [sudoku.pl](sudoku.pl) | A 9x9 Sudoku solved by backtracking, most constrained cells first |
@@ -185,9 +186,9 @@ node bin/eyel.js --goal "add(A, B, s(s(s(zero))))" examples/peano.pl
 `sudoku.pl` solves the 9x9 puzzle from Wikipedia's Sudoku article with nothing
 but backtracking. The given digits are placed first, then the blanks that see
 the most givens, so the search meets contradictions early: it takes about
-136,000 inferences, against 586,000 when the blanks are filled in row order. Each blank is
-checked only against the cells placed before it in its row, column or box, and
-that plan is worked out once before the search starts. Every check is
+136,000 inferences, against 586,000 when the blanks are filled in row order.
+Each blank is checked only against the cells placed before it in its row,
+column or box, and that plan is worked out once before the search starts. Every check is
 arithmetic, so the proof passes strict checking without trusted obligations. It
 is also one of the larger certificates, about 13 MB, because each step of the
 plan carries the lists it walks.
@@ -196,6 +197,13 @@ plan carries the lists it walks.
 It completes endpoints from durations and classifies each valid interval pair
 into exactly one of thirteen relations. Empty and reversed intervals are
 excluded from classification.
+
+`control-system.pl` computes two actuator commands. The first is a
+proportional part on a conditioned measurement minus a feedforward
+compensation, the base-10 logarithm of a measured disturbance. The second is
+a proportional, nonlinear differential feedback controller on the error
+between a target and an output. The results are ordinary floats, and the proof
+recomputes every arithmetic step.
 
 `bayes-diagnosis.pl` models printer faults using illustrative priors and two
 conditionally independent observations. It keeps exact integer likelihood

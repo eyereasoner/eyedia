@@ -203,6 +203,11 @@
     "trusted": []
   },
   {
+    "name": "control-system",
+    "description": "Feedforward and nonlinear feedback commands for two actuators",
+    "trusted": []
+  },
+  {
     "name": "variable-predicates",
     "description": "Relations selected and renamed through data bindings",
     "trusted": []
