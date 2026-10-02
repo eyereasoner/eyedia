@@ -80,6 +80,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [four-color.pl](four-color.pl) | Four-colouring the map of the European Union |
 | [wolf-goat-cabbage.pl](wolf-goat-cabbage.pl) | The river crossing, with seven crossings shown to be minimal |
 | [monkey-bananas.pl](monkey-bananas.pl) | Every plan of up to five moves that gets the monkey the bananas |
+| [gps.pl](gps.pl) | Goal-driven parallel sequences: routes to a goal state within duration, cost, belief and comfort limits |
 | [enigma1225.pl](enigma1225.pl) | New Scientist Enigma 1225: the best board whose transpose is a row permutation of itself |
 | [superdense-coding.pl](superdense-coding.pl) | Superdense coding in discrete quantum theory, with interference as odd path counts |
 | [teleportation.pl](teleportation.pl) | Quantum teleportation in discrete quantum theory, checked for every state and outcome |
@@ -289,6 +290,18 @@ European Union so that no neighbours share a colour. `wolf-goat-cabbage.pl`
 shows that a safe crossing takes seven trips and that no shorter one exists,
 then prints both seven-trip plans. `monkey-bananas.pl` lists every plan of up
 to five moves that gets the monkey the bananas, shortest first.
+
+`gps.pl` is goal-driven parallel sequences: it finds sequences of actions from
+the current state to a goal state, here driving from Gent to Oostende on a
+partial map of Belgium. Duration and cost add up along a path and belief and
+comfort multiply, and each must stay within its limit, as must the number of
+stages, runs of steps in the same map. Two routes qualify, directly through
+Brugge and the longer one through Kortrijk. The original keeps the current
+state in the database, reading transitions with `clause/2` and asserting and
+retracting fluents as it moves; here the state is a list of fluents passed
+along the search, so every step is an ordinary clause instance and the
+certificate passes strict checking. Stages are counted as changes of map plus
+one, where the original stops counting at two.
 
 `enigma1225.pl` solves New Scientist Enigma 1225 for an 8x8 board. Permuting
 the rows by a permutation without fixed points must give the transpose, and no

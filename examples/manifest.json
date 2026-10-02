@@ -364,6 +364,11 @@
     "trusted": []
   },
   {
+    "name": "gps",
+    "description": "Goal-driven parallel sequences: routes to a goal state within duration, cost, belief and comfort limits",
+    "trusted": []
+  },
+  {
     "name": "enigma1225",
     "description": "New Scientist Enigma 1225: the best board whose transpose is a row permutation of itself",
     "trusted": []
