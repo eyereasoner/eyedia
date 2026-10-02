@@ -349,7 +349,7 @@ language does not hand you a certificate it has not verified.
 
 ## The examples
 
-The [example collection](examples/README.md) is 67 complete programs. Each one
+The [example collection](examples/README.md) is 68 complete programs. Each one
 ships with its conclusions, its proof and its C1–C7 check report, all saved to
 disk:
 
@@ -373,7 +373,7 @@ examples/check/socrates.pl     C1-C7 proof-check report
 | `nested-collections`, `flat-map`, `scoped-audit`, `variable-predicates` | Structured collections, mapping, scoped checks and relation renaming |
 | `family-cousins`, `dog-license`, `paraconsistent-animals`, `record-scopes` | Family branches, counted policies, conflicting observations and witness scope |
 | `hanoi`, `collatz`, `metric-classification`, `control-system`, `sudoku`, `age` | Recursive puzzles, numerical classification, actuator control, a 9x9 Sudoku solver and calendar age checks |
-| `good-cobbler`, `peano`, `expression-eval`, `complex` | Structured descriptions, symbolic arithmetic, expression graphs and a complex-number domain |
+| `good-cobbler`, `peano`, `expression-eval`, `complex`, `polynomial` | Structured descriptions, symbolic arithmetic, expression graphs, a complex-number domain and polynomial roots |
 | `modexp`, `queens`, `interval-relations` | Modular powers, constraint search and all thirteen interval relations |
 | `concept-alignment`, `bayes-diagnosis`, `policy-risk` | Reporting rollups, normalized fault scores and ranked policy findings |
 | `ackermann`, `peasant`, `padovan`, `sieve`, `goldbach`, `kaprekar` | Exact hyperoperations, ancient arithmetic, number sequences and number-theory checks |

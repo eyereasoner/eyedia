@@ -59,6 +59,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [peano.pl](peano.pl) | Symbolic arithmetic, relational addition and a chained derivation |
 | [expression-eval.pl](expression-eval.pl) | Recursive expression graphs used in forward inference |
 | [complex.pl](complex.pl) | Complex arithmetic, exact over Gaussian integers and polar beyond them |
+| [polynomial.pl](polynomial.pl) | Complex roots of polynomials up to degree 4 by Cardan and Lagrange |
 | [modexp.pl](modexp.pl) | Exact modular exponentiation by repeated squaring |
 | [concept-alignment.pl](concept-alignment.pl) | Vocabulary alignment and reporting rollups |
 | [interval-relations.pl](interval-relations.pl) | All thirteen interval relations and endpoint completion |
@@ -170,6 +171,25 @@ recomputed by the checker:
 ```sh
 node bin/eyel.js --goal "complex_power(complex(1, 1), 16, Result)" examples/complex.pl
 node bin/eyel.js --goal "complex_div(complex(1, 0), complex(0, 1), Inverse)" examples/complex.pl
+```
+
+`polynomial.pl` is Alain Colmerauer's solver for polynomial equations up to
+degree 4, with complex coefficients and roots as `[Re, Im]` pairs. Degree 3
+follows Cardan's formula and degree 4 Lagrange's method, which solves a cubic
+on the way. Its default goals find the roots of (x-1)(x-2)(x-3)(x-4) and of a
+quartic with complex coefficients whose roots are 3+2i, 5+i, i and 1+i, each
+up to rounding. The original evaluates expressions by building calls with
+`=..`; here each operation has its own clause, and the zero tests compare
+numbers instead of cutting. Lagrange's step collects the roots of a cubic with
+a predicate of its own, so that collection depends only on a lower degree.
+
+A list of all roots is a completed collection, so the default certificate is
+small: four steps, with the arithmetic inside two `collected` obligations. Ask
+for one root at a time and every arithmetic step is in the certificate
+instead. For a cubic it passes strict checking:
+
+```sh
+node bin/eyel.js --proof --goal "racine([[1, 0], [-6, 0], [11, 0], [-6, 0]], Z)" examples/polynomial.pl
 ```
 
 `modexp.pl` handles billion-sized exponents by repeated squaring without

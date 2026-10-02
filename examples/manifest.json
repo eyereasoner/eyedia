@@ -243,6 +243,13 @@
     "trusted": []
   },
   {
+    "name": "polynomial",
+    "description": "Complex roots of polynomials up to degree 4 by Cardan and Lagrange",
+    "trusted": [
+      "collected"
+    ]
+  },
+  {
     "name": "modexp",
     "description": "Exact modular exponentiation by repeated squaring",
     "trusted": []
