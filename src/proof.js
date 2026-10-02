@@ -14,14 +14,15 @@ function template(term) {
 export function renderProof(program, claims, roots) {
   const steps = new Map();
   const clauses = new Set();
-  const visit = (node) => {
+  const pending = [...roots].reverse();
+  while (pending.length) {
+    const node = pending.pop();
     const id = text(node.goal);
-    if (steps.has(id)) return;
+    if (steps.has(id)) continue;
     steps.set(id, node);
     if (node.by.arity) clauses.add(Number(node.by.args[0].name));
-    for (const child of node.children) visit(child);
-  };
-  roots.forEach(visit);
+    for (let index = node.children.length - 1; index >= 0; index--) pending.push(node.children[index]);
+  }
   const lines = claims.map((claim) => `${text(claim)}.`);
   lines.push('');
   for (const id of [...clauses].sort((a, b) => a - b)) {
@@ -120,14 +121,14 @@ export function checkProof(source, document, options = {}) {
       const heads = clause.forward ? flattenConjunction(head) : [head];
       let resolution = false;
       for (const candidate of heads) {
-        const next = env.clone();
-        if (!unify(candidate, goal, next) || body.length !== uses.length) continue;
-        let matches = true;
-        for (let i = 0; i < body.length; i++) {
-          if (!unify(body[i], uses[i], next)) { matches = false; break; }
+        const mark = env.mark();
+        let matches = unify(candidate, goal, env) && body.length === uses.length;
+        for (let i = 0; matches && i < body.length; i++) {
+          if (!unify(body[i], uses[i], env)) matches = false;
         }
-        if (matches && text(copyResolved(candidate, next)) === text(goal) &&
-            body.every((item, i) => text(copyResolved(item, next)) === text(uses[i]))) resolution = true;
+        if (matches && text(copyResolved(candidate, env)) === text(goal) &&
+            body.every((item, i) => text(copyResolved(item, env)) === text(uses[i]))) resolution = true;
+        env.undo(mark);
       }
       if (!valid || !resolution) fail('C1', `not an instance of source clause ${id}: ${text(goal)}`, goal);
       else verified++;
@@ -158,18 +159,33 @@ export function checkProof(source, document, options = {}) {
       if (options.allowTrusted === false) fail('C5', `trusted boundary forbidden: ${by.name}`, goal);
     } else fail('C3', `unknown justification ${text(by)}`, goal);
   }
+  // Walk the derivation iteratively: a certificate is as deep as the search
+  // that produced it, which can be far deeper than the host stack allows.
   const visiting = new Set();
   const visited = new Set();
-  const visit = (id) => {
-    if (visiting.has(id)) { fail('C2', `cyclic derivation at ${id}`, steps.get(id).goal); return; }
-    if (visited.has(id)) return;
-    visiting.add(id);
+  const supports = (id) => {
+    const used = [];
     for (const use of steps.get(id)?.uses ?? []) {
-      for (const part of flattenConjunction(use)) if (steps.has(text(part))) visit(text(part));
+      for (const part of flattenConjunction(use)) if (steps.has(text(part))) used.push(text(part));
     }
-    visiting.delete(id); visited.add(id);
+    return used;
   };
-  for (const id of steps.keys()) visit(id);
+  for (const start of steps.keys()) {
+    if (visited.has(start)) continue;
+    visiting.add(start);
+    const stack = [{ id: start, used: supports(start), index: 0 }];
+    while (stack.length) {
+      const top = stack[stack.length - 1];
+      if (top.index >= top.used.length) {
+        visiting.delete(top.id); visited.add(top.id); stack.pop(); continue;
+      }
+      const next = top.used[top.index++];
+      if (visiting.has(next)) { fail('C2', `cyclic derivation at ${next}`, steps.get(next).goal); continue; }
+      if (visited.has(next)) continue;
+      visiting.add(next);
+      stack.push({ id: next, used: supports(next), index: 0 });
+    }
+  }
   const uses = [...steps.values()].reduce((count, step) => count + step.uses.length, 0);
   const failed = (condition) => failures.filter((failure) => failure.condition === condition).length;
   const conditions = [

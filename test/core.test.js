@@ -11,7 +11,7 @@ function proven(source, options = {}) {
   return result;
 }
 test('standalone forward inference and proof', () => {
-  assert.deepEqual(proven(example('socrates')).answers, ['type(socrates, mortal)']);
+  assert.deepEqual(proven(example('socrates')).answers, ['type(socrates, mortal)', 'type(socrates, human)']);
 });
 test('mixed forward and backward reasoning', () => {
   const source = example('backward');

@@ -1,12 +1,12 @@
-condition('C1', resolution, ok, 68).
-condition('C2', well_founded, ok, 149).
-condition('C3', justification, ok, 149).
-condition('C4', coverage, ok, 173).
-condition('C5', re_decision, ok, 81).
-steps(149).
-verified(68).
-recomputed(81).
+condition('C1', resolution, ok, 93).
+condition('C2', well_founded, ok, 215).
+condition('C3', justification, ok, 215).
+condition('C4', coverage, ok, 255).
+condition('C5', re_decision, ok, 122).
+steps(215).
+verified(93).
+recomputed(122).
 composed(0).
 trusted(0).
-claims(17).
+claims(23).
 verdict(checked).

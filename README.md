@@ -107,14 +107,14 @@ console.log(checkProof(source, result.proof).valid); // true
 `run()` returns `answers`, `bindings`, `inferred`, `stdout`, `proof`, `stats`
 and `haltCode`. Bindings and answers contain printable Prolog text. `Program.parse()`
 creates a reusable parsed program; each run has its own inference state.
-Options include `goal`, `goals`, `proof`, `maxDepth` (256), `maxIterations`
+Options include `goal`, `goals`, `proof`, `maxDepth` (1000000), `maxIterations`
 (1000 per stratum) and `maxInferences` (1000000). Exceeding a bound throws;
 partial closure is not returned as a completed result. Backward search is ordinary
-depth-first Prolog search and recurses on the host stack, so a `maxDepth` raised
-much above a thousand can exhaust that stack before the bound is reached; the
-engine reports this in its own terms rather than leaking a host error.
-Use forward rules for finite recursive closure; left-recursive backward programs
-need reformulation and can hit the depth bound.
+depth-first Prolog search, run as an explicit machine rather than on the host
+call stack, so the depth it reaches is bounded by `maxDepth` and by memory
+rather than by the host. One resolution step costs one inference whatever the
+depth. Use forward rules for finite recursive closure; left-recursive backward
+programs need reformulation and can hit the depth bound.
 
 Recursion limits depend on the algorithm used by the program. The Fibonacci
 example uses fast doubling to compute F(10000) exactly with logarithmic recursion
@@ -150,11 +150,12 @@ checked before being returned.
 Clause numbers refer to the supplied program's normalized rules, in source
 order. Check a saved proof against the same source program that produced it.
 
-The [examples](examples/README.md) include 46 complete programs:
+The [examples](examples/README.md) include 51 complete programs:
 
 | Examples | What they demonstrate |
 | --- | --- |
 | `socrates`, `family`, `backward` | Basic inference, recursive relationships and mixed chaining |
+| `deep-taxonomy-10` through `deep-taxonomy-100000` | A subclass chain whose branches lead nowhere, at five sizes |
 | `reachability`, `shortest-path`, `path-discovery` | Cyclic graph closure, weighted paths and airport routes with bounded stopovers |
 | `fibonacci`, `arithmetic`, `lists` | Recursive computation, exact integers and list operations |
 | `strings`, `unification`, `alternatives` | Unicode, structural matching and goal-directed choices |

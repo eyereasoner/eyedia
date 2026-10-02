@@ -10,7 +10,7 @@ Facts and rules use Prolog syntax; :+ rules run to a fixpoint.
   --goal GOAL         Ask a backward goal after forward reasoning
   --strict-proof      Reject proofs relying on absence or collection
   --stats             Print reasoning statistics to stderr
-  --max-depth N       Bound backward recursion (default 256)
+  --max-depth N       Bound backward recursion (default 1000000)
   --max-iterations N  Bound forward rounds per stratum (default 1000)
   --max-inferences N  Bound reasoning work (default 1000000)
   --help              Print this help

@@ -26,49 +26,53 @@ export const emptyList = () => atom('[]');
 export const cons = (head, tail) => compound('.', [head, tail]);
 
 
-// A substitution is cloned on every unification attempt and most of those
-// attempts fail, so a clone starts as an empty layer over its parent instead of
-// copying the whole map. Lookups walk the layers; flattening once a chain
-// reaches FLATTEN_LAYERS keeps that walk short while still copying far less
-// often than a clone-per-binding would. Layers are write-once per name, so the
-// first value a walk finds is the binding.
-const FLATTEN_LAYERS = 16;
+// One substitution per search, with an undo trail. Backtracking restores the
+// bindings a failed branch made instead of copying the whole map for every
+// alternative, so a derivation N steps deep costs O(N) rather than O(N^2).
+// The trail records each name with the value it had, so rebinding a name -
+// which path compression in deref below does - undoes correctly too.
 export class Env {
-  constructor(parent = null) {
-    this.parent = parent;
-    this.own = null;
-    this.layers = parent === null ? 1 : parent.layers + 1;
+  constructor() {
+    this.bindings = new Map();
+    this.trail = [];
   }
-  clone() {
-    if (this.layers < FLATTEN_LAYERS) return new Env(this);
-    const flat = new Env();
-    flat.own = new Map();
-    for (let env = this; env !== null; env = env.parent) {
-      if (env.own !== null) for (const [name, value] of env.own) if (!flat.own.has(name)) flat.own.set(name, value);
+  mark() {
+    return this.trail.length;
+  }
+  undo(mark) {
+    while (this.trail.length > mark) {
+      const previous = this.trail.pop();
+      const name = this.trail.pop();
+      if (previous === undefined) this.bindings.delete(name);
+      else this.bindings.set(name, previous);
     }
-    return flat;
   }
   lookup(name) {
-    for (let env = this; env !== null; env = env.parent) {
-      if (env.own !== null) {
-        const value = env.own.get(name);
-        if (value !== undefined) return value;
-      }
-    }
-    return undefined;
+    return this.bindings.get(name);
   }
   bind(name, value) {
-    if (this.own === null) this.own = new Map();
-    this.own.set(name, value);
+    this.trail.push(name, this.bindings.get(name));
+    this.bindings.set(name, value);
   }
 }
 export function deref(term, env) {
-  while (term.type === VAR) {
-    const value = env.lookup(term.name);
-    if (value === undefined) return term;
-    term = value;
+  if (term.type !== VAR) return term;
+  let value = env.lookup(term.name);
+  if (value === undefined) return term;
+  if (value.type !== VAR) return value;
+  // Resolving a chain of variable-to-variable bindings records where the whole
+  // chain ended, not just its head. These are the same bindings, reached in one
+  // step from now on; without this a derivation that threads one variable
+  // through N resolution steps re-walks the chain on every dereference.
+  const chain = [term.name];
+  while (value.type === VAR) {
+    const next = env.lookup(value.name);
+    if (next === undefined) break;
+    chain.push(value.name);
+    value = next;
   }
-  return term;
+  for (const name of chain) env.bind(name, value);
+  return value;
 }
 export const isEmptyList = (term) => term?.type === ATOM && term.name === '[]';
 export const isCons = (term) => term?.type === COMPOUND && term.name === '.' && term.arity === 2;

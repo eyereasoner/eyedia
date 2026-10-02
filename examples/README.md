@@ -15,9 +15,14 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | Program | Demonstrates |
 | --- | --- |
 | [socrates.pl](socrates.pl) | Class membership derived through a subclass rule |
+| [deep-taxonomy-10.pl](deep-taxonomy-10.pl) | A ten-level subclass chain with branches that lead nowhere |
+| [deep-taxonomy-100.pl](deep-taxonomy-100.pl) | The same taxonomy benchmark at a hundred levels |
+| [deep-taxonomy-1000.pl](deep-taxonomy-1000.pl) | The same taxonomy benchmark at a thousand levels |
+| [deep-taxonomy-10000.pl](deep-taxonomy-10000.pl) | The same taxonomy benchmark at ten thousand levels |
+| [deep-taxonomy-100000.pl](deep-taxonomy-100000.pl) | The same taxonomy benchmark at a hundred thousand levels |
 | [family.pl](family.pl) | Recursive family relationships |
 | [backward.pl](backward.pl) | Backward definitions inside forward bodies |
-| [fibonacci.pl](fibonacci.pl) | Fast doubling for exact Fibonacci numbers, F(0) through F(10000) |
+| [fibonacci.pl](fibonacci.pl) | Fast doubling for exact Fibonacci numbers, and the golden ratio |
 | [graphs.pl](graphs.pl) | Base data, negation and collection |
 | [terms.pl](terms.pl) | Quoted graphs, triple terms and residual witnesses |
 | [reachability.pl](reachability.pl) | Finite closure in a graph containing a cycle |
@@ -40,7 +45,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [family-cousins.pl](family-cousins.pl) | Generations, family branches and cousin relationships |
 | [dog-license.pl](dog-license.pl) | A licensing threshold based on collected dog counts |
 | [hanoi.pl](hanoi.pl) | Recursive construction of a disk-move sequence |
-| [collatz.pl](collatz.pl) | A parity-based recursive trajectory |
+| [collatz.pl](collatz.pl) | Parity-based recursive trajectories over a range of starts |
 | [flat-map.pl](flat-map.pl) | Predicate-based mapping with multiple or missing values |
 | [property-paths.pl](property-paths.pl) | Composed, inverse and repeatable relationship paths |
 | [paraconsistent-animals.pl](paraconsistent-animals.pl) | Local summaries of conflicting observations |
@@ -71,8 +76,27 @@ trusted boundaries include `obligation/3`. Add `--json` to the check command
 for JSON output instead of Prolog facts.
 
 `fibonacci.pl` answers F(0), F(1), F(10), F(100), F(1000) and F(10000), the
-last a 2090-digit integer. It uses fast doubling, which halves the index at each
-recursive step and fits within the default reasoning limits. Its saved proof records the arithmetic and recursive clause
+last a 2090-digit integer, then divides successive values to watch the ratio
+converge on the golden ratio. It uses fast doubling, which halves the index at
+each recursive step and fits within the default reasoning limits.
+
+The `deep-taxonomy` examples are the deep-taxonomy benchmark: one individual, a
+chain of subclass rules, and two sibling branches at every level that lead
+nowhere. The query has to follow the single productive branch the whole way
+down, so the chain length is also the backward recursion depth. The five sizes
+run from ten to a hundred thousand levels, and each costs exactly one
+resolution step per level, which `--stats` reports and the saved check report
+confirms: `deep-taxonomy-100000` verifies 100001 steps. Backward search is an
+explicit machine, so the depth costs heap rather than host stack.
+
+```sh
+node bin/eyel.js --stats examples/deep-taxonomy-100000.pl
+```
+
+These are the largest artifacts in the corpus: the hundred-thousand-level
+source is about 10 MB and its certificate about 15 MB, since a certificate
+records every step it claims. Running `npm test` or `npm run examples:update`
+therefore spends most of its time on this one example. Its saved proof records the arithmetic and recursive clause
 instances without trusted obligations.
 
 `path-discovery.pl` contains 7,698 airport records and 37,505 directed
@@ -117,8 +141,11 @@ assuming it, confirms that the Gaussian norm is multiplicative, and raises
 Polar form then leaves the integers altogether, so a complex number can be
 raised to a complex power. The square root of -1 is `i`, `e` to the power `i*pi`
 is -1, `i` to the power `i` is the real number 0.20787957635076193, and the
-inverse sine and cosine of 2 are complex. The example passes strict proof
-checking, so every component of every conclusion is recomputed by the checker:
+inverse sine and cosine of 2 are complex. Logarithm, sine, cosine, tangent and
+arctangent follow, each applied to the answer of its own inverse so the
+round trip is visible: the sine of the arcsine of 2 comes back as 2. The example
+passes strict proof checking, so every component of every conclusion is
+recomputed by the checker:
 
 ```sh
 node bin/eyel.js --goal "complex_power(complex(1, 1), 16, Result)" examples/complex.pl

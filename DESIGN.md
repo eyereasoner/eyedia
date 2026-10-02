@@ -64,12 +64,20 @@ or caller-supplied data.
 | `tools/example-artifacts.js` | Example evaluation and artifact generation rules |
 | `test/examples.test.js` | Saved-artifact verification and complete CLI runs |
 
-Branch-local maps hold substitutions; unification does not change terms.
-A substitution is a layer over the one it was cloned from, flattened once a
-chain grows long, because most unification attempts fail and would otherwise
-pay for a full copy of the bindings. An occurs check enforces finite trees.
-Fresh names are rendered injectively so an internal `X#1` cannot be confused
-with a source variable named `X_1`.
+Backward search is an explicit machine, not nested host calls: a frame is one
+body being worked through, frames are immutable, and a choice point remembers
+the frame it was made in, so backtracking is a pointer assignment. Depth is
+therefore bounded by `maxDepth` and by memory rather than by the host stack.
+
+One substitution is threaded through a search and restored by an undo trail
+when a branch fails, so an alternative costs the bindings it actually made
+instead of a copy of the whole map. The trail records the previous value of
+each name, which also makes dereferencing safe to shorten a chain of
+variable-to-variable bindings as it walks one. Together these make a derivation
+N steps deep cost O(N); without either, it costs O(N^2). An answer's bindings
+are valid only until the next answer is requested. An occurs check enforces
+finite trees. Fresh names are rendered injectively so an internal `X#1` cannot
+be confused with a source variable named `X_1`.
 
 Numeric semantics keep integers exact: an integer operand never passes through
 a floating-point value, mixed comparisons are decided without rounding either
@@ -88,9 +96,11 @@ parsing mid-file, so a source text has one reading and `test/syntax.test.js`
 can state it case by case. A `?- Goal.` is always a goal to run: nothing that
 follows it can turn it into something else.
 
-Forward dependency analysis matches full head and body terms. Two relations
-using the same predicate name can therefore occupy distinct strata when their
-argument patterns do not overlap. A rule runs only after all its closed
+Forward dependency analysis matches full head and body terms, over heads
+indexed by functor and by the atoms in each argument position, so a body goal
+is compared with the few heads that can match it rather than with every clause
+sharing its name. Two relations using the same predicate name can therefore
+occupy distinct strata when their argument patterns do not overlap. A rule runs only after all its closed
 prerequisites reach a fixpoint. Positive cycles remain in the same stratum.
 
 Proof steps record the first derivation found for each conclusion. A source

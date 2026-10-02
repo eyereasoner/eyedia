@@ -99,27 +99,60 @@ function dependencies(goal, closed = false, out = []) {
   else if (goal.type === VAR || !primitiveKeys.has(key(goal))) out.push({ goal, closed });
   return out;
 }
+// A dependency can only resolve against a head with the same functor, and an
+// atom in the goal can only meet the same atom or a variable in the head. Index
+// both so a body goal is compared with the few heads that can match it rather
+// than with every clause sharing its name. Without this, a program whose
+// clauses all share one functor costs a full pairwise scan to stratify.
+function headIndex(clauses) {
+  const index = new Map();
+  for (const clause of clauses) {
+    for (const head of clause.heads) {
+      const id = key(head);
+      let entry = index.get(id);
+      if (entry == null) {
+        entry = { clauses: [], positions: [] };
+        for (let position = 0; position < head.arity; position++) entry.positions.push({ atoms: new Map(), other: [] });
+        index.set(id, entry);
+      }
+      if (entry.clauses.at(-1) !== clause) entry.clauses.push(clause);
+      for (let position = 0; position < head.arity; position++) {
+        const argument = head.args[position];
+        const bucket = entry.positions[position];
+        if (argument.type !== ATOM) { bucket.other.push(clause); continue; }
+        if (!bucket.atoms.has(argument.name)) bucket.atoms.set(argument.name, []);
+        bucket.atoms.get(argument.name).push(clause);
+      }
+    }
+  }
+  return index;
+}
+function headCandidates(entry, goal) {
+  if (entry == null) return [];
+  let chosen = entry.clauses;
+  for (const [position, bucket] of entry.positions.entries()) {
+    if (goal.args[position]?.type !== ATOM) continue;
+    const matched = bucket.atoms.get(goal.args[position].name) ?? [];
+    if (matched.length + bucket.other.length < chosen.length) chosen = [...matched, ...bucket.other];
+  }
+  return chosen;
+}
 function stratify(clauses) {
   const ranks = new Map(clauses.map((clause) => [clause.id, 0]));
   const edges = [];
+  const outgoing = new Map();
   const dynamic = new Set();
-  // A dependency can only resolve against a head with the same functor, so
-  // index the heads and compare complete terms within one bucket instead of
-  // unifying every body goal against every clause in the program.
-  const byHead = new Map();
-  for (const clause of clauses) {
-    for (const id of new Set(clause.heads.map(key))) {
-      if (!byHead.has(id)) byHead.set(id, []);
-      byHead.get(id).push(clause);
-    }
-  }
+  const index = headIndex(clauses);
   for (const clause of clauses) {
     for (const goal of clause.body) for (const dep of dependencies(goal)) {
       const named = dep.goal.type !== VAR;
       if (!named) dynamic.add(clause.id);
-      for (const candidate of named ? byHead.get(key(dep.goal)) ?? [] : clauses) {
+      for (const candidate of named ? headCandidates(index.get(key(dep.goal)), dep.goal) : clauses) {
         if (candidate.heads.some((head) => unify(freshTerm(dep.goal, 'dependency'), freshTerm(head, 'head'), new Env()))) {
-          edges.push({ head: clause.id, id: candidate.id, closed: dep.closed });
+          const edge = { head: clause.id, id: candidate.id, closed: dep.closed };
+          edges.push(edge);
+          if (!outgoing.has(clause.id)) outgoing.set(clause.id, []);
+          outgoing.get(clause.id).push(edge);
         }
       }
     }
@@ -131,7 +164,7 @@ function stratify(clauses) {
     if (reachable.has(id)) continue;
     reachable.add(id);
     if (dynamic.has(id)) throw new Error('forward dependencies require statically named calls');
-    for (const edge of edges) if (edge.head === id) pending.push(edge.id);
+    for (const edge of outgoing.get(id) ?? []) pending.push(edge.id);
   }
   for (let pass = 0; pass <= ranks.size; pass++) {
     let changed = false;

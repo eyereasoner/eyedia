@@ -24,13 +24,13 @@ export function* primitive(goal, env) {
   if (!primitiveKeys.has(id)) throw new Error(`unsupported primitive ${id}`);
   const args = goal.args;
   const resolved = args.map((arg) => deref(arg, env));
-  const next = env.clone();
-  const bind = (a, b) => unify(a, b, next);
+  const mark = env.mark();
+  const bind = (a, b) => unify(a, b, env);
   let success = false;
   if (id === 'true/0') success = true;
   else if (id === 'fail/0' || id === 'false/0') success = false;
   else if (id === '=/2') success = bind(args[0], args[1]);
-  else if (id === '\\=/2') success = !unify(args[0], args[1], env.clone());
+  else if (id === '\\=/2') { success = !unify(args[0], args[1], env); env.undo(mark); }
   else if (id === '==/2' || id === '\\==/2') {
     const equal = compareTerms(copyResolved(args[0], env), copyResolved(args[1], env)) === 0;
     success = id === '==/2' ? equal : !equal;
@@ -89,8 +89,9 @@ export function* primitive(goal, env) {
     else if (resolved[2].type === ATOM) {
       const chars = Array.from(resolved[2].name);
       for (let i = 0; i <= chars.length; i++) {
-        const branch = env.clone();
-        if (unify(args[0], atom(chars.slice(0, i).join('')), branch) && unify(args[1], atom(chars.slice(i).join('')), branch)) yield branch;
+        if (unify(args[0], atom(chars.slice(0, i).join('')), env) &&
+            unify(args[1], atom(chars.slice(i).join('')), env)) yield env;
+        env.undo(mark);
       }
       return;
     } else throw new Error('atom_concat/3 needs the result or both operands bound');
@@ -98,7 +99,8 @@ export function* primitive(goal, env) {
     const comparison = compareTerms(copyResolved(args[1], env), copyResolved(args[2], env));
     success = bind(args[0], atom(comparison < 0 ? '<' : comparison > 0 ? '>' : '='));
   }
-  if (success) yield next;
+  if (success) yield env;
+  else env.undo(mark);
 }
 let functorSerial = 0;
 function boundedInteger(term, min, max) {

@@ -10,7 +10,7 @@ const cli = (args = [], input) => {
   return result;
 };
 test('CLI runs files, stdin, multiple sources and goals', () => {
-  assert.equal(cli(['examples/socrates.pl']).stdout, 'type(socrates, mortal).\n');
+  assert.equal(cli(['examples/socrates.pl']).stdout, 'type(socrates, mortal).\ntype(socrates, human).\n');
   assert.equal(cli([], 'p(a). q(X) :+ p(X).').stdout, 'q(a).\n');
   assert.equal(cli(['examples/socrates.pl', '-', '--goal', 'type(X, mortal)'], 'type(plato, human).').stdout,
     'type(socrates, mortal).\ntype(plato, mortal).\n');

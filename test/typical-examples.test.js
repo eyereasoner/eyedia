@@ -198,6 +198,12 @@ test('complex arithmetic obeys the field laws and keeps Gaussian integers exact'
     'power(real_power, complex(0.20787957635177984, 0.0))',
     'arcsine(complex(2, 0), complex(1.5707963267948966, 1.3169578969248166))',
     'arccosine(complex(2, 0), complex(0.0, -1.3169578969248166))',
+    'logarithm(natural, complex(0.0, 3.141592653589793))',
+    'logarithm(imaginary, complex(1.0, 0.0))',
+    'sine(complex(1.9999999999999998, 1.0605752387249067e-16))',
+    'cosine(complex(1.9999999999999998, 0.0))',
+    'arctangent(complex(1.3389725222944935, 0.402359478108525))',
+    'tangent(complex(1.0, 1.9999999999999996))',
   ]));
 
   for (const [a, b] of samples) {

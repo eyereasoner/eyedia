@@ -1,4 +1,5 @@
 type(socrates, mortal).
+type(socrates, human).
 
 clause(1, type(socrates, human), true).
 clause(2, subclass_of(human, mortal), true).

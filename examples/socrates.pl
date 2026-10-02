@@ -3,3 +3,5 @@
 type(socrates, human).
 subclass_of(human, mortal).
 type(S, B) :+ type(S, A), subclass_of(A, B).
+% The query reports every class membership, asserted as well as derived.
+true :+ type(X, Y).

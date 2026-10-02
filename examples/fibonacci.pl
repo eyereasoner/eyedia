@@ -6,9 +6,15 @@ fib_pair(0, 0, 1).
 fib_pair(N, A, B) :- N > 0, Half is N//2, fib_pair(Half, X, Y), C is X*(2*Y-X), D is X*X+Y*Y, parity_pair(N, C, D, A, B).
 parity_pair(N, C, D, A, B) :- 0 =:= N mod 2, A=C, B=D.
 parity_pair(N, C, D, A, B) :- 1 =:= N mod 2, A=D, B is C+D.
+% The ratio of successive Fibonacci numbers converges on the golden ratio.
+golden_ratio(N, Ratio) :- fib(N, A), A > 0, Next is N+1, fib(Next, B), Ratio is B/A.
 ?- fib(0, F).
 ?- fib(1, F).
 ?- fib(10, F).
 ?- fib(100, F).
 ?- fib(1000, F).
 ?- fib(10000, F).
+?- golden_ratio(1, Ratio).
+?- golden_ratio(10, Ratio).
+?- golden_ratio(100, Ratio).
+?- golden_ratio(1000, Ratio).

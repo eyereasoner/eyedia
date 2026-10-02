@@ -5,6 +5,31 @@
     "trusted": []
   },
   {
+    "name": "deep-taxonomy-10",
+    "description": "A ten-level subclass chain with branches that lead nowhere",
+    "trusted": []
+  },
+  {
+    "name": "deep-taxonomy-100",
+    "description": "The same taxonomy benchmark at a hundred levels",
+    "trusted": []
+  },
+  {
+    "name": "deep-taxonomy-1000",
+    "description": "The same taxonomy benchmark at a thousand levels",
+    "trusted": []
+  },
+  {
+    "name": "deep-taxonomy-10000",
+    "description": "The same taxonomy benchmark at ten thousand levels",
+    "trusted": []
+  },
+  {
+    "name": "deep-taxonomy-100000",
+    "description": "The same taxonomy benchmark at a hundred thousand levels",
+    "trusted": []
+  },
+  {
     "name": "family",
     "description": "Recursive family relationships",
     "trusted": []
