@@ -31,7 +31,7 @@ test('numeric identity and order retain exact large integers', () => {
   assert.equal(compareTerms(numberTerm('9007199254740993'), numberTerm('9007199254740992')), 1);
 });
 test('standard order compares numbers by value before type', () => {
-  const order = (left, right) => run(`?- compare(O, ${left}, ${right}).`).bindings[0].O;
+  const order = (left, right) => run('', { goal: `compare(O, ${left}, ${right})` }).bindings[0].O;
   assert.equal(order('1.0', '0'), '>');
   assert.equal(order('2', '1.5'), '>');
   assert.equal(order('-1.5', '-2'), '>');

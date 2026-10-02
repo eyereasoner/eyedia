@@ -10,12 +10,10 @@ const callable = (term) => term?.type === ATOM || term?.type === COMPOUND;
 export class Program {
   constructor(source) {
     this.clauses = [];
-    this.queries = [];
     this.groups = new Map();
     this.forward = [];
     for (const parsed of parseProgramText(String(source))) {
-      if (parsed.kind === 'query') { this.queries.push(parsed.goal); continue; }
-      if (!parsed.head || parsed.kind) throw new Error('only facts, :- rules, :+ rules and ?- queries are supported');
+      if (!parsed.head) throw new Error('only facts, :- rules and :+ rules are supported');
       if (is(parsed.head, ':-', 1) || is(parsed.head, '-->', 2)) throw new Error('directives and DCGs are outside eyel');
       const forward = is(parsed.head, ':+', 2);
       if (forward && parsed.body.length) throw new Error('guarded :+ rule declarations are outside eyel');

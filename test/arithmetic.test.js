@@ -2,9 +2,9 @@ import test from './progress.js';
 import assert from 'node:assert/strict';
 import { run } from '../index.js';
 
-const value = (expression) => run(`?- X is ${expression}.`).bindings[0].X;
+const value = (expression) => run('', { goal: `X is ${expression}` }).bindings[0].X;
 const fails = (expression) => {
-  try { run(`?- X is ${expression}.`); } catch (error) { return error.message; }
+  try { run('', { goal: `X is ${expression}` }); } catch (error) { return error.message; }
   return null;
 };
 
@@ -52,8 +52,8 @@ test('exceptional conditions are reported as ISO error terms', () => {
 });
 
 test('arithmetic comparison stays exact across the integer/float boundary', () => {
-  assert.deepEqual(run('?- 9007199254740993 > 9007199254740992.0.').answers,
+  assert.deepEqual(run('true :+ 9007199254740993 > 9007199254740992.0.').answers,
     ['>(9007199254740993, 9007199254740992.0)']);
-  assert.deepEqual(run('?- 2 > 1.5.').answers, ['>(2, 1.5)']);
-  assert.deepEqual(run('?- 1 =:= 1.0.').answers, ["'=:='(1, 1.0)"]);
+  assert.deepEqual(run('true :+ 2 > 1.5.').answers, ['>(2, 1.5)']);
+  assert.deepEqual(run('true :+ 1 =:= 1.0.').answers, ["'=:='(1, 1.0)"]);
 });

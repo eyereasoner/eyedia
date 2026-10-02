@@ -7,12 +7,12 @@ clause(6, append([var('X')|var('Xs')], var('Ys'), [var('X')|var('Zs')]), append(
 clause(7, flat_map([], var('__anon0'), []), true).
 clause(8, flat_map([var('S')|var('Subjects')], var('P'), var('Objects')), ','(findall(var('O'), t(var('S'), var('P'), var('O')), var('Here')), ','(flat_map(var('Subjects'), var('P'), var('Rest')), append(var('Here'), var('Rest'), var('Objects'))))).
 
-step(flat_map([s1, s2, s3], p1, [o1, o2, o3, o4]), rule(8), [=('S', s1), =('Subjects', [s2, s3]), =('P', p1), =('Objects', [o1, o2, o3, o4]), =('O', EYE_4f_23_32), =('Here', [o1]), =('Rest', [o2, o3, o4])], [findall(EYE_4f_23_32, t(s1, p1, EYE_4f_23_32), [o1]), flat_map([s2, s3], p1, [o2, o3, o4]), append([o1], [o2, o3, o4], [o1, o2, o3, o4])]).
-step(findall(EYE_4f_23_32, t(s1, p1, EYE_4f_23_32), [o1]), collected, [], []).
-step(flat_map([s2, s3], p1, [o2, o3, o4]), rule(8), [=('S', s2), =('Subjects', [s3]), =('P', p1), =('Objects', [o2, o3, o4]), =('O', EYE_4f_23_36), =('Here', [o2]), =('Rest', [o3, o4])], [findall(EYE_4f_23_36, t(s2, p1, EYE_4f_23_36), [o2]), flat_map([s3], p1, [o3, o4]), append([o2], [o3, o4], [o2, o3, o4])]).
-step(findall(EYE_4f_23_36, t(s2, p1, EYE_4f_23_36), [o2]), collected, [], []).
-step(flat_map([s3], p1, [o3, o4]), rule(8), [=('S', s3), =('Subjects', []), =('P', p1), =('Objects', [o3, o4]), =('O', EYE_4f_23_31_30), =('Here', [o3, o4]), =('Rest', [])], [findall(EYE_4f_23_31_30, t(s3, p1, EYE_4f_23_31_30), [o3, o4]), flat_map([], p1, []), append([o3, o4], [], [o3, o4])]).
-step(findall(EYE_4f_23_31_30, t(s3, p1, EYE_4f_23_31_30), [o3, o4]), collected, [], []).
+step(flat_map([s1, s2, s3], p1, [o1, o2, o3, o4]), rule(8), [=('S', s1), =('Subjects', [s2, s3]), =('P', p1), =('Objects', [o1, o2, o3, o4]), =('O', EYE_4f_23_33), =('Here', [o1]), =('Rest', [o2, o3, o4])], [findall(EYE_4f_23_33, t(s1, p1, EYE_4f_23_33), [o1]), flat_map([s2, s3], p1, [o2, o3, o4]), append([o1], [o2, o3, o4], [o1, o2, o3, o4])]).
+step(findall(EYE_4f_23_33, t(s1, p1, EYE_4f_23_33), [o1]), collected, [], []).
+step(flat_map([s2, s3], p1, [o2, o3, o4]), rule(8), [=('S', s2), =('Subjects', [s3]), =('P', p1), =('Objects', [o2, o3, o4]), =('O', EYE_4f_23_37), =('Here', [o2]), =('Rest', [o3, o4])], [findall(EYE_4f_23_37, t(s2, p1, EYE_4f_23_37), [o2]), flat_map([s3], p1, [o3, o4]), append([o2], [o3, o4], [o2, o3, o4])]).
+step(findall(EYE_4f_23_37, t(s2, p1, EYE_4f_23_37), [o2]), collected, [], []).
+step(flat_map([s3], p1, [o3, o4]), rule(8), [=('S', s3), =('Subjects', []), =('P', p1), =('Objects', [o3, o4]), =('O', EYE_4f_23_31_31), =('Here', [o3, o4]), =('Rest', [])], [findall(EYE_4f_23_31_31, t(s3, p1, EYE_4f_23_31_31), [o3, o4]), flat_map([], p1, []), append([o3, o4], [], [o3, o4])]).
+step(findall(EYE_4f_23_31_31, t(s3, p1, EYE_4f_23_31_31), [o3, o4]), collected, [], []).
 step(flat_map([], p1, []), fact(7), [=('__anon0', p1)], []).
 step(append([o3, o4], [], [o3, o4]), rule(6), [=('X', o3), =('Xs', [o4]), =('Ys', []), =('Zs', [o4])], [append([o4], [], [o4])]).
 step(append([o4], [], [o4]), rule(6), [=('X', o4), =('Xs', []), =('Ys', []), =('Zs', [])], [append([], [], [])]).
@@ -21,8 +21,8 @@ step(append([o2], [o3, o4], [o2, o3, o4]), rule(6), [=('X', o2), =('Xs', []), =(
 step(append([], [o3, o4], [o3, o4]), fact(5), [=('Ys', [o3, o4])], []).
 step(append([o1], [o2, o3, o4], [o1, o2, o3, o4]), rule(6), [=('X', o1), =('Xs', []), =('Ys', [o2, o3, o4]), =('Zs', [o2, o3, o4])], [append([], [o2, o3, o4], [o2, o3, o4])]).
 step(append([], [o2, o3, o4], [o2, o3, o4]), fact(5), [=('Ys', [o2, o3, o4])], []).
-step(flat_map([missing], p1, []), rule(8), [=('S', missing), =('Subjects', []), =('P', p1), =('Objects', []), =('O', EYE_4f_23_33_32), =('Here', []), =('Rest', [])], [findall(EYE_4f_23_33_32, t(missing, p1, EYE_4f_23_33_32), []), flat_map([], p1, []), append([], [], [])]).
-step(findall(EYE_4f_23_33_32, t(missing, p1, EYE_4f_23_33_32), []), collected, [], []).
-step(flat_map([s1], p2, []), rule(8), [=('S', s1), =('Subjects', []), =('P', p2), =('Objects', []), =('O', EYE_4f_23_33_38), =('Here', []), =('Rest', [])], [findall(EYE_4f_23_33_38, t(s1, p2, EYE_4f_23_33_38), []), flat_map([], p2, []), append([], [], [])]).
-step(findall(EYE_4f_23_33_38, t(s1, p2, EYE_4f_23_33_38), []), collected, [], []).
+step(flat_map([missing], p1, []), rule(8), [=('S', missing), =('Subjects', []), =('P', p1), =('Objects', []), =('O', EYE_4f_23_33_34), =('Here', []), =('Rest', [])], [findall(EYE_4f_23_33_34, t(missing, p1, EYE_4f_23_33_34), []), flat_map([], p1, []), append([], [], [])]).
+step(findall(EYE_4f_23_33_34, t(missing, p1, EYE_4f_23_33_34), []), collected, [], []).
+step(flat_map([s1], p2, []), rule(8), [=('S', s1), =('Subjects', []), =('P', p2), =('Objects', []), =('O', EYE_4f_23_34_31), =('Here', []), =('Rest', [])], [findall(EYE_4f_23_34_31, t(s1, p2, EYE_4f_23_34_31), []), flat_map([], p2, []), append([], [], [])]).
+step(findall(EYE_4f_23_34_31, t(s1, p2, EYE_4f_23_34_31), []), collected, [], []).
 step(flat_map([], p2, []), fact(7), [=('__anon0', p2)], []).

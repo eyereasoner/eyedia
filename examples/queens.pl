@@ -12,4 +12,4 @@ safe(_, [], _).
 safe(Column, [Other|Rest], Distance) :-
     Column =\= Other+Distance, Column =\= Other-Distance,
     Next is Distance+1, safe(Column, Rest, Next).
-?- once(queens(8, Columns)).
+true :+ once(queens(8, Columns)).

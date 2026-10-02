@@ -59,4 +59,4 @@ month_offset(10, 273).
 month_offset(11, 304).
 month_offset(12, 334).
 
-?- age_above(Person, years(80)).
+true :+ age_above(Person, years(80)).

@@ -62,7 +62,7 @@ test('full airport network: 11 queries with proofs over 45k clauses', () => {
 });
 
 test('path discovery enumerates simple routes in a cyclic graph and handles arbitrary bounds', () => {
-  const rules = source.slice(source.indexOf('% Find simple directed routes')).split('?-')[0];
+  const rules = source.slice(source.indexOf('% Find simple directed routes')).split('true :+')[0];
   const p = Program.parse(`
     airport(a, 'A'). airport(b, 'B'). airport(c, 'C'). airport(d, 'D').
     flight(a, b). flight(b, a). flight(a, a). flight(b, c).

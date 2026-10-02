@@ -5,4 +5,4 @@ trajectory(N, [N|Rest]) :- N > 1, 1 =:= N mod 2, Next is 3*N+1, trajectory(Next,
 % A range of starting values, enumerated by ordinary clauses.
 in_range(Low, High, Low) :- Low =< High.
 in_range(Low, High, N) :- Low < High, Next is Low+1, in_range(Next, High, N).
-?- in_range(1, 20, N), trajectory(N, Values).
+true :+ in_range(1, 20, N), trajectory(N, Values).

@@ -119,17 +119,19 @@ ancestor(X, Z) :+ ancestor(X, Y), parent(Y, Z).
 related(X, Y) :- ancestor(X, Y).
 related(X, Y) :- ancestor(Y, X).
 
-?- related(alice, carol).
+true :+ related(alice, carol).
 ```
 
 The closure establishes ancestry once. The query expresses the relationship you
 want to inspect. Each part has one job.
 
-Output follows from how you ask. With no query, the newly materialized facts
-are printed. `?- Goal.` in the program, or `--goal 'Goal'` on the command line,
-asks a question. A `true :+ Body` rule publishes its instantiated body. A
-`false :+ Body` rule declares a contradiction and exits with code 65 — an
-integrity constraint that fails loudly.
+Output follows from how you ask. With nothing asked, the newly materialized
+facts are printed. `true :+ Goal.` asks a question: it publishes each instance
+of `Goal` it can establish, which is why the example above ends that way rather
+than with Prolog's interactive `?-`. A program text contains clauses, and a
+goal is one of them. `--goal 'Goal'` asks from outside instead, and then the
+program's own goals stay quiet. A `false :+ Body` rule declares a contradiction
+and exits with code 65 — an integrity constraint that fails loudly.
 
 ## What you can say
 
@@ -167,7 +169,7 @@ than it looks. These are the patterns the examples are built from:
 | Typed or language-tagged values | Structured `literal/2` terms |
 | Per-binding witnesses | Explicit `record(Rule, Binding)` terms |
 | Ordered events and state changes | Indexed facts, recursive transition relations |
-| Output selection | `?- Goal`, `--goal`, or `true :+ Body` |
+| Asking a goal | `true :+ Goal`, or `--goal` from outside |
 | Integrity constraints | `false :+ Body` |
 
 ### Numbers behave
@@ -416,8 +418,8 @@ internal `X#1` can never be confused with a source variable named `X_1`.
 nothing in a program can change how the rest of itself — or any program loaded
 beside it — is read. A source text has exactly one reading, which is why
 [test/syntax.test.js](test/syntax.test.js) can state that reading case by case.
-`?- Goal.` is always a goal to run; nothing that follows it can turn it into
-something else.
+There is no separate query syntax to interact with it either: a goal is the
+ordinary clause `true :+ Goal.`, so nothing around it can change how it reads.
 
 **Stratification matches whole terms, not just predicate names.** Forward rules
 that use negation or collection run only after everything they inspect has

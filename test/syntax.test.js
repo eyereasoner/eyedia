@@ -17,6 +17,15 @@ const reads = (source, expected) => {
     : `${text(clause.head)}:-${clause.body.map((goal) => text(goal)).join(',')}`;
   assert.equal(actual, expected, `for ${JSON.stringify(source)}`);
 };
+// A goal is asked with `true :+ Goal.`, so parse one of those and report how
+// the goal itself read.
+const asks = (goal, expected) => {
+  const clauses = parseProgramText(`true :+ ${goal}.`);
+  assert.equal(clauses.length, 1, goal);
+  const head = clauses[0].head;
+  assert.equal(head.name, ':+', goal);
+  assert.equal(text(head.args[1]), expected, `for ${JSON.stringify(goal)}`);
+};
 const rejects = (source, pattern) => assert.throws(() => parseProgramText(source), pattern, source);
 
 test('clause shapes read as the documented terms', () => {
@@ -28,27 +37,29 @@ test('clause shapes read as the documented terms', () => {
   reads('true :+ b.', "':+'(true, b):-");
   reads('(a(X), b(X)) :+ c(X).', "':+'(','(a(X), b(X)), c(X)):-");
   reads('a(X), b(X) :+ c(X).', "':+'(','(a(X), b(X)), c(X)):-");
-  reads('?- a.', 'query:a');
-  reads('?- a, b.', "query:','(a, b)");
-  reads('?-(a).', 'query:a');
+  asks('a', 'a');
+  asks('a, b', "','(a, b)");
+  // `?-` is recognized only to point at the form the language does use.
+  rejects('?- a.', /a goal is asked with `true :\+ Goal\.`/);
+  rejects('?-(a).', /a goal is asked with `true :\+ Goal\.`/);
   rejects('a(X), b(X), c(X) :+ d.', /expected \., got ,/);
   rejects('a', /expected \./);
   rejects('p :- .', /bad term/);
 });
 
 test('operator notation lowers to canonical compounds', () => {
-  reads('?- X is 2 + 3 * 4.', 'query:is(X, +(2, *(3, 4)))');
-  reads('?- X is (2 + 3) * 4.', 'query:is(X, *(+(2, 3), 4))');
-  reads('?- X is 1 - 2 - 3.', 'query:is(X, -(-(1, 2), 3))');
-  reads('?- X is 2 ** 3.', 'query:is(X, **(2, 3))');
-  reads('?- X is 2 ^ 3 ^ 2.', 'query:is(X, ^(2, ^(3, 2)))');
-  reads('?- a ; b.', 'query:;(a, b)');
-  reads('?- \\+ a.', 'query:\\+(a)');
-  reads('?- X = (a :- b).', "query:=(X, ':-'(a, b))");
-  reads('?- X = a:b:c.', "query:=(X, ':'(a, ':'(b, c)))");
-  reads('?- X = f(a, (b, c)).', "query:=(X, f(a, ','(b, c)))");
-  rejects('?- X is 1 = 2 = 3.', /non-associative operator is requires parentheses/);
-  rejects('?- X = a + .', /bad term/);
+  asks('X is 2 + 3 * 4', 'is(X, +(2, *(3, 4)))');
+  asks('X is (2 + 3) * 4', 'is(X, *(+(2, 3), 4))');
+  asks('X is 1 - 2 - 3', 'is(X, -(-(1, 2), 3))');
+  asks('X is 2 ** 3', 'is(X, **(2, 3))');
+  asks('X is 2 ^ 3 ^ 2', 'is(X, ^(2, ^(3, 2)))');
+  asks('a ; b', ';(a, b)');
+  asks('\\+ a', '\\+(a)');
+  asks('X = (a :- b)', "=(X, ':-'(a, b))");
+  asks('X = a:b:c', "=(X, ':'(a, ':'(b, c)))");
+  asks('X = f(a, (b, c))', "=(X, f(a, ','(b, c)))");
+  rejects('true :+ X is 1 = 2 = 3.', /non-associative operator is requires parentheses/);
+  rejects('true :+ X = a + .', /bad term/);
 });
 
 test('numbers keep ISO lexical syntax and canonical spelling', () => {
@@ -69,28 +80,28 @@ test('numbers keep ISO lexical syntax and canonical spelling', () => {
   // A minus directly against a digit is lexical; after a term it is infix.
   assert.equal(text(parseGoalText('t(X-1)')), 't(-(X, 1))');
   assert.equal(text(parseGoalText('t(-1)')), 't(-1)');
-  rejects('?- t(1.0e).', /expected \), got e/);
-  rejects('?- t(0x).', /expected \), got x/);
+  rejects('true :+ t(1.0e).', /expected \), got e/);
+  rejects('true :+ t(0x).', /expected \), got x/);
 });
 
 test('atoms, strings and lists read as their canonical forms', () => {
   // Double-quoted text reads as a list of one-character atoms, and is written
   // back as one: list notation needs no flag to read back the same term.
-  reads('?- X = "ab".', 'query:=(X, [a, b])');
-  reads('?- X = [a, b].', 'query:=(X, [a, b])');
-  reads('?- X = [1, 2].', 'query:=(X, [1, 2])');
-  reads('?- X = [a|T].', 'query:=(X, [a|T])');
-  reads('?- X = "ab"||T.', 'query:=(X, [a, b|T])');
-  reads('?- X = [].', 'query:=(X, [])');
-  reads('?- X = {a, b}.', "query:=(X, {}(','(a, b)))");
-  reads('?- X = {}.', 'query:=(X, {})');
-  reads("?- X = 'it''s'.", "query:=(X, 'it''s')");
-  reads('?- X = f(+).', 'query:=(X, f(+))');
-  reads('?- X = (+).', 'query:=(X, +)');
-  rejects("?- X = 'unterminated.", /unterminated quoted term/);
-  rejects('?- X = [a, b.', /expected \], got \./);
-  rejects("?- X = '\\z'.", /bad escape sequence/);
-  rejects('?- X = f().', /zero-arity compound syntax is not supported/);
+  asks('X = "ab"', '=(X, [a, b])');
+  asks('X = [a, b]', '=(X, [a, b])');
+  asks('X = [1, 2]', '=(X, [1, 2])');
+  asks('X = [a|T]', '=(X, [a|T])');
+  asks('X = "ab"||T', '=(X, [a, b|T])');
+  asks('X = []', '=(X, [])');
+  asks('X = {a, b}', "=(X, {}(','(a, b)))");
+  asks('X = {}', '=(X, {})');
+  asks("X = 'it''s'", "=(X, 'it''s')");
+  asks('X = f(+)', '=(X, f(+))');
+  asks('X = (+)', '=(X, +)');
+  rejects("true :+ X = 'unterminated.", /unterminated quoted term/);
+  rejects('true :+ X = [a, b.', /expected \], got \./);
+  rejects("true :+ X = '\\z'.", /bad escape sequence/);
+  rejects('true :+ X = f().', /zero-arity compound syntax is not supported/);
 });
 
 test('layout, comments and the end token are distinguished', () => {
@@ -98,18 +109,19 @@ test('layout, comments and the end token are distinguished', () => {
   reads('/* block */ a.', 'a:-');
   reads('a /* mid */ .', 'a:-');
   // A dot that continues a graphic token does not end the term.
-  reads('?- t(.*).', 'query:t(.*)');
+  asks('t(.*)', 't(.*)');
   assert.equal(parseProgramText('a.\nb.\n').length, 2);
   assert.equal(parseProgramText('').length, 0);
   rejects('/* unterminated\na.', /unterminated block comment/);
   rejects('a.b.', /expected \., got \./);
 });
 
-test('a query is never reinterpreted by what follows it', () => {
-  // An indented clause after a query is still a clause.
-  const clauses = parseProgramText('p(1).\n?- p(X).\n  q(y).\n');
-  assert.deepEqual(clauses.map((clause) => clause.kind ?? 'clause'), ['clause', 'query', 'clause']);
-  assert.deepEqual(run('p(1).\n?- p(X).\n  q(y).\n').answers, ['p(1)']);
+test('a goal is an ordinary clause, so nothing around it changes its reading', () => {
+  // Every term in a program text is a clause, including the one asking a goal,
+  // and an indented clause after it is still a clause.
+  const clauses = parseProgramText('p(1).\ntrue :+ p(X).\n  q(y).\n');
+  assert.deepEqual(clauses.map((clause) => text(clause.head)), ['p(1)', "':+'(true, p(X))", 'q(y)']);
+  assert.deepEqual(run('p(1).\ntrue :+ p(X).\n  q(y).\n').answers, ['p(1)']);
 });
 
 test('directives and DCGs parse as terms and are refused by the profile', () => {
@@ -127,7 +139,7 @@ test('directives and DCGs parse as terms and are refused by the profile', () => 
 });
 
 test('source metadata records the line each clause starts on', () => {
-  const clauses = parseProgramText('a.\n\nb :- c.\n?- d.\n');
+  const clauses = parseProgramText('a.\n\nb :- c.\ntrue :+ d.\n');
   assert.deepEqual(clauses.map((clause) => clause.source.line), [1, 3, 4]);
 });
 

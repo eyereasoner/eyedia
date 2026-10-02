@@ -3,6 +3,6 @@ train(paris, brussels).
 bus(paris, lille).
 route(From, To) :- train(From, To).
 route(From, To) :- bus(From, To).
-?- route(paris, To).
-?- (train(paris, brussels); bus(paris, lille)).
-?- once(route(paris, To)).
+true :+ route(paris, To).
+true :+ (train(paris, brussels); bus(paris, lille)).
+true :+ once(route(paris, To)).

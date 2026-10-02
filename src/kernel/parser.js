@@ -739,17 +739,12 @@ class Parser {
     while (this.token.type !== TOK.EOF) {
       const line = this.token.line;
       const source = { line };
-      // `?- Goal.` delivers a goal to the reasoner. ISO 6.2.1 admits only
-      // directive-terms and clause-terms in a Prolog text, and its own "query"
-      // is interactive input, so reading `?-` from a file as a goal is
-      // 7.7.3's implementation-defined "method by which a user delivers a
-      // goal" -- the notation nearly every Prolog uses for one.
+      // A Prolog text contains clauses. ISO 6.2.1 has no query among them -
+      // its own "query" is interactive input - so eyel asks for a goal the one
+      // way it already has: `true :+ Goal.` reports each instance of Goal.
+      // Recognize `?-` only to say so.
       if (this.operatorTokenName() === '?-') {
-        this.advance();
-        const goal = this.parseTerm(0, true);
-        this.expectAndAdvance(TOK.DOT, '.');
-        clauses.push({ kind: 'query', goal, source });
-        continue;
+        throw new Error(`parse line ${line}: a goal is asked with \`true :+ Goal.\`, not \`?- Goal.\``);
       }
       // Directives are outside the language. Read the whole term so the
       // profile check reports the directive itself rather than a syntax error.

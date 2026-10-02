@@ -5,6 +5,6 @@ squares([], []).
 squares([X|Xs], [Y|Ys]) :- Y is X*X, squares(Xs, Ys).
 sum([], 0).
 sum([X|Xs], Total) :- sum(Xs, Rest), Total is X+Rest.
-?- append([a,b], [c,d], Joined).
-?- squares([1,2,3,4], Squared).
-?- sum([1,2,3,4], Total).
+true :+ append([a,b], [c,d], Joined).
+true :+ squares([1,2,3,4], Squared).
+true :+ sum([1,2,3,4], Total).

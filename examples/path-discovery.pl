@@ -45233,4 +45233,4 @@ airport_names([], []).
 airport_names([Id|Ids], [Name|Names]) :-
     airport(Id, Name), airport_names(Ids, Names).
 
-?- path_discovery('Ostend-Bruges International Airport', 'Václav Havel Airport Prague', 2, Path).
+true :+ path_discovery('Ostend-Bruges International Airport', 'Václav Havel Airport Prague', 2, Path).

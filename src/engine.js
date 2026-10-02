@@ -190,7 +190,10 @@ export class Solver {
     }
     return null;
   }
-  forward() {
+  // A rule whose heads are all `true` only publishes output. When the caller
+  // asks its own question that output is discarded, so the rule has nothing to
+  // contribute and solving its body would be wasted work.
+  forward(reporting = true) {
     // Each rule's heads share a stratum. A rule with multiple heads runs only
     // after every prerequisite has reached its fixpoint.
     const layers = new Map();
@@ -206,6 +209,7 @@ export class Solver {
         if (++rounds > (this.options.maxIterations ?? 1000)) throw new Error('forward reasoning exceeded maxIterations');
         this.stats.rounds++; changed = false;
         for (const clause of rules) {
+          if (!reporting && clause.heads.every((item) => is(item, 'true', 0))) continue;
           const names = new Map();
           const head = freshTerm(clause.head, ++this.serial, names);
           const body = clause.body.map((item) => freshTerm(item, this.serial, names));
@@ -268,8 +272,8 @@ export function run(source, options = {}) {
 function reason(source, options) {
   const program = source instanceof Program ? source : Program.parse(source);
   const solver = new Solver(program, options);
-  solver.forward();
-  const goals = options.goals ?? (options.goal == null ? program.queries : [options.goal]);
+  const goals = options.goals ?? (options.goal == null ? [] : [options.goal]);
+  solver.forward(goals.length === 0);
   const roots = [];
   const bindings = [];
   const claims = [];
