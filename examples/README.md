@@ -79,6 +79,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [monkey-bananas.pl](monkey-bananas.pl) | Every plan of up to five moves that gets the monkey the bananas |
 | [enigma1225.pl](enigma1225.pl) | New Scientist Enigma 1225: the best board whose transpose is a row permutation of itself |
 | [superdense-coding.pl](superdense-coding.pl) | Superdense coding in discrete quantum theory, with interference as odd path counts |
+| [teleportation.pl](teleportation.pl) | Quantum teleportation in discrete quantum theory, checked for every state and outcome |
 
 `integrity.pl` intentionally exits with code 65 because it concludes `false`.
 Its proof-check report is valid: the certificate explains why the constraint was
@@ -222,7 +223,7 @@ rules. Invalid dates, future births, unknown people, and negative or noninteger
 thresholds return no answers. Reference dates are explicit source data rather
 than clock readings, and the example passes strict proof checking.
 
-The classics from `ackermann.pl` to `superdense-coding.pl` are written without a
+The classics from `ackermann.pl` to `teleportation.pl` are written without a
 library. Relations such as `between/3`, `member/2` or `length/2` are defined in
 each program as ordinary clauses, and a search commits with `once/1`, or with
 guards that make its alternatives exclusive, where Prolog would use cut.
@@ -270,6 +271,16 @@ message arrives as itself by exactly one way, and every wrong reading by two
 ways that cancel or by none, so Bob reads 0 to 3 exactly as Alice sent them.
 The parity depends on all the ways, so the certificate carries the four
 collections behind its answers as obligations.
+
+`teleportation.pl` runs the companion protocol in the same theory, with the
+same relations. Alice measures the qubit to send together with her half of the
+entangled pair, in the four-state basis Bob decodes with in superdense coding,
+and sends him the outcome. Bob applies the inverse of that basis relation, which
+turns out to be one of Alice's four operations from superdense coding, to his
+half. For each of the three nonzero states over the two-element field and each
+of the four outcomes, Bob ends up holding exactly the state Alice sent, and a
+`false :+` rule would stop the run with exit code 65 if he did not. The
+protocol was written for this collection, not taken from a sibling project.
 
 Certificates that lean on a completed search say so. In `kaprekar.pl` the whole
 verification sits inside one negation, so its certificate is two steps plus an

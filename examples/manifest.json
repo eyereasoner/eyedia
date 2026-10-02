@@ -357,5 +357,12 @@
     "trusted": [
       "collected"
     ]
+  },
+  {
+    "name": "teleportation",
+    "description": "Quantum teleportation in discrete quantum theory, checked for every state and outcome",
+    "trusted": [
+      "collected"
+    ]
   }
 ]
