@@ -49,7 +49,7 @@ console.log(checkProof(source, result.proof).valid);    // true
 - **[Make reasoning something you can see](make-reasoning-something-you-can-see.md)** —
   what the language is for, how to write it, what a checked proof does and does
   not establish, and how the engine works.
-- **[Examples](examples/README.md)** — 51 complete programs, each with its saved
+- **[Examples](examples/README.md)** — 63 complete programs, each with its saved
   conclusions, proof and C1-C5 check report.
 - **[src/builtins.js](src/builtins.js)** — the exact native predicate list.
 

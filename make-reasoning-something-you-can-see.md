@@ -300,7 +300,7 @@ language does not hand you a certificate it has not verified.
 
 ## The examples
 
-The [example collection](examples/README.md) is 51 complete programs. Each one
+The [example collection](examples/README.md) is 63 complete programs. Each one
 ships with its conclusions, its proof and its C1–C5 check report, all saved to
 disk:
 
@@ -327,8 +327,13 @@ examples/check/socrates.pl     C1-C5 proof-check report
 | `good-cobbler`, `peano`, `expression-eval`, `complex` | Structured descriptions, symbolic arithmetic, expression graphs and a complex-number domain |
 | `modexp`, `queens`, `interval-relations` | Modular powers, constraint search and all thirteen interval relations |
 | `concept-alignment`, `bayes-diagnosis`, `policy-risk` | Reporting rollups, normalized fault scores and ranked policy findings |
+| `ackermann`, `peasant`, `padovan`, `sieve`, `goldbach`, `kaprekar` | Exact hyperoperations, ancient arithmetic, number sequences and number-theory checks |
+| `easter`, `turing` | Calendar arithmetic and a Turing machine interpreter |
+| `zebra`, `four-color`, `wolf-goat-cabbage`, `monkey-bananas` | Classic constraint puzzles and planning problems |
 
-A few are worth singling out. The [airport search](examples/path-discovery.pl)
+A few are worth singling out. [Ackermann](examples/ackermann.pl) computes
+A(4, 2), a number with 19,729 digits, exactly. The [zebra puzzle](examples/zebra.pl)
+is Einstein's riddle solved by unification alone. The [airport search](examples/path-discovery.pl)
 works over 7,698 airports and 37,505 connections; change the endpoints and the
 stopover budget and ask again. The [interval example](examples/interval-relations.pl)
 distinguishes all thirteen basic relations between two intervals. The

@@ -65,6 +65,18 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [policy-risk.pl](policy-risk.pl) | Ranked findings with explanations and suggested mitigations |
 | [queens.pl](queens.pl) | Configurable N-queens search with diagonal constraints |
 | [age.pl](age.pl) | Calendar-year and elapsed-day age checks at an explicit reference date |
+| [ackermann.pl](ackermann.pl) | The Ackermann function through the hyperoperation sequence, exactly |
+| [peasant.pl](peasant.pl) | Peasant multiplication and exponentiation by halving and doubling |
+| [padovan.pl](padovan.pl) | The Padovan sequence and its convergence on the plastic ratio |
+| [sieve.pl](sieve.pl) | The sieve of Eratosthenes over an explicit list of integers |
+| [goldbach.pl](goldbach.pl) | Goldbach splits of every power of two up to 2^25 |
+| [kaprekar.pl](kaprekar.pl) | Every four-digit Kaprekar routine reaches 6174 within seven steps |
+| [easter.pl](easter.pl) | Easter Sunday by the anonymous Gregorian algorithm, 2021 to 2050 |
+| [turing.pl](turing.pl) | A Turing machine interpreter running a binary incrementer |
+| [zebra.pl](zebra.pl) | The zebra puzzle solved by narrowing five partially known houses |
+| [four-color.pl](four-color.pl) | Four-colouring the map of the European Union |
+| [wolf-goat-cabbage.pl](wolf-goat-cabbage.pl) | The river crossing, with seven crossings shown to be minimal |
+| [monkey-bananas.pl](monkey-bananas.pl) | Every plan of up to five moves that gets the monkey the bananas |
 
 `integrity.pl` intentionally exits with code 65 because it concludes `false`.
 Its proof-check report is valid: the certificate explains why the constraint was
@@ -194,6 +206,21 @@ year. Elapsed days follow the Gregorian calendar, including century leap-year
 rules. Invalid dates, future births, unknown people, and negative or noninteger
 thresholds return no answers. Reference dates are explicit source data rather
 than clock readings, and the example passes strict proof checking.
+
+The classics from `ackermann.pl` to `monkey-bananas.pl` come from the sibling
+eyelet project, which uses the same `:+` rule syntax, and ten of the twelve
+print exactly what eyelet prints. Where eyelet leans on library predicates such
+as `between/3`, `member/2` or `length/2`, these define them as ordinary clauses,
+and where it uses cut they commit with `once/1` or with guards that make the
+alternatives exclusive. `wolf-goat-cabbage.pl` also prints the two shortest
+plans, not only that seven crossings are minimal. `sieve.pl` stops at 100
+instead of 1000, because its certificate records every intermediate list.
+
+Certificates that lean on a completed search say so. In `kaprekar.pl` the whole
+verification sits inside one negation, so its certificate is two steps plus an
+`absent` obligation: the exhaustive check over 705 digit multisets is exactly
+what the obligation names. `four-color.pl` collects the countries with
+`findall/3` and rules out conflicts with negation, so it carries both kinds.
 
 Run `npm test` for the full suite or `npm run test:examples` for this corpus.
 Every example runs through the API and all three CLI modes. The test log prints

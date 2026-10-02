@@ -276,5 +276,74 @@
     "name": "age",
     "description": "Calendar-year and elapsed-day age thresholds at an explicit date",
     "trusted": []
+  },
+  {
+    "name": "ackermann",
+    "description": "The Ackermann function through the hyperoperation sequence, exactly",
+    "trusted": []
+  },
+  {
+    "name": "peasant",
+    "description": "Peasant multiplication and exponentiation by halving and doubling",
+    "trusted": []
+  },
+  {
+    "name": "padovan",
+    "description": "The Padovan sequence and its convergence on the plastic ratio",
+    "trusted": []
+  },
+  {
+    "name": "sieve",
+    "description": "The sieve of Eratosthenes over an explicit list of integers",
+    "trusted": []
+  },
+  {
+    "name": "goldbach",
+    "description": "Goldbach splits of every power of two up to 2^25",
+    "trusted": [
+      "absent"
+    ]
+  },
+  {
+    "name": "kaprekar",
+    "description": "Every four-digit Kaprekar routine reaches 6174 within seven steps",
+    "trusted": [
+      "absent"
+    ]
+  },
+  {
+    "name": "easter",
+    "description": "Easter Sunday by the anonymous Gregorian algorithm, 2021 to 2050",
+    "trusted": []
+  },
+  {
+    "name": "turing",
+    "description": "A Turing machine interpreter running a binary incrementer",
+    "trusted": []
+  },
+  {
+    "name": "zebra",
+    "description": "The zebra puzzle solved by narrowing five partially known houses",
+    "trusted": []
+  },
+  {
+    "name": "four-color",
+    "description": "Four-colouring the map of the European Union",
+    "trusted": [
+      "absent",
+      "collected"
+    ]
+  },
+  {
+    "name": "wolf-goat-cabbage",
+    "description": "The river crossing, with seven crossings shown to be minimal",
+    "trusted": [
+      "absent"
+    ]
+  },
+  {
+    "name": "monkey-bananas",
+    "description": "Every plan of up to five moves that gets the monkey the bananas",
+    "trusted": []
   }
 ]

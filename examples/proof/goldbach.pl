@@ -1,0 +1,949 @@
+goldbach(4, [2, 2]).
+goldbach(8, [3, 5]).
+goldbach(16, [3, 13]).
+goldbach(32, [3, 29]).
+goldbach(64, [3, 61]).
+goldbach(128, [19, 109]).
+goldbach(256, [5, 251]).
+goldbach(512, [3, 509]).
+goldbach(1024, [3, 1021]).
+goldbach(2048, [19, 2029]).
+goldbach(4096, [3, 4093]).
+goldbach(8192, [13, 8179]).
+goldbach(16384, [3, 16381]).
+goldbach(32768, [19, 32749]).
+goldbach(65536, [17, 65519]).
+goldbach(131072, [13, 131059]).
+goldbach(262144, [5, 262139]).
+goldbach(524288, [19, 524269]).
+goldbach(1048576, [3, 1048573]).
+goldbach(2097152, [19, 2097133]).
+goldbach(4194304, [3, 4194301]).
+goldbach(8388608, [37, 8388571]).
+goldbach(16777216, [3, 16777213]).
+goldbach(33554432, [61, 33554371]).
+
+clause(1, split(4, [2, 2]), true).
+clause(2, split(var('N'), var('Pair')), ','('=:='(0, rem(var('N'), 2)), ','(>(var('N'), 4), once(split_from(var('N'), var('Pair'), 3))))).
+clause(3, split_from(var('N'), [var('P'), var('Q')], var('P')), ','(is(var('Q'), -(var('N'), var('P'))), is_prime(var('Q')))).
+clause(4, split_from(var('N'), var('Pair'), var('P')), ','(<(var('P'), var('N')), ','(once(next_prime(var('P'), var('Next'))), split_from(var('N'), var('Pair'), var('Next'))))).
+clause(5, next_prime(var('P'), var('Next')), ','(is(var('Next'), +(var('P'), 2)), is_prime(var('Next')))).
+clause(6, next_prime(var('P'), var('Next')), ','(is(var('Q'), +(var('P'), 2)), next_prime(var('Q'), var('Next')))).
+clause(9, is_prime(var('P')), ','(>(var('P'), 3), ','('=:='(1, rem(var('P'), 2)), \+(has_factor(var('P'), 3))))).
+clause(12, in_range(var('Low'), var('High'), var('Low')), =<(var('Low'), var('High'))).
+clause(13, in_range(var('Low'), var('High'), var('N')), ','(<(var('Low'), var('High')), ','(is(var('Next'), +(var('Low'), 1)), in_range(var('Next'), var('High'), var('N'))))).
+clause(14, goldbach(var('N'), var('Pair')), ','(in_range(2, 25, var('I')), ','(is(var('N'), ^(2, var('I'))), split(var('N'), var('Pair'))))).
+
+step(goldbach(4, [2, 2]), rule(14), [=('N', 4), =('Pair', [2, 2]), =('I', 2)], [in_range(2, 25, 2), is(4, ^(2, 2)), split(4, [2, 2])]).
+step(in_range(2, 25, 2), rule(12), [=('Low', 2), =('High', 25)], [=<(2, 25)]).
+step(=<(2, 25), builtin, [], []).
+step(is(4, ^(2, 2)), builtin, [], []).
+step(split(4, [2, 2]), fact(1), [], []).
+step(goldbach(8, [3, 5]), rule(14), [=('N', 8), =('Pair', [3, 5]), =('I', 3)], [in_range(2, 25, 3), is(8, ^(2, 3)), split(8, [3, 5])]).
+step(in_range(2, 25, 3), rule(13), [=('Low', 2), =('High', 25), =('N', 3), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 3)]).
+step(<(2, 25), builtin, [], []).
+step(is(3, +(2, 1)), builtin, [], []).
+step(in_range(3, 25, 3), rule(12), [=('Low', 3), =('High', 25)], [=<(3, 25)]).
+step(=<(3, 25), builtin, [], []).
+step(is(8, ^(2, 3)), builtin, [], []).
+step(split(8, [3, 5]), rule(2), [=('N', 8), =('Pair', [3, 5])], ['=:='(0, rem(8, 2)), >(8, 4), once(split_from(8, [3, 5], 3))]).
+step('=:='(0, rem(8, 2)), builtin, [], []).
+step(>(8, 4), builtin, [], []).
+step(once(split_from(8, [3, 5], 3)), control, [], [split_from(8, [3, 5], 3)]).
+step(split_from(8, [3, 5], 3), rule(3), [=('N', 8), =('P', 3), =('Q', 5)], [is(5, -(8, 3)), is_prime(5)]).
+step(is(5, -(8, 3)), builtin, [], []).
+step(is_prime(5), rule(9), [=('P', 5)], [>(5, 3), '=:='(1, rem(5, 2)), \+(has_factor(5, 3))]).
+step(>(5, 3), builtin, [], []).
+step('=:='(1, rem(5, 2)), builtin, [], []).
+step(\+(has_factor(5, 3)), absent, [], []).
+step(goldbach(16, [3, 13]), rule(14), [=('N', 16), =('Pair', [3, 13]), =('I', 4)], [in_range(2, 25, 4), is(16, ^(2, 4)), split(16, [3, 13])]).
+step(in_range(2, 25, 4), rule(13), [=('Low', 2), =('High', 25), =('N', 4), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 4)]).
+step(in_range(3, 25, 4), rule(13), [=('Low', 3), =('High', 25), =('N', 4), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 4)]).
+step(<(3, 25), builtin, [], []).
+step(is(4, +(3, 1)), builtin, [], []).
+step(in_range(4, 25, 4), rule(12), [=('Low', 4), =('High', 25)], [=<(4, 25)]).
+step(=<(4, 25), builtin, [], []).
+step(is(16, ^(2, 4)), builtin, [], []).
+step(split(16, [3, 13]), rule(2), [=('N', 16), =('Pair', [3, 13])], ['=:='(0, rem(16, 2)), >(16, 4), once(split_from(16, [3, 13], 3))]).
+step('=:='(0, rem(16, 2)), builtin, [], []).
+step(>(16, 4), builtin, [], []).
+step(once(split_from(16, [3, 13], 3)), control, [], [split_from(16, [3, 13], 3)]).
+step(split_from(16, [3, 13], 3), rule(3), [=('N', 16), =('P', 3), =('Q', 13)], [is(13, -(16, 3)), is_prime(13)]).
+step(is(13, -(16, 3)), builtin, [], []).
+step(is_prime(13), rule(9), [=('P', 13)], [>(13, 3), '=:='(1, rem(13, 2)), \+(has_factor(13, 3))]).
+step(>(13, 3), builtin, [], []).
+step('=:='(1, rem(13, 2)), builtin, [], []).
+step(\+(has_factor(13, 3)), absent, [], []).
+step(goldbach(32, [3, 29]), rule(14), [=('N', 32), =('Pair', [3, 29]), =('I', 5)], [in_range(2, 25, 5), is(32, ^(2, 5)), split(32, [3, 29])]).
+step(in_range(2, 25, 5), rule(13), [=('Low', 2), =('High', 25), =('N', 5), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 5)]).
+step(in_range(3, 25, 5), rule(13), [=('Low', 3), =('High', 25), =('N', 5), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 5)]).
+step(in_range(4, 25, 5), rule(13), [=('Low', 4), =('High', 25), =('N', 5), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 5)]).
+step(<(4, 25), builtin, [], []).
+step(is(5, +(4, 1)), builtin, [], []).
+step(in_range(5, 25, 5), rule(12), [=('Low', 5), =('High', 25)], [=<(5, 25)]).
+step(=<(5, 25), builtin, [], []).
+step(is(32, ^(2, 5)), builtin, [], []).
+step(split(32, [3, 29]), rule(2), [=('N', 32), =('Pair', [3, 29])], ['=:='(0, rem(32, 2)), >(32, 4), once(split_from(32, [3, 29], 3))]).
+step('=:='(0, rem(32, 2)), builtin, [], []).
+step(>(32, 4), builtin, [], []).
+step(once(split_from(32, [3, 29], 3)), control, [], [split_from(32, [3, 29], 3)]).
+step(split_from(32, [3, 29], 3), rule(3), [=('N', 32), =('P', 3), =('Q', 29)], [is(29, -(32, 3)), is_prime(29)]).
+step(is(29, -(32, 3)), builtin, [], []).
+step(is_prime(29), rule(9), [=('P', 29)], [>(29, 3), '=:='(1, rem(29, 2)), \+(has_factor(29, 3))]).
+step(>(29, 3), builtin, [], []).
+step('=:='(1, rem(29, 2)), builtin, [], []).
+step(\+(has_factor(29, 3)), absent, [], []).
+step(goldbach(64, [3, 61]), rule(14), [=('N', 64), =('Pair', [3, 61]), =('I', 6)], [in_range(2, 25, 6), is(64, ^(2, 6)), split(64, [3, 61])]).
+step(in_range(2, 25, 6), rule(13), [=('Low', 2), =('High', 25), =('N', 6), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 6)]).
+step(in_range(3, 25, 6), rule(13), [=('Low', 3), =('High', 25), =('N', 6), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 6)]).
+step(in_range(4, 25, 6), rule(13), [=('Low', 4), =('High', 25), =('N', 6), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 6)]).
+step(in_range(5, 25, 6), rule(13), [=('Low', 5), =('High', 25), =('N', 6), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 6)]).
+step(<(5, 25), builtin, [], []).
+step(is(6, +(5, 1)), builtin, [], []).
+step(in_range(6, 25, 6), rule(12), [=('Low', 6), =('High', 25)], [=<(6, 25)]).
+step(=<(6, 25), builtin, [], []).
+step(is(64, ^(2, 6)), builtin, [], []).
+step(split(64, [3, 61]), rule(2), [=('N', 64), =('Pair', [3, 61])], ['=:='(0, rem(64, 2)), >(64, 4), once(split_from(64, [3, 61], 3))]).
+step('=:='(0, rem(64, 2)), builtin, [], []).
+step(>(64, 4), builtin, [], []).
+step(once(split_from(64, [3, 61], 3)), control, [], [split_from(64, [3, 61], 3)]).
+step(split_from(64, [3, 61], 3), rule(3), [=('N', 64), =('P', 3), =('Q', 61)], [is(61, -(64, 3)), is_prime(61)]).
+step(is(61, -(64, 3)), builtin, [], []).
+step(is_prime(61), rule(9), [=('P', 61)], [>(61, 3), '=:='(1, rem(61, 2)), \+(has_factor(61, 3))]).
+step(>(61, 3), builtin, [], []).
+step('=:='(1, rem(61, 2)), builtin, [], []).
+step(\+(has_factor(61, 3)), absent, [], []).
+step(goldbach(128, [19, 109]), rule(14), [=('N', 128), =('Pair', [19, 109]), =('I', 7)], [in_range(2, 25, 7), is(128, ^(2, 7)), split(128, [19, 109])]).
+step(in_range(2, 25, 7), rule(13), [=('Low', 2), =('High', 25), =('N', 7), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 7)]).
+step(in_range(3, 25, 7), rule(13), [=('Low', 3), =('High', 25), =('N', 7), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 7)]).
+step(in_range(4, 25, 7), rule(13), [=('Low', 4), =('High', 25), =('N', 7), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 7)]).
+step(in_range(5, 25, 7), rule(13), [=('Low', 5), =('High', 25), =('N', 7), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 7)]).
+step(in_range(6, 25, 7), rule(13), [=('Low', 6), =('High', 25), =('N', 7), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 7)]).
+step(<(6, 25), builtin, [], []).
+step(is(7, +(6, 1)), builtin, [], []).
+step(in_range(7, 25, 7), rule(12), [=('Low', 7), =('High', 25)], [=<(7, 25)]).
+step(=<(7, 25), builtin, [], []).
+step(is(128, ^(2, 7)), builtin, [], []).
+step(split(128, [19, 109]), rule(2), [=('N', 128), =('Pair', [19, 109])], ['=:='(0, rem(128, 2)), >(128, 4), once(split_from(128, [19, 109], 3))]).
+step('=:='(0, rem(128, 2)), builtin, [], []).
+step(>(128, 4), builtin, [], []).
+step(once(split_from(128, [19, 109], 3)), control, [], [split_from(128, [19, 109], 3)]).
+step(split_from(128, [19, 109], 3), rule(4), [=('N', 128), =('Pair', [19, 109]), =('P', 3), =('Next', 5)], [<(3, 128), once(next_prime(3, 5)), split_from(128, [19, 109], 5)]).
+step(<(3, 128), builtin, [], []).
+step(once(next_prime(3, 5)), control, [], [next_prime(3, 5)]).
+step(next_prime(3, 5), rule(5), [=('P', 3), =('Next', 5)], [is(5, +(3, 2)), is_prime(5)]).
+step(is(5, +(3, 2)), builtin, [], []).
+step(split_from(128, [19, 109], 5), rule(4), [=('N', 128), =('Pair', [19, 109]), =('P', 5), =('Next', 7)], [<(5, 128), once(next_prime(5, 7)), split_from(128, [19, 109], 7)]).
+step(<(5, 128), builtin, [], []).
+step(once(next_prime(5, 7)), control, [], [next_prime(5, 7)]).
+step(next_prime(5, 7), rule(5), [=('P', 5), =('Next', 7)], [is(7, +(5, 2)), is_prime(7)]).
+step(is(7, +(5, 2)), builtin, [], []).
+step(is_prime(7), rule(9), [=('P', 7)], [>(7, 3), '=:='(1, rem(7, 2)), \+(has_factor(7, 3))]).
+step(>(7, 3), builtin, [], []).
+step('=:='(1, rem(7, 2)), builtin, [], []).
+step(\+(has_factor(7, 3)), absent, [], []).
+step(split_from(128, [19, 109], 7), rule(4), [=('N', 128), =('Pair', [19, 109]), =('P', 7), =('Next', 11)], [<(7, 128), once(next_prime(7, 11)), split_from(128, [19, 109], 11)]).
+step(<(7, 128), builtin, [], []).
+step(once(next_prime(7, 11)), control, [], [next_prime(7, 11)]).
+step(next_prime(7, 11), rule(6), [=('P', 7), =('Next', 11), =('Q', 9)], [is(9, +(7, 2)), next_prime(9, 11)]).
+step(is(9, +(7, 2)), builtin, [], []).
+step(next_prime(9, 11), rule(5), [=('P', 9), =('Next', 11)], [is(11, +(9, 2)), is_prime(11)]).
+step(is(11, +(9, 2)), builtin, [], []).
+step(is_prime(11), rule(9), [=('P', 11)], [>(11, 3), '=:='(1, rem(11, 2)), \+(has_factor(11, 3))]).
+step(>(11, 3), builtin, [], []).
+step('=:='(1, rem(11, 2)), builtin, [], []).
+step(\+(has_factor(11, 3)), absent, [], []).
+step(split_from(128, [19, 109], 11), rule(4), [=('N', 128), =('Pair', [19, 109]), =('P', 11), =('Next', 13)], [<(11, 128), once(next_prime(11, 13)), split_from(128, [19, 109], 13)]).
+step(<(11, 128), builtin, [], []).
+step(once(next_prime(11, 13)), control, [], [next_prime(11, 13)]).
+step(next_prime(11, 13), rule(5), [=('P', 11), =('Next', 13)], [is(13, +(11, 2)), is_prime(13)]).
+step(is(13, +(11, 2)), builtin, [], []).
+step(split_from(128, [19, 109], 13), rule(4), [=('N', 128), =('Pair', [19, 109]), =('P', 13), =('Next', 17)], [<(13, 128), once(next_prime(13, 17)), split_from(128, [19, 109], 17)]).
+step(<(13, 128), builtin, [], []).
+step(once(next_prime(13, 17)), control, [], [next_prime(13, 17)]).
+step(next_prime(13, 17), rule(6), [=('P', 13), =('Next', 17), =('Q', 15)], [is(15, +(13, 2)), next_prime(15, 17)]).
+step(is(15, +(13, 2)), builtin, [], []).
+step(next_prime(15, 17), rule(5), [=('P', 15), =('Next', 17)], [is(17, +(15, 2)), is_prime(17)]).
+step(is(17, +(15, 2)), builtin, [], []).
+step(is_prime(17), rule(9), [=('P', 17)], [>(17, 3), '=:='(1, rem(17, 2)), \+(has_factor(17, 3))]).
+step(>(17, 3), builtin, [], []).
+step('=:='(1, rem(17, 2)), builtin, [], []).
+step(\+(has_factor(17, 3)), absent, [], []).
+step(split_from(128, [19, 109], 17), rule(4), [=('N', 128), =('Pair', [19, 109]), =('P', 17), =('Next', 19)], [<(17, 128), once(next_prime(17, 19)), split_from(128, [19, 109], 19)]).
+step(<(17, 128), builtin, [], []).
+step(once(next_prime(17, 19)), control, [], [next_prime(17, 19)]).
+step(next_prime(17, 19), rule(5), [=('P', 17), =('Next', 19)], [is(19, +(17, 2)), is_prime(19)]).
+step(is(19, +(17, 2)), builtin, [], []).
+step(is_prime(19), rule(9), [=('P', 19)], [>(19, 3), '=:='(1, rem(19, 2)), \+(has_factor(19, 3))]).
+step(>(19, 3), builtin, [], []).
+step('=:='(1, rem(19, 2)), builtin, [], []).
+step(\+(has_factor(19, 3)), absent, [], []).
+step(split_from(128, [19, 109], 19), rule(3), [=('N', 128), =('P', 19), =('Q', 109)], [is(109, -(128, 19)), is_prime(109)]).
+step(is(109, -(128, 19)), builtin, [], []).
+step(is_prime(109), rule(9), [=('P', 109)], [>(109, 3), '=:='(1, rem(109, 2)), \+(has_factor(109, 3))]).
+step(>(109, 3), builtin, [], []).
+step('=:='(1, rem(109, 2)), builtin, [], []).
+step(\+(has_factor(109, 3)), absent, [], []).
+step(goldbach(256, [5, 251]), rule(14), [=('N', 256), =('Pair', [5, 251]), =('I', 8)], [in_range(2, 25, 8), is(256, ^(2, 8)), split(256, [5, 251])]).
+step(in_range(2, 25, 8), rule(13), [=('Low', 2), =('High', 25), =('N', 8), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 8)]).
+step(in_range(3, 25, 8), rule(13), [=('Low', 3), =('High', 25), =('N', 8), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 8)]).
+step(in_range(4, 25, 8), rule(13), [=('Low', 4), =('High', 25), =('N', 8), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 8)]).
+step(in_range(5, 25, 8), rule(13), [=('Low', 5), =('High', 25), =('N', 8), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 8)]).
+step(in_range(6, 25, 8), rule(13), [=('Low', 6), =('High', 25), =('N', 8), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 8)]).
+step(in_range(7, 25, 8), rule(13), [=('Low', 7), =('High', 25), =('N', 8), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 8)]).
+step(<(7, 25), builtin, [], []).
+step(is(8, +(7, 1)), builtin, [], []).
+step(in_range(8, 25, 8), rule(12), [=('Low', 8), =('High', 25)], [=<(8, 25)]).
+step(=<(8, 25), builtin, [], []).
+step(is(256, ^(2, 8)), builtin, [], []).
+step(split(256, [5, 251]), rule(2), [=('N', 256), =('Pair', [5, 251])], ['=:='(0, rem(256, 2)), >(256, 4), once(split_from(256, [5, 251], 3))]).
+step('=:='(0, rem(256, 2)), builtin, [], []).
+step(>(256, 4), builtin, [], []).
+step(once(split_from(256, [5, 251], 3)), control, [], [split_from(256, [5, 251], 3)]).
+step(split_from(256, [5, 251], 3), rule(4), [=('N', 256), =('Pair', [5, 251]), =('P', 3), =('Next', 5)], [<(3, 256), once(next_prime(3, 5)), split_from(256, [5, 251], 5)]).
+step(<(3, 256), builtin, [], []).
+step(split_from(256, [5, 251], 5), rule(3), [=('N', 256), =('P', 5), =('Q', 251)], [is(251, -(256, 5)), is_prime(251)]).
+step(is(251, -(256, 5)), builtin, [], []).
+step(is_prime(251), rule(9), [=('P', 251)], [>(251, 3), '=:='(1, rem(251, 2)), \+(has_factor(251, 3))]).
+step(>(251, 3), builtin, [], []).
+step('=:='(1, rem(251, 2)), builtin, [], []).
+step(\+(has_factor(251, 3)), absent, [], []).
+step(goldbach(512, [3, 509]), rule(14), [=('N', 512), =('Pair', [3, 509]), =('I', 9)], [in_range(2, 25, 9), is(512, ^(2, 9)), split(512, [3, 509])]).
+step(in_range(2, 25, 9), rule(13), [=('Low', 2), =('High', 25), =('N', 9), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 9)]).
+step(in_range(3, 25, 9), rule(13), [=('Low', 3), =('High', 25), =('N', 9), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 9)]).
+step(in_range(4, 25, 9), rule(13), [=('Low', 4), =('High', 25), =('N', 9), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 9)]).
+step(in_range(5, 25, 9), rule(13), [=('Low', 5), =('High', 25), =('N', 9), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 9)]).
+step(in_range(6, 25, 9), rule(13), [=('Low', 6), =('High', 25), =('N', 9), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 9)]).
+step(in_range(7, 25, 9), rule(13), [=('Low', 7), =('High', 25), =('N', 9), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 9)]).
+step(in_range(8, 25, 9), rule(13), [=('Low', 8), =('High', 25), =('N', 9), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 9)]).
+step(<(8, 25), builtin, [], []).
+step(is(9, +(8, 1)), builtin, [], []).
+step(in_range(9, 25, 9), rule(12), [=('Low', 9), =('High', 25)], [=<(9, 25)]).
+step(=<(9, 25), builtin, [], []).
+step(is(512, ^(2, 9)), builtin, [], []).
+step(split(512, [3, 509]), rule(2), [=('N', 512), =('Pair', [3, 509])], ['=:='(0, rem(512, 2)), >(512, 4), once(split_from(512, [3, 509], 3))]).
+step('=:='(0, rem(512, 2)), builtin, [], []).
+step(>(512, 4), builtin, [], []).
+step(once(split_from(512, [3, 509], 3)), control, [], [split_from(512, [3, 509], 3)]).
+step(split_from(512, [3, 509], 3), rule(3), [=('N', 512), =('P', 3), =('Q', 509)], [is(509, -(512, 3)), is_prime(509)]).
+step(is(509, -(512, 3)), builtin, [], []).
+step(is_prime(509), rule(9), [=('P', 509)], [>(509, 3), '=:='(1, rem(509, 2)), \+(has_factor(509, 3))]).
+step(>(509, 3), builtin, [], []).
+step('=:='(1, rem(509, 2)), builtin, [], []).
+step(\+(has_factor(509, 3)), absent, [], []).
+step(goldbach(1024, [3, 1021]), rule(14), [=('N', 1024), =('Pair', [3, 1021]), =('I', 10)], [in_range(2, 25, 10), is(1024, ^(2, 10)), split(1024, [3, 1021])]).
+step(in_range(2, 25, 10), rule(13), [=('Low', 2), =('High', 25), =('N', 10), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 10)]).
+step(in_range(3, 25, 10), rule(13), [=('Low', 3), =('High', 25), =('N', 10), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 10)]).
+step(in_range(4, 25, 10), rule(13), [=('Low', 4), =('High', 25), =('N', 10), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 10)]).
+step(in_range(5, 25, 10), rule(13), [=('Low', 5), =('High', 25), =('N', 10), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 10)]).
+step(in_range(6, 25, 10), rule(13), [=('Low', 6), =('High', 25), =('N', 10), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 10)]).
+step(in_range(7, 25, 10), rule(13), [=('Low', 7), =('High', 25), =('N', 10), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 10)]).
+step(in_range(8, 25, 10), rule(13), [=('Low', 8), =('High', 25), =('N', 10), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 10)]).
+step(in_range(9, 25, 10), rule(13), [=('Low', 9), =('High', 25), =('N', 10), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 10)]).
+step(<(9, 25), builtin, [], []).
+step(is(10, +(9, 1)), builtin, [], []).
+step(in_range(10, 25, 10), rule(12), [=('Low', 10), =('High', 25)], [=<(10, 25)]).
+step(=<(10, 25), builtin, [], []).
+step(is(1024, ^(2, 10)), builtin, [], []).
+step(split(1024, [3, 1021]), rule(2), [=('N', 1024), =('Pair', [3, 1021])], ['=:='(0, rem(1024, 2)), >(1024, 4), once(split_from(1024, [3, 1021], 3))]).
+step('=:='(0, rem(1024, 2)), builtin, [], []).
+step(>(1024, 4), builtin, [], []).
+step(once(split_from(1024, [3, 1021], 3)), control, [], [split_from(1024, [3, 1021], 3)]).
+step(split_from(1024, [3, 1021], 3), rule(3), [=('N', 1024), =('P', 3), =('Q', 1021)], [is(1021, -(1024, 3)), is_prime(1021)]).
+step(is(1021, -(1024, 3)), builtin, [], []).
+step(is_prime(1021), rule(9), [=('P', 1021)], [>(1021, 3), '=:='(1, rem(1021, 2)), \+(has_factor(1021, 3))]).
+step(>(1021, 3), builtin, [], []).
+step('=:='(1, rem(1021, 2)), builtin, [], []).
+step(\+(has_factor(1021, 3)), absent, [], []).
+step(goldbach(2048, [19, 2029]), rule(14), [=('N', 2048), =('Pair', [19, 2029]), =('I', 11)], [in_range(2, 25, 11), is(2048, ^(2, 11)), split(2048, [19, 2029])]).
+step(in_range(2, 25, 11), rule(13), [=('Low', 2), =('High', 25), =('N', 11), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 11)]).
+step(in_range(3, 25, 11), rule(13), [=('Low', 3), =('High', 25), =('N', 11), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 11)]).
+step(in_range(4, 25, 11), rule(13), [=('Low', 4), =('High', 25), =('N', 11), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 11)]).
+step(in_range(5, 25, 11), rule(13), [=('Low', 5), =('High', 25), =('N', 11), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 11)]).
+step(in_range(6, 25, 11), rule(13), [=('Low', 6), =('High', 25), =('N', 11), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 11)]).
+step(in_range(7, 25, 11), rule(13), [=('Low', 7), =('High', 25), =('N', 11), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 11)]).
+step(in_range(8, 25, 11), rule(13), [=('Low', 8), =('High', 25), =('N', 11), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 11)]).
+step(in_range(9, 25, 11), rule(13), [=('Low', 9), =('High', 25), =('N', 11), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 11)]).
+step(in_range(10, 25, 11), rule(13), [=('Low', 10), =('High', 25), =('N', 11), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 11)]).
+step(<(10, 25), builtin, [], []).
+step(is(11, +(10, 1)), builtin, [], []).
+step(in_range(11, 25, 11), rule(12), [=('Low', 11), =('High', 25)], [=<(11, 25)]).
+step(=<(11, 25), builtin, [], []).
+step(is(2048, ^(2, 11)), builtin, [], []).
+step(split(2048, [19, 2029]), rule(2), [=('N', 2048), =('Pair', [19, 2029])], ['=:='(0, rem(2048, 2)), >(2048, 4), once(split_from(2048, [19, 2029], 3))]).
+step('=:='(0, rem(2048, 2)), builtin, [], []).
+step(>(2048, 4), builtin, [], []).
+step(once(split_from(2048, [19, 2029], 3)), control, [], [split_from(2048, [19, 2029], 3)]).
+step(split_from(2048, [19, 2029], 3), rule(4), [=('N', 2048), =('Pair', [19, 2029]), =('P', 3), =('Next', 5)], [<(3, 2048), once(next_prime(3, 5)), split_from(2048, [19, 2029], 5)]).
+step(<(3, 2048), builtin, [], []).
+step(split_from(2048, [19, 2029], 5), rule(4), [=('N', 2048), =('Pair', [19, 2029]), =('P', 5), =('Next', 7)], [<(5, 2048), once(next_prime(5, 7)), split_from(2048, [19, 2029], 7)]).
+step(<(5, 2048), builtin, [], []).
+step(split_from(2048, [19, 2029], 7), rule(4), [=('N', 2048), =('Pair', [19, 2029]), =('P', 7), =('Next', 11)], [<(7, 2048), once(next_prime(7, 11)), split_from(2048, [19, 2029], 11)]).
+step(<(7, 2048), builtin, [], []).
+step(split_from(2048, [19, 2029], 11), rule(4), [=('N', 2048), =('Pair', [19, 2029]), =('P', 11), =('Next', 13)], [<(11, 2048), once(next_prime(11, 13)), split_from(2048, [19, 2029], 13)]).
+step(<(11, 2048), builtin, [], []).
+step(split_from(2048, [19, 2029], 13), rule(4), [=('N', 2048), =('Pair', [19, 2029]), =('P', 13), =('Next', 17)], [<(13, 2048), once(next_prime(13, 17)), split_from(2048, [19, 2029], 17)]).
+step(<(13, 2048), builtin, [], []).
+step(split_from(2048, [19, 2029], 17), rule(4), [=('N', 2048), =('Pair', [19, 2029]), =('P', 17), =('Next', 19)], [<(17, 2048), once(next_prime(17, 19)), split_from(2048, [19, 2029], 19)]).
+step(<(17, 2048), builtin, [], []).
+step(split_from(2048, [19, 2029], 19), rule(3), [=('N', 2048), =('P', 19), =('Q', 2029)], [is(2029, -(2048, 19)), is_prime(2029)]).
+step(is(2029, -(2048, 19)), builtin, [], []).
+step(is_prime(2029), rule(9), [=('P', 2029)], [>(2029, 3), '=:='(1, rem(2029, 2)), \+(has_factor(2029, 3))]).
+step(>(2029, 3), builtin, [], []).
+step('=:='(1, rem(2029, 2)), builtin, [], []).
+step(\+(has_factor(2029, 3)), absent, [], []).
+step(goldbach(4096, [3, 4093]), rule(14), [=('N', 4096), =('Pair', [3, 4093]), =('I', 12)], [in_range(2, 25, 12), is(4096, ^(2, 12)), split(4096, [3, 4093])]).
+step(in_range(2, 25, 12), rule(13), [=('Low', 2), =('High', 25), =('N', 12), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 12)]).
+step(in_range(3, 25, 12), rule(13), [=('Low', 3), =('High', 25), =('N', 12), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 12)]).
+step(in_range(4, 25, 12), rule(13), [=('Low', 4), =('High', 25), =('N', 12), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 12)]).
+step(in_range(5, 25, 12), rule(13), [=('Low', 5), =('High', 25), =('N', 12), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 12)]).
+step(in_range(6, 25, 12), rule(13), [=('Low', 6), =('High', 25), =('N', 12), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 12)]).
+step(in_range(7, 25, 12), rule(13), [=('Low', 7), =('High', 25), =('N', 12), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 12)]).
+step(in_range(8, 25, 12), rule(13), [=('Low', 8), =('High', 25), =('N', 12), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 12)]).
+step(in_range(9, 25, 12), rule(13), [=('Low', 9), =('High', 25), =('N', 12), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 12)]).
+step(in_range(10, 25, 12), rule(13), [=('Low', 10), =('High', 25), =('N', 12), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 12)]).
+step(in_range(11, 25, 12), rule(13), [=('Low', 11), =('High', 25), =('N', 12), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 12)]).
+step(<(11, 25), builtin, [], []).
+step(is(12, +(11, 1)), builtin, [], []).
+step(in_range(12, 25, 12), rule(12), [=('Low', 12), =('High', 25)], [=<(12, 25)]).
+step(=<(12, 25), builtin, [], []).
+step(is(4096, ^(2, 12)), builtin, [], []).
+step(split(4096, [3, 4093]), rule(2), [=('N', 4096), =('Pair', [3, 4093])], ['=:='(0, rem(4096, 2)), >(4096, 4), once(split_from(4096, [3, 4093], 3))]).
+step('=:='(0, rem(4096, 2)), builtin, [], []).
+step(>(4096, 4), builtin, [], []).
+step(once(split_from(4096, [3, 4093], 3)), control, [], [split_from(4096, [3, 4093], 3)]).
+step(split_from(4096, [3, 4093], 3), rule(3), [=('N', 4096), =('P', 3), =('Q', 4093)], [is(4093, -(4096, 3)), is_prime(4093)]).
+step(is(4093, -(4096, 3)), builtin, [], []).
+step(is_prime(4093), rule(9), [=('P', 4093)], [>(4093, 3), '=:='(1, rem(4093, 2)), \+(has_factor(4093, 3))]).
+step(>(4093, 3), builtin, [], []).
+step('=:='(1, rem(4093, 2)), builtin, [], []).
+step(\+(has_factor(4093, 3)), absent, [], []).
+step(goldbach(8192, [13, 8179]), rule(14), [=('N', 8192), =('Pair', [13, 8179]), =('I', 13)], [in_range(2, 25, 13), is(8192, ^(2, 13)), split(8192, [13, 8179])]).
+step(in_range(2, 25, 13), rule(13), [=('Low', 2), =('High', 25), =('N', 13), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 13)]).
+step(in_range(3, 25, 13), rule(13), [=('Low', 3), =('High', 25), =('N', 13), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 13)]).
+step(in_range(4, 25, 13), rule(13), [=('Low', 4), =('High', 25), =('N', 13), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 13)]).
+step(in_range(5, 25, 13), rule(13), [=('Low', 5), =('High', 25), =('N', 13), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 13)]).
+step(in_range(6, 25, 13), rule(13), [=('Low', 6), =('High', 25), =('N', 13), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 13)]).
+step(in_range(7, 25, 13), rule(13), [=('Low', 7), =('High', 25), =('N', 13), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 13)]).
+step(in_range(8, 25, 13), rule(13), [=('Low', 8), =('High', 25), =('N', 13), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 13)]).
+step(in_range(9, 25, 13), rule(13), [=('Low', 9), =('High', 25), =('N', 13), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 13)]).
+step(in_range(10, 25, 13), rule(13), [=('Low', 10), =('High', 25), =('N', 13), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 13)]).
+step(in_range(11, 25, 13), rule(13), [=('Low', 11), =('High', 25), =('N', 13), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 13)]).
+step(in_range(12, 25, 13), rule(13), [=('Low', 12), =('High', 25), =('N', 13), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 13)]).
+step(<(12, 25), builtin, [], []).
+step(is(13, +(12, 1)), builtin, [], []).
+step(in_range(13, 25, 13), rule(12), [=('Low', 13), =('High', 25)], [=<(13, 25)]).
+step(=<(13, 25), builtin, [], []).
+step(is(8192, ^(2, 13)), builtin, [], []).
+step(split(8192, [13, 8179]), rule(2), [=('N', 8192), =('Pair', [13, 8179])], ['=:='(0, rem(8192, 2)), >(8192, 4), once(split_from(8192, [13, 8179], 3))]).
+step('=:='(0, rem(8192, 2)), builtin, [], []).
+step(>(8192, 4), builtin, [], []).
+step(once(split_from(8192, [13, 8179], 3)), control, [], [split_from(8192, [13, 8179], 3)]).
+step(split_from(8192, [13, 8179], 3), rule(4), [=('N', 8192), =('Pair', [13, 8179]), =('P', 3), =('Next', 5)], [<(3, 8192), once(next_prime(3, 5)), split_from(8192, [13, 8179], 5)]).
+step(<(3, 8192), builtin, [], []).
+step(split_from(8192, [13, 8179], 5), rule(4), [=('N', 8192), =('Pair', [13, 8179]), =('P', 5), =('Next', 7)], [<(5, 8192), once(next_prime(5, 7)), split_from(8192, [13, 8179], 7)]).
+step(<(5, 8192), builtin, [], []).
+step(split_from(8192, [13, 8179], 7), rule(4), [=('N', 8192), =('Pair', [13, 8179]), =('P', 7), =('Next', 11)], [<(7, 8192), once(next_prime(7, 11)), split_from(8192, [13, 8179], 11)]).
+step(<(7, 8192), builtin, [], []).
+step(split_from(8192, [13, 8179], 11), rule(4), [=('N', 8192), =('Pair', [13, 8179]), =('P', 11), =('Next', 13)], [<(11, 8192), once(next_prime(11, 13)), split_from(8192, [13, 8179], 13)]).
+step(<(11, 8192), builtin, [], []).
+step(split_from(8192, [13, 8179], 13), rule(3), [=('N', 8192), =('P', 13), =('Q', 8179)], [is(8179, -(8192, 13)), is_prime(8179)]).
+step(is(8179, -(8192, 13)), builtin, [], []).
+step(is_prime(8179), rule(9), [=('P', 8179)], [>(8179, 3), '=:='(1, rem(8179, 2)), \+(has_factor(8179, 3))]).
+step(>(8179, 3), builtin, [], []).
+step('=:='(1, rem(8179, 2)), builtin, [], []).
+step(\+(has_factor(8179, 3)), absent, [], []).
+step(goldbach(16384, [3, 16381]), rule(14), [=('N', 16384), =('Pair', [3, 16381]), =('I', 14)], [in_range(2, 25, 14), is(16384, ^(2, 14)), split(16384, [3, 16381])]).
+step(in_range(2, 25, 14), rule(13), [=('Low', 2), =('High', 25), =('N', 14), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 14)]).
+step(in_range(3, 25, 14), rule(13), [=('Low', 3), =('High', 25), =('N', 14), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 14)]).
+step(in_range(4, 25, 14), rule(13), [=('Low', 4), =('High', 25), =('N', 14), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 14)]).
+step(in_range(5, 25, 14), rule(13), [=('Low', 5), =('High', 25), =('N', 14), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 14)]).
+step(in_range(6, 25, 14), rule(13), [=('Low', 6), =('High', 25), =('N', 14), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 14)]).
+step(in_range(7, 25, 14), rule(13), [=('Low', 7), =('High', 25), =('N', 14), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 14)]).
+step(in_range(8, 25, 14), rule(13), [=('Low', 8), =('High', 25), =('N', 14), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 14)]).
+step(in_range(9, 25, 14), rule(13), [=('Low', 9), =('High', 25), =('N', 14), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 14)]).
+step(in_range(10, 25, 14), rule(13), [=('Low', 10), =('High', 25), =('N', 14), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 14)]).
+step(in_range(11, 25, 14), rule(13), [=('Low', 11), =('High', 25), =('N', 14), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 14)]).
+step(in_range(12, 25, 14), rule(13), [=('Low', 12), =('High', 25), =('N', 14), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 14)]).
+step(in_range(13, 25, 14), rule(13), [=('Low', 13), =('High', 25), =('N', 14), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 14)]).
+step(<(13, 25), builtin, [], []).
+step(is(14, +(13, 1)), builtin, [], []).
+step(in_range(14, 25, 14), rule(12), [=('Low', 14), =('High', 25)], [=<(14, 25)]).
+step(=<(14, 25), builtin, [], []).
+step(is(16384, ^(2, 14)), builtin, [], []).
+step(split(16384, [3, 16381]), rule(2), [=('N', 16384), =('Pair', [3, 16381])], ['=:='(0, rem(16384, 2)), >(16384, 4), once(split_from(16384, [3, 16381], 3))]).
+step('=:='(0, rem(16384, 2)), builtin, [], []).
+step(>(16384, 4), builtin, [], []).
+step(once(split_from(16384, [3, 16381], 3)), control, [], [split_from(16384, [3, 16381], 3)]).
+step(split_from(16384, [3, 16381], 3), rule(3), [=('N', 16384), =('P', 3), =('Q', 16381)], [is(16381, -(16384, 3)), is_prime(16381)]).
+step(is(16381, -(16384, 3)), builtin, [], []).
+step(is_prime(16381), rule(9), [=('P', 16381)], [>(16381, 3), '=:='(1, rem(16381, 2)), \+(has_factor(16381, 3))]).
+step(>(16381, 3), builtin, [], []).
+step('=:='(1, rem(16381, 2)), builtin, [], []).
+step(\+(has_factor(16381, 3)), absent, [], []).
+step(goldbach(32768, [19, 32749]), rule(14), [=('N', 32768), =('Pair', [19, 32749]), =('I', 15)], [in_range(2, 25, 15), is(32768, ^(2, 15)), split(32768, [19, 32749])]).
+step(in_range(2, 25, 15), rule(13), [=('Low', 2), =('High', 25), =('N', 15), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 15)]).
+step(in_range(3, 25, 15), rule(13), [=('Low', 3), =('High', 25), =('N', 15), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 15)]).
+step(in_range(4, 25, 15), rule(13), [=('Low', 4), =('High', 25), =('N', 15), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 15)]).
+step(in_range(5, 25, 15), rule(13), [=('Low', 5), =('High', 25), =('N', 15), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 15)]).
+step(in_range(6, 25, 15), rule(13), [=('Low', 6), =('High', 25), =('N', 15), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 15)]).
+step(in_range(7, 25, 15), rule(13), [=('Low', 7), =('High', 25), =('N', 15), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 15)]).
+step(in_range(8, 25, 15), rule(13), [=('Low', 8), =('High', 25), =('N', 15), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 15)]).
+step(in_range(9, 25, 15), rule(13), [=('Low', 9), =('High', 25), =('N', 15), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 15)]).
+step(in_range(10, 25, 15), rule(13), [=('Low', 10), =('High', 25), =('N', 15), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 15)]).
+step(in_range(11, 25, 15), rule(13), [=('Low', 11), =('High', 25), =('N', 15), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 15)]).
+step(in_range(12, 25, 15), rule(13), [=('Low', 12), =('High', 25), =('N', 15), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 15)]).
+step(in_range(13, 25, 15), rule(13), [=('Low', 13), =('High', 25), =('N', 15), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 15)]).
+step(in_range(14, 25, 15), rule(13), [=('Low', 14), =('High', 25), =('N', 15), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 15)]).
+step(<(14, 25), builtin, [], []).
+step(is(15, +(14, 1)), builtin, [], []).
+step(in_range(15, 25, 15), rule(12), [=('Low', 15), =('High', 25)], [=<(15, 25)]).
+step(=<(15, 25), builtin, [], []).
+step(is(32768, ^(2, 15)), builtin, [], []).
+step(split(32768, [19, 32749]), rule(2), [=('N', 32768), =('Pair', [19, 32749])], ['=:='(0, rem(32768, 2)), >(32768, 4), once(split_from(32768, [19, 32749], 3))]).
+step('=:='(0, rem(32768, 2)), builtin, [], []).
+step(>(32768, 4), builtin, [], []).
+step(once(split_from(32768, [19, 32749], 3)), control, [], [split_from(32768, [19, 32749], 3)]).
+step(split_from(32768, [19, 32749], 3), rule(4), [=('N', 32768), =('Pair', [19, 32749]), =('P', 3), =('Next', 5)], [<(3, 32768), once(next_prime(3, 5)), split_from(32768, [19, 32749], 5)]).
+step(<(3, 32768), builtin, [], []).
+step(split_from(32768, [19, 32749], 5), rule(4), [=('N', 32768), =('Pair', [19, 32749]), =('P', 5), =('Next', 7)], [<(5, 32768), once(next_prime(5, 7)), split_from(32768, [19, 32749], 7)]).
+step(<(5, 32768), builtin, [], []).
+step(split_from(32768, [19, 32749], 7), rule(4), [=('N', 32768), =('Pair', [19, 32749]), =('P', 7), =('Next', 11)], [<(7, 32768), once(next_prime(7, 11)), split_from(32768, [19, 32749], 11)]).
+step(<(7, 32768), builtin, [], []).
+step(split_from(32768, [19, 32749], 11), rule(4), [=('N', 32768), =('Pair', [19, 32749]), =('P', 11), =('Next', 13)], [<(11, 32768), once(next_prime(11, 13)), split_from(32768, [19, 32749], 13)]).
+step(<(11, 32768), builtin, [], []).
+step(split_from(32768, [19, 32749], 13), rule(4), [=('N', 32768), =('Pair', [19, 32749]), =('P', 13), =('Next', 17)], [<(13, 32768), once(next_prime(13, 17)), split_from(32768, [19, 32749], 17)]).
+step(<(13, 32768), builtin, [], []).
+step(split_from(32768, [19, 32749], 17), rule(4), [=('N', 32768), =('Pair', [19, 32749]), =('P', 17), =('Next', 19)], [<(17, 32768), once(next_prime(17, 19)), split_from(32768, [19, 32749], 19)]).
+step(<(17, 32768), builtin, [], []).
+step(split_from(32768, [19, 32749], 19), rule(3), [=('N', 32768), =('P', 19), =('Q', 32749)], [is(32749, -(32768, 19)), is_prime(32749)]).
+step(is(32749, -(32768, 19)), builtin, [], []).
+step(is_prime(32749), rule(9), [=('P', 32749)], [>(32749, 3), '=:='(1, rem(32749, 2)), \+(has_factor(32749, 3))]).
+step(>(32749, 3), builtin, [], []).
+step('=:='(1, rem(32749, 2)), builtin, [], []).
+step(\+(has_factor(32749, 3)), absent, [], []).
+step(goldbach(65536, [17, 65519]), rule(14), [=('N', 65536), =('Pair', [17, 65519]), =('I', 16)], [in_range(2, 25, 16), is(65536, ^(2, 16)), split(65536, [17, 65519])]).
+step(in_range(2, 25, 16), rule(13), [=('Low', 2), =('High', 25), =('N', 16), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 16)]).
+step(in_range(3, 25, 16), rule(13), [=('Low', 3), =('High', 25), =('N', 16), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 16)]).
+step(in_range(4, 25, 16), rule(13), [=('Low', 4), =('High', 25), =('N', 16), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 16)]).
+step(in_range(5, 25, 16), rule(13), [=('Low', 5), =('High', 25), =('N', 16), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 16)]).
+step(in_range(6, 25, 16), rule(13), [=('Low', 6), =('High', 25), =('N', 16), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 16)]).
+step(in_range(7, 25, 16), rule(13), [=('Low', 7), =('High', 25), =('N', 16), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 16)]).
+step(in_range(8, 25, 16), rule(13), [=('Low', 8), =('High', 25), =('N', 16), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 16)]).
+step(in_range(9, 25, 16), rule(13), [=('Low', 9), =('High', 25), =('N', 16), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 16)]).
+step(in_range(10, 25, 16), rule(13), [=('Low', 10), =('High', 25), =('N', 16), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 16)]).
+step(in_range(11, 25, 16), rule(13), [=('Low', 11), =('High', 25), =('N', 16), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 16)]).
+step(in_range(12, 25, 16), rule(13), [=('Low', 12), =('High', 25), =('N', 16), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 16)]).
+step(in_range(13, 25, 16), rule(13), [=('Low', 13), =('High', 25), =('N', 16), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 16)]).
+step(in_range(14, 25, 16), rule(13), [=('Low', 14), =('High', 25), =('N', 16), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 16)]).
+step(in_range(15, 25, 16), rule(13), [=('Low', 15), =('High', 25), =('N', 16), =('Next', 16)], [<(15, 25), is(16, +(15, 1)), in_range(16, 25, 16)]).
+step(<(15, 25), builtin, [], []).
+step(is(16, +(15, 1)), builtin, [], []).
+step(in_range(16, 25, 16), rule(12), [=('Low', 16), =('High', 25)], [=<(16, 25)]).
+step(=<(16, 25), builtin, [], []).
+step(is(65536, ^(2, 16)), builtin, [], []).
+step(split(65536, [17, 65519]), rule(2), [=('N', 65536), =('Pair', [17, 65519])], ['=:='(0, rem(65536, 2)), >(65536, 4), once(split_from(65536, [17, 65519], 3))]).
+step('=:='(0, rem(65536, 2)), builtin, [], []).
+step(>(65536, 4), builtin, [], []).
+step(once(split_from(65536, [17, 65519], 3)), control, [], [split_from(65536, [17, 65519], 3)]).
+step(split_from(65536, [17, 65519], 3), rule(4), [=('N', 65536), =('Pair', [17, 65519]), =('P', 3), =('Next', 5)], [<(3, 65536), once(next_prime(3, 5)), split_from(65536, [17, 65519], 5)]).
+step(<(3, 65536), builtin, [], []).
+step(split_from(65536, [17, 65519], 5), rule(4), [=('N', 65536), =('Pair', [17, 65519]), =('P', 5), =('Next', 7)], [<(5, 65536), once(next_prime(5, 7)), split_from(65536, [17, 65519], 7)]).
+step(<(5, 65536), builtin, [], []).
+step(split_from(65536, [17, 65519], 7), rule(4), [=('N', 65536), =('Pair', [17, 65519]), =('P', 7), =('Next', 11)], [<(7, 65536), once(next_prime(7, 11)), split_from(65536, [17, 65519], 11)]).
+step(<(7, 65536), builtin, [], []).
+step(split_from(65536, [17, 65519], 11), rule(4), [=('N', 65536), =('Pair', [17, 65519]), =('P', 11), =('Next', 13)], [<(11, 65536), once(next_prime(11, 13)), split_from(65536, [17, 65519], 13)]).
+step(<(11, 65536), builtin, [], []).
+step(split_from(65536, [17, 65519], 13), rule(4), [=('N', 65536), =('Pair', [17, 65519]), =('P', 13), =('Next', 17)], [<(13, 65536), once(next_prime(13, 17)), split_from(65536, [17, 65519], 17)]).
+step(<(13, 65536), builtin, [], []).
+step(split_from(65536, [17, 65519], 17), rule(3), [=('N', 65536), =('P', 17), =('Q', 65519)], [is(65519, -(65536, 17)), is_prime(65519)]).
+step(is(65519, -(65536, 17)), builtin, [], []).
+step(is_prime(65519), rule(9), [=('P', 65519)], [>(65519, 3), '=:='(1, rem(65519, 2)), \+(has_factor(65519, 3))]).
+step(>(65519, 3), builtin, [], []).
+step('=:='(1, rem(65519, 2)), builtin, [], []).
+step(\+(has_factor(65519, 3)), absent, [], []).
+step(goldbach(131072, [13, 131059]), rule(14), [=('N', 131072), =('Pair', [13, 131059]), =('I', 17)], [in_range(2, 25, 17), is(131072, ^(2, 17)), split(131072, [13, 131059])]).
+step(in_range(2, 25, 17), rule(13), [=('Low', 2), =('High', 25), =('N', 17), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 17)]).
+step(in_range(3, 25, 17), rule(13), [=('Low', 3), =('High', 25), =('N', 17), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 17)]).
+step(in_range(4, 25, 17), rule(13), [=('Low', 4), =('High', 25), =('N', 17), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 17)]).
+step(in_range(5, 25, 17), rule(13), [=('Low', 5), =('High', 25), =('N', 17), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 17)]).
+step(in_range(6, 25, 17), rule(13), [=('Low', 6), =('High', 25), =('N', 17), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 17)]).
+step(in_range(7, 25, 17), rule(13), [=('Low', 7), =('High', 25), =('N', 17), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 17)]).
+step(in_range(8, 25, 17), rule(13), [=('Low', 8), =('High', 25), =('N', 17), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 17)]).
+step(in_range(9, 25, 17), rule(13), [=('Low', 9), =('High', 25), =('N', 17), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 17)]).
+step(in_range(10, 25, 17), rule(13), [=('Low', 10), =('High', 25), =('N', 17), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 17)]).
+step(in_range(11, 25, 17), rule(13), [=('Low', 11), =('High', 25), =('N', 17), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 17)]).
+step(in_range(12, 25, 17), rule(13), [=('Low', 12), =('High', 25), =('N', 17), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 17)]).
+step(in_range(13, 25, 17), rule(13), [=('Low', 13), =('High', 25), =('N', 17), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 17)]).
+step(in_range(14, 25, 17), rule(13), [=('Low', 14), =('High', 25), =('N', 17), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 17)]).
+step(in_range(15, 25, 17), rule(13), [=('Low', 15), =('High', 25), =('N', 17), =('Next', 16)], [<(15, 25), is(16, +(15, 1)), in_range(16, 25, 17)]).
+step(in_range(16, 25, 17), rule(13), [=('Low', 16), =('High', 25), =('N', 17), =('Next', 17)], [<(16, 25), is(17, +(16, 1)), in_range(17, 25, 17)]).
+step(<(16, 25), builtin, [], []).
+step(is(17, +(16, 1)), builtin, [], []).
+step(in_range(17, 25, 17), rule(12), [=('Low', 17), =('High', 25)], [=<(17, 25)]).
+step(=<(17, 25), builtin, [], []).
+step(is(131072, ^(2, 17)), builtin, [], []).
+step(split(131072, [13, 131059]), rule(2), [=('N', 131072), =('Pair', [13, 131059])], ['=:='(0, rem(131072, 2)), >(131072, 4), once(split_from(131072, [13, 131059], 3))]).
+step('=:='(0, rem(131072, 2)), builtin, [], []).
+step(>(131072, 4), builtin, [], []).
+step(once(split_from(131072, [13, 131059], 3)), control, [], [split_from(131072, [13, 131059], 3)]).
+step(split_from(131072, [13, 131059], 3), rule(4), [=('N', 131072), =('Pair', [13, 131059]), =('P', 3), =('Next', 5)], [<(3, 131072), once(next_prime(3, 5)), split_from(131072, [13, 131059], 5)]).
+step(<(3, 131072), builtin, [], []).
+step(split_from(131072, [13, 131059], 5), rule(4), [=('N', 131072), =('Pair', [13, 131059]), =('P', 5), =('Next', 7)], [<(5, 131072), once(next_prime(5, 7)), split_from(131072, [13, 131059], 7)]).
+step(<(5, 131072), builtin, [], []).
+step(split_from(131072, [13, 131059], 7), rule(4), [=('N', 131072), =('Pair', [13, 131059]), =('P', 7), =('Next', 11)], [<(7, 131072), once(next_prime(7, 11)), split_from(131072, [13, 131059], 11)]).
+step(<(7, 131072), builtin, [], []).
+step(split_from(131072, [13, 131059], 11), rule(4), [=('N', 131072), =('Pair', [13, 131059]), =('P', 11), =('Next', 13)], [<(11, 131072), once(next_prime(11, 13)), split_from(131072, [13, 131059], 13)]).
+step(<(11, 131072), builtin, [], []).
+step(split_from(131072, [13, 131059], 13), rule(3), [=('N', 131072), =('P', 13), =('Q', 131059)], [is(131059, -(131072, 13)), is_prime(131059)]).
+step(is(131059, -(131072, 13)), builtin, [], []).
+step(is_prime(131059), rule(9), [=('P', 131059)], [>(131059, 3), '=:='(1, rem(131059, 2)), \+(has_factor(131059, 3))]).
+step(>(131059, 3), builtin, [], []).
+step('=:='(1, rem(131059, 2)), builtin, [], []).
+step(\+(has_factor(131059, 3)), absent, [], []).
+step(goldbach(262144, [5, 262139]), rule(14), [=('N', 262144), =('Pair', [5, 262139]), =('I', 18)], [in_range(2, 25, 18), is(262144, ^(2, 18)), split(262144, [5, 262139])]).
+step(in_range(2, 25, 18), rule(13), [=('Low', 2), =('High', 25), =('N', 18), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 18)]).
+step(in_range(3, 25, 18), rule(13), [=('Low', 3), =('High', 25), =('N', 18), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 18)]).
+step(in_range(4, 25, 18), rule(13), [=('Low', 4), =('High', 25), =('N', 18), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 18)]).
+step(in_range(5, 25, 18), rule(13), [=('Low', 5), =('High', 25), =('N', 18), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 18)]).
+step(in_range(6, 25, 18), rule(13), [=('Low', 6), =('High', 25), =('N', 18), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 18)]).
+step(in_range(7, 25, 18), rule(13), [=('Low', 7), =('High', 25), =('N', 18), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 18)]).
+step(in_range(8, 25, 18), rule(13), [=('Low', 8), =('High', 25), =('N', 18), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 18)]).
+step(in_range(9, 25, 18), rule(13), [=('Low', 9), =('High', 25), =('N', 18), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 18)]).
+step(in_range(10, 25, 18), rule(13), [=('Low', 10), =('High', 25), =('N', 18), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 18)]).
+step(in_range(11, 25, 18), rule(13), [=('Low', 11), =('High', 25), =('N', 18), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 18)]).
+step(in_range(12, 25, 18), rule(13), [=('Low', 12), =('High', 25), =('N', 18), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 18)]).
+step(in_range(13, 25, 18), rule(13), [=('Low', 13), =('High', 25), =('N', 18), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 18)]).
+step(in_range(14, 25, 18), rule(13), [=('Low', 14), =('High', 25), =('N', 18), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 18)]).
+step(in_range(15, 25, 18), rule(13), [=('Low', 15), =('High', 25), =('N', 18), =('Next', 16)], [<(15, 25), is(16, +(15, 1)), in_range(16, 25, 18)]).
+step(in_range(16, 25, 18), rule(13), [=('Low', 16), =('High', 25), =('N', 18), =('Next', 17)], [<(16, 25), is(17, +(16, 1)), in_range(17, 25, 18)]).
+step(in_range(17, 25, 18), rule(13), [=('Low', 17), =('High', 25), =('N', 18), =('Next', 18)], [<(17, 25), is(18, +(17, 1)), in_range(18, 25, 18)]).
+step(<(17, 25), builtin, [], []).
+step(is(18, +(17, 1)), builtin, [], []).
+step(in_range(18, 25, 18), rule(12), [=('Low', 18), =('High', 25)], [=<(18, 25)]).
+step(=<(18, 25), builtin, [], []).
+step(is(262144, ^(2, 18)), builtin, [], []).
+step(split(262144, [5, 262139]), rule(2), [=('N', 262144), =('Pair', [5, 262139])], ['=:='(0, rem(262144, 2)), >(262144, 4), once(split_from(262144, [5, 262139], 3))]).
+step('=:='(0, rem(262144, 2)), builtin, [], []).
+step(>(262144, 4), builtin, [], []).
+step(once(split_from(262144, [5, 262139], 3)), control, [], [split_from(262144, [5, 262139], 3)]).
+step(split_from(262144, [5, 262139], 3), rule(4), [=('N', 262144), =('Pair', [5, 262139]), =('P', 3), =('Next', 5)], [<(3, 262144), once(next_prime(3, 5)), split_from(262144, [5, 262139], 5)]).
+step(<(3, 262144), builtin, [], []).
+step(split_from(262144, [5, 262139], 5), rule(3), [=('N', 262144), =('P', 5), =('Q', 262139)], [is(262139, -(262144, 5)), is_prime(262139)]).
+step(is(262139, -(262144, 5)), builtin, [], []).
+step(is_prime(262139), rule(9), [=('P', 262139)], [>(262139, 3), '=:='(1, rem(262139, 2)), \+(has_factor(262139, 3))]).
+step(>(262139, 3), builtin, [], []).
+step('=:='(1, rem(262139, 2)), builtin, [], []).
+step(\+(has_factor(262139, 3)), absent, [], []).
+step(goldbach(524288, [19, 524269]), rule(14), [=('N', 524288), =('Pair', [19, 524269]), =('I', 19)], [in_range(2, 25, 19), is(524288, ^(2, 19)), split(524288, [19, 524269])]).
+step(in_range(2, 25, 19), rule(13), [=('Low', 2), =('High', 25), =('N', 19), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 19)]).
+step(in_range(3, 25, 19), rule(13), [=('Low', 3), =('High', 25), =('N', 19), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 19)]).
+step(in_range(4, 25, 19), rule(13), [=('Low', 4), =('High', 25), =('N', 19), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 19)]).
+step(in_range(5, 25, 19), rule(13), [=('Low', 5), =('High', 25), =('N', 19), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 19)]).
+step(in_range(6, 25, 19), rule(13), [=('Low', 6), =('High', 25), =('N', 19), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 19)]).
+step(in_range(7, 25, 19), rule(13), [=('Low', 7), =('High', 25), =('N', 19), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 19)]).
+step(in_range(8, 25, 19), rule(13), [=('Low', 8), =('High', 25), =('N', 19), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 19)]).
+step(in_range(9, 25, 19), rule(13), [=('Low', 9), =('High', 25), =('N', 19), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 19)]).
+step(in_range(10, 25, 19), rule(13), [=('Low', 10), =('High', 25), =('N', 19), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 19)]).
+step(in_range(11, 25, 19), rule(13), [=('Low', 11), =('High', 25), =('N', 19), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 19)]).
+step(in_range(12, 25, 19), rule(13), [=('Low', 12), =('High', 25), =('N', 19), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 19)]).
+step(in_range(13, 25, 19), rule(13), [=('Low', 13), =('High', 25), =('N', 19), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 19)]).
+step(in_range(14, 25, 19), rule(13), [=('Low', 14), =('High', 25), =('N', 19), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 19)]).
+step(in_range(15, 25, 19), rule(13), [=('Low', 15), =('High', 25), =('N', 19), =('Next', 16)], [<(15, 25), is(16, +(15, 1)), in_range(16, 25, 19)]).
+step(in_range(16, 25, 19), rule(13), [=('Low', 16), =('High', 25), =('N', 19), =('Next', 17)], [<(16, 25), is(17, +(16, 1)), in_range(17, 25, 19)]).
+step(in_range(17, 25, 19), rule(13), [=('Low', 17), =('High', 25), =('N', 19), =('Next', 18)], [<(17, 25), is(18, +(17, 1)), in_range(18, 25, 19)]).
+step(in_range(18, 25, 19), rule(13), [=('Low', 18), =('High', 25), =('N', 19), =('Next', 19)], [<(18, 25), is(19, +(18, 1)), in_range(19, 25, 19)]).
+step(<(18, 25), builtin, [], []).
+step(is(19, +(18, 1)), builtin, [], []).
+step(in_range(19, 25, 19), rule(12), [=('Low', 19), =('High', 25)], [=<(19, 25)]).
+step(=<(19, 25), builtin, [], []).
+step(is(524288, ^(2, 19)), builtin, [], []).
+step(split(524288, [19, 524269]), rule(2), [=('N', 524288), =('Pair', [19, 524269])], ['=:='(0, rem(524288, 2)), >(524288, 4), once(split_from(524288, [19, 524269], 3))]).
+step('=:='(0, rem(524288, 2)), builtin, [], []).
+step(>(524288, 4), builtin, [], []).
+step(once(split_from(524288, [19, 524269], 3)), control, [], [split_from(524288, [19, 524269], 3)]).
+step(split_from(524288, [19, 524269], 3), rule(4), [=('N', 524288), =('Pair', [19, 524269]), =('P', 3), =('Next', 5)], [<(3, 524288), once(next_prime(3, 5)), split_from(524288, [19, 524269], 5)]).
+step(<(3, 524288), builtin, [], []).
+step(split_from(524288, [19, 524269], 5), rule(4), [=('N', 524288), =('Pair', [19, 524269]), =('P', 5), =('Next', 7)], [<(5, 524288), once(next_prime(5, 7)), split_from(524288, [19, 524269], 7)]).
+step(<(5, 524288), builtin, [], []).
+step(split_from(524288, [19, 524269], 7), rule(4), [=('N', 524288), =('Pair', [19, 524269]), =('P', 7), =('Next', 11)], [<(7, 524288), once(next_prime(7, 11)), split_from(524288, [19, 524269], 11)]).
+step(<(7, 524288), builtin, [], []).
+step(split_from(524288, [19, 524269], 11), rule(4), [=('N', 524288), =('Pair', [19, 524269]), =('P', 11), =('Next', 13)], [<(11, 524288), once(next_prime(11, 13)), split_from(524288, [19, 524269], 13)]).
+step(<(11, 524288), builtin, [], []).
+step(split_from(524288, [19, 524269], 13), rule(4), [=('N', 524288), =('Pair', [19, 524269]), =('P', 13), =('Next', 17)], [<(13, 524288), once(next_prime(13, 17)), split_from(524288, [19, 524269], 17)]).
+step(<(13, 524288), builtin, [], []).
+step(split_from(524288, [19, 524269], 17), rule(4), [=('N', 524288), =('Pair', [19, 524269]), =('P', 17), =('Next', 19)], [<(17, 524288), once(next_prime(17, 19)), split_from(524288, [19, 524269], 19)]).
+step(<(17, 524288), builtin, [], []).
+step(split_from(524288, [19, 524269], 19), rule(3), [=('N', 524288), =('P', 19), =('Q', 524269)], [is(524269, -(524288, 19)), is_prime(524269)]).
+step(is(524269, -(524288, 19)), builtin, [], []).
+step(is_prime(524269), rule(9), [=('P', 524269)], [>(524269, 3), '=:='(1, rem(524269, 2)), \+(has_factor(524269, 3))]).
+step(>(524269, 3), builtin, [], []).
+step('=:='(1, rem(524269, 2)), builtin, [], []).
+step(\+(has_factor(524269, 3)), absent, [], []).
+step(goldbach(1048576, [3, 1048573]), rule(14), [=('N', 1048576), =('Pair', [3, 1048573]), =('I', 20)], [in_range(2, 25, 20), is(1048576, ^(2, 20)), split(1048576, [3, 1048573])]).
+step(in_range(2, 25, 20), rule(13), [=('Low', 2), =('High', 25), =('N', 20), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 20)]).
+step(in_range(3, 25, 20), rule(13), [=('Low', 3), =('High', 25), =('N', 20), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 20)]).
+step(in_range(4, 25, 20), rule(13), [=('Low', 4), =('High', 25), =('N', 20), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 20)]).
+step(in_range(5, 25, 20), rule(13), [=('Low', 5), =('High', 25), =('N', 20), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 20)]).
+step(in_range(6, 25, 20), rule(13), [=('Low', 6), =('High', 25), =('N', 20), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 20)]).
+step(in_range(7, 25, 20), rule(13), [=('Low', 7), =('High', 25), =('N', 20), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 20)]).
+step(in_range(8, 25, 20), rule(13), [=('Low', 8), =('High', 25), =('N', 20), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 20)]).
+step(in_range(9, 25, 20), rule(13), [=('Low', 9), =('High', 25), =('N', 20), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 20)]).
+step(in_range(10, 25, 20), rule(13), [=('Low', 10), =('High', 25), =('N', 20), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 20)]).
+step(in_range(11, 25, 20), rule(13), [=('Low', 11), =('High', 25), =('N', 20), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 20)]).
+step(in_range(12, 25, 20), rule(13), [=('Low', 12), =('High', 25), =('N', 20), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 20)]).
+step(in_range(13, 25, 20), rule(13), [=('Low', 13), =('High', 25), =('N', 20), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 20)]).
+step(in_range(14, 25, 20), rule(13), [=('Low', 14), =('High', 25), =('N', 20), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 20)]).
+step(in_range(15, 25, 20), rule(13), [=('Low', 15), =('High', 25), =('N', 20), =('Next', 16)], [<(15, 25), is(16, +(15, 1)), in_range(16, 25, 20)]).
+step(in_range(16, 25, 20), rule(13), [=('Low', 16), =('High', 25), =('N', 20), =('Next', 17)], [<(16, 25), is(17, +(16, 1)), in_range(17, 25, 20)]).
+step(in_range(17, 25, 20), rule(13), [=('Low', 17), =('High', 25), =('N', 20), =('Next', 18)], [<(17, 25), is(18, +(17, 1)), in_range(18, 25, 20)]).
+step(in_range(18, 25, 20), rule(13), [=('Low', 18), =('High', 25), =('N', 20), =('Next', 19)], [<(18, 25), is(19, +(18, 1)), in_range(19, 25, 20)]).
+step(in_range(19, 25, 20), rule(13), [=('Low', 19), =('High', 25), =('N', 20), =('Next', 20)], [<(19, 25), is(20, +(19, 1)), in_range(20, 25, 20)]).
+step(<(19, 25), builtin, [], []).
+step(is(20, +(19, 1)), builtin, [], []).
+step(in_range(20, 25, 20), rule(12), [=('Low', 20), =('High', 25)], [=<(20, 25)]).
+step(=<(20, 25), builtin, [], []).
+step(is(1048576, ^(2, 20)), builtin, [], []).
+step(split(1048576, [3, 1048573]), rule(2), [=('N', 1048576), =('Pair', [3, 1048573])], ['=:='(0, rem(1048576, 2)), >(1048576, 4), once(split_from(1048576, [3, 1048573], 3))]).
+step('=:='(0, rem(1048576, 2)), builtin, [], []).
+step(>(1048576, 4), builtin, [], []).
+step(once(split_from(1048576, [3, 1048573], 3)), control, [], [split_from(1048576, [3, 1048573], 3)]).
+step(split_from(1048576, [3, 1048573], 3), rule(3), [=('N', 1048576), =('P', 3), =('Q', 1048573)], [is(1048573, -(1048576, 3)), is_prime(1048573)]).
+step(is(1048573, -(1048576, 3)), builtin, [], []).
+step(is_prime(1048573), rule(9), [=('P', 1048573)], [>(1048573, 3), '=:='(1, rem(1048573, 2)), \+(has_factor(1048573, 3))]).
+step(>(1048573, 3), builtin, [], []).
+step('=:='(1, rem(1048573, 2)), builtin, [], []).
+step(\+(has_factor(1048573, 3)), absent, [], []).
+step(goldbach(2097152, [19, 2097133]), rule(14), [=('N', 2097152), =('Pair', [19, 2097133]), =('I', 21)], [in_range(2, 25, 21), is(2097152, ^(2, 21)), split(2097152, [19, 2097133])]).
+step(in_range(2, 25, 21), rule(13), [=('Low', 2), =('High', 25), =('N', 21), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 21)]).
+step(in_range(3, 25, 21), rule(13), [=('Low', 3), =('High', 25), =('N', 21), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 21)]).
+step(in_range(4, 25, 21), rule(13), [=('Low', 4), =('High', 25), =('N', 21), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 21)]).
+step(in_range(5, 25, 21), rule(13), [=('Low', 5), =('High', 25), =('N', 21), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 21)]).
+step(in_range(6, 25, 21), rule(13), [=('Low', 6), =('High', 25), =('N', 21), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 21)]).
+step(in_range(7, 25, 21), rule(13), [=('Low', 7), =('High', 25), =('N', 21), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 21)]).
+step(in_range(8, 25, 21), rule(13), [=('Low', 8), =('High', 25), =('N', 21), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 21)]).
+step(in_range(9, 25, 21), rule(13), [=('Low', 9), =('High', 25), =('N', 21), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 21)]).
+step(in_range(10, 25, 21), rule(13), [=('Low', 10), =('High', 25), =('N', 21), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 21)]).
+step(in_range(11, 25, 21), rule(13), [=('Low', 11), =('High', 25), =('N', 21), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 21)]).
+step(in_range(12, 25, 21), rule(13), [=('Low', 12), =('High', 25), =('N', 21), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 21)]).
+step(in_range(13, 25, 21), rule(13), [=('Low', 13), =('High', 25), =('N', 21), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 21)]).
+step(in_range(14, 25, 21), rule(13), [=('Low', 14), =('High', 25), =('N', 21), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 21)]).
+step(in_range(15, 25, 21), rule(13), [=('Low', 15), =('High', 25), =('N', 21), =('Next', 16)], [<(15, 25), is(16, +(15, 1)), in_range(16, 25, 21)]).
+step(in_range(16, 25, 21), rule(13), [=('Low', 16), =('High', 25), =('N', 21), =('Next', 17)], [<(16, 25), is(17, +(16, 1)), in_range(17, 25, 21)]).
+step(in_range(17, 25, 21), rule(13), [=('Low', 17), =('High', 25), =('N', 21), =('Next', 18)], [<(17, 25), is(18, +(17, 1)), in_range(18, 25, 21)]).
+step(in_range(18, 25, 21), rule(13), [=('Low', 18), =('High', 25), =('N', 21), =('Next', 19)], [<(18, 25), is(19, +(18, 1)), in_range(19, 25, 21)]).
+step(in_range(19, 25, 21), rule(13), [=('Low', 19), =('High', 25), =('N', 21), =('Next', 20)], [<(19, 25), is(20, +(19, 1)), in_range(20, 25, 21)]).
+step(in_range(20, 25, 21), rule(13), [=('Low', 20), =('High', 25), =('N', 21), =('Next', 21)], [<(20, 25), is(21, +(20, 1)), in_range(21, 25, 21)]).
+step(<(20, 25), builtin, [], []).
+step(is(21, +(20, 1)), builtin, [], []).
+step(in_range(21, 25, 21), rule(12), [=('Low', 21), =('High', 25)], [=<(21, 25)]).
+step(=<(21, 25), builtin, [], []).
+step(is(2097152, ^(2, 21)), builtin, [], []).
+step(split(2097152, [19, 2097133]), rule(2), [=('N', 2097152), =('Pair', [19, 2097133])], ['=:='(0, rem(2097152, 2)), >(2097152, 4), once(split_from(2097152, [19, 2097133], 3))]).
+step('=:='(0, rem(2097152, 2)), builtin, [], []).
+step(>(2097152, 4), builtin, [], []).
+step(once(split_from(2097152, [19, 2097133], 3)), control, [], [split_from(2097152, [19, 2097133], 3)]).
+step(split_from(2097152, [19, 2097133], 3), rule(4), [=('N', 2097152), =('Pair', [19, 2097133]), =('P', 3), =('Next', 5)], [<(3, 2097152), once(next_prime(3, 5)), split_from(2097152, [19, 2097133], 5)]).
+step(<(3, 2097152), builtin, [], []).
+step(split_from(2097152, [19, 2097133], 5), rule(4), [=('N', 2097152), =('Pair', [19, 2097133]), =('P', 5), =('Next', 7)], [<(5, 2097152), once(next_prime(5, 7)), split_from(2097152, [19, 2097133], 7)]).
+step(<(5, 2097152), builtin, [], []).
+step(split_from(2097152, [19, 2097133], 7), rule(4), [=('N', 2097152), =('Pair', [19, 2097133]), =('P', 7), =('Next', 11)], [<(7, 2097152), once(next_prime(7, 11)), split_from(2097152, [19, 2097133], 11)]).
+step(<(7, 2097152), builtin, [], []).
+step(split_from(2097152, [19, 2097133], 11), rule(4), [=('N', 2097152), =('Pair', [19, 2097133]), =('P', 11), =('Next', 13)], [<(11, 2097152), once(next_prime(11, 13)), split_from(2097152, [19, 2097133], 13)]).
+step(<(11, 2097152), builtin, [], []).
+step(split_from(2097152, [19, 2097133], 13), rule(4), [=('N', 2097152), =('Pair', [19, 2097133]), =('P', 13), =('Next', 17)], [<(13, 2097152), once(next_prime(13, 17)), split_from(2097152, [19, 2097133], 17)]).
+step(<(13, 2097152), builtin, [], []).
+step(split_from(2097152, [19, 2097133], 17), rule(4), [=('N', 2097152), =('Pair', [19, 2097133]), =('P', 17), =('Next', 19)], [<(17, 2097152), once(next_prime(17, 19)), split_from(2097152, [19, 2097133], 19)]).
+step(<(17, 2097152), builtin, [], []).
+step(split_from(2097152, [19, 2097133], 19), rule(3), [=('N', 2097152), =('P', 19), =('Q', 2097133)], [is(2097133, -(2097152, 19)), is_prime(2097133)]).
+step(is(2097133, -(2097152, 19)), builtin, [], []).
+step(is_prime(2097133), rule(9), [=('P', 2097133)], [>(2097133, 3), '=:='(1, rem(2097133, 2)), \+(has_factor(2097133, 3))]).
+step(>(2097133, 3), builtin, [], []).
+step('=:='(1, rem(2097133, 2)), builtin, [], []).
+step(\+(has_factor(2097133, 3)), absent, [], []).
+step(goldbach(4194304, [3, 4194301]), rule(14), [=('N', 4194304), =('Pair', [3, 4194301]), =('I', 22)], [in_range(2, 25, 22), is(4194304, ^(2, 22)), split(4194304, [3, 4194301])]).
+step(in_range(2, 25, 22), rule(13), [=('Low', 2), =('High', 25), =('N', 22), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 22)]).
+step(in_range(3, 25, 22), rule(13), [=('Low', 3), =('High', 25), =('N', 22), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 22)]).
+step(in_range(4, 25, 22), rule(13), [=('Low', 4), =('High', 25), =('N', 22), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 22)]).
+step(in_range(5, 25, 22), rule(13), [=('Low', 5), =('High', 25), =('N', 22), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 22)]).
+step(in_range(6, 25, 22), rule(13), [=('Low', 6), =('High', 25), =('N', 22), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 22)]).
+step(in_range(7, 25, 22), rule(13), [=('Low', 7), =('High', 25), =('N', 22), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 22)]).
+step(in_range(8, 25, 22), rule(13), [=('Low', 8), =('High', 25), =('N', 22), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 22)]).
+step(in_range(9, 25, 22), rule(13), [=('Low', 9), =('High', 25), =('N', 22), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 22)]).
+step(in_range(10, 25, 22), rule(13), [=('Low', 10), =('High', 25), =('N', 22), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 22)]).
+step(in_range(11, 25, 22), rule(13), [=('Low', 11), =('High', 25), =('N', 22), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 22)]).
+step(in_range(12, 25, 22), rule(13), [=('Low', 12), =('High', 25), =('N', 22), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 22)]).
+step(in_range(13, 25, 22), rule(13), [=('Low', 13), =('High', 25), =('N', 22), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 22)]).
+step(in_range(14, 25, 22), rule(13), [=('Low', 14), =('High', 25), =('N', 22), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 22)]).
+step(in_range(15, 25, 22), rule(13), [=('Low', 15), =('High', 25), =('N', 22), =('Next', 16)], [<(15, 25), is(16, +(15, 1)), in_range(16, 25, 22)]).
+step(in_range(16, 25, 22), rule(13), [=('Low', 16), =('High', 25), =('N', 22), =('Next', 17)], [<(16, 25), is(17, +(16, 1)), in_range(17, 25, 22)]).
+step(in_range(17, 25, 22), rule(13), [=('Low', 17), =('High', 25), =('N', 22), =('Next', 18)], [<(17, 25), is(18, +(17, 1)), in_range(18, 25, 22)]).
+step(in_range(18, 25, 22), rule(13), [=('Low', 18), =('High', 25), =('N', 22), =('Next', 19)], [<(18, 25), is(19, +(18, 1)), in_range(19, 25, 22)]).
+step(in_range(19, 25, 22), rule(13), [=('Low', 19), =('High', 25), =('N', 22), =('Next', 20)], [<(19, 25), is(20, +(19, 1)), in_range(20, 25, 22)]).
+step(in_range(20, 25, 22), rule(13), [=('Low', 20), =('High', 25), =('N', 22), =('Next', 21)], [<(20, 25), is(21, +(20, 1)), in_range(21, 25, 22)]).
+step(in_range(21, 25, 22), rule(13), [=('Low', 21), =('High', 25), =('N', 22), =('Next', 22)], [<(21, 25), is(22, +(21, 1)), in_range(22, 25, 22)]).
+step(<(21, 25), builtin, [], []).
+step(is(22, +(21, 1)), builtin, [], []).
+step(in_range(22, 25, 22), rule(12), [=('Low', 22), =('High', 25)], [=<(22, 25)]).
+step(=<(22, 25), builtin, [], []).
+step(is(4194304, ^(2, 22)), builtin, [], []).
+step(split(4194304, [3, 4194301]), rule(2), [=('N', 4194304), =('Pair', [3, 4194301])], ['=:='(0, rem(4194304, 2)), >(4194304, 4), once(split_from(4194304, [3, 4194301], 3))]).
+step('=:='(0, rem(4194304, 2)), builtin, [], []).
+step(>(4194304, 4), builtin, [], []).
+step(once(split_from(4194304, [3, 4194301], 3)), control, [], [split_from(4194304, [3, 4194301], 3)]).
+step(split_from(4194304, [3, 4194301], 3), rule(3), [=('N', 4194304), =('P', 3), =('Q', 4194301)], [is(4194301, -(4194304, 3)), is_prime(4194301)]).
+step(is(4194301, -(4194304, 3)), builtin, [], []).
+step(is_prime(4194301), rule(9), [=('P', 4194301)], [>(4194301, 3), '=:='(1, rem(4194301, 2)), \+(has_factor(4194301, 3))]).
+step(>(4194301, 3), builtin, [], []).
+step('=:='(1, rem(4194301, 2)), builtin, [], []).
+step(\+(has_factor(4194301, 3)), absent, [], []).
+step(goldbach(8388608, [37, 8388571]), rule(14), [=('N', 8388608), =('Pair', [37, 8388571]), =('I', 23)], [in_range(2, 25, 23), is(8388608, ^(2, 23)), split(8388608, [37, 8388571])]).
+step(in_range(2, 25, 23), rule(13), [=('Low', 2), =('High', 25), =('N', 23), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 23)]).
+step(in_range(3, 25, 23), rule(13), [=('Low', 3), =('High', 25), =('N', 23), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 23)]).
+step(in_range(4, 25, 23), rule(13), [=('Low', 4), =('High', 25), =('N', 23), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 23)]).
+step(in_range(5, 25, 23), rule(13), [=('Low', 5), =('High', 25), =('N', 23), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 23)]).
+step(in_range(6, 25, 23), rule(13), [=('Low', 6), =('High', 25), =('N', 23), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 23)]).
+step(in_range(7, 25, 23), rule(13), [=('Low', 7), =('High', 25), =('N', 23), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 23)]).
+step(in_range(8, 25, 23), rule(13), [=('Low', 8), =('High', 25), =('N', 23), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 23)]).
+step(in_range(9, 25, 23), rule(13), [=('Low', 9), =('High', 25), =('N', 23), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 23)]).
+step(in_range(10, 25, 23), rule(13), [=('Low', 10), =('High', 25), =('N', 23), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 23)]).
+step(in_range(11, 25, 23), rule(13), [=('Low', 11), =('High', 25), =('N', 23), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 23)]).
+step(in_range(12, 25, 23), rule(13), [=('Low', 12), =('High', 25), =('N', 23), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 23)]).
+step(in_range(13, 25, 23), rule(13), [=('Low', 13), =('High', 25), =('N', 23), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 23)]).
+step(in_range(14, 25, 23), rule(13), [=('Low', 14), =('High', 25), =('N', 23), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 23)]).
+step(in_range(15, 25, 23), rule(13), [=('Low', 15), =('High', 25), =('N', 23), =('Next', 16)], [<(15, 25), is(16, +(15, 1)), in_range(16, 25, 23)]).
+step(in_range(16, 25, 23), rule(13), [=('Low', 16), =('High', 25), =('N', 23), =('Next', 17)], [<(16, 25), is(17, +(16, 1)), in_range(17, 25, 23)]).
+step(in_range(17, 25, 23), rule(13), [=('Low', 17), =('High', 25), =('N', 23), =('Next', 18)], [<(17, 25), is(18, +(17, 1)), in_range(18, 25, 23)]).
+step(in_range(18, 25, 23), rule(13), [=('Low', 18), =('High', 25), =('N', 23), =('Next', 19)], [<(18, 25), is(19, +(18, 1)), in_range(19, 25, 23)]).
+step(in_range(19, 25, 23), rule(13), [=('Low', 19), =('High', 25), =('N', 23), =('Next', 20)], [<(19, 25), is(20, +(19, 1)), in_range(20, 25, 23)]).
+step(in_range(20, 25, 23), rule(13), [=('Low', 20), =('High', 25), =('N', 23), =('Next', 21)], [<(20, 25), is(21, +(20, 1)), in_range(21, 25, 23)]).
+step(in_range(21, 25, 23), rule(13), [=('Low', 21), =('High', 25), =('N', 23), =('Next', 22)], [<(21, 25), is(22, +(21, 1)), in_range(22, 25, 23)]).
+step(in_range(22, 25, 23), rule(13), [=('Low', 22), =('High', 25), =('N', 23), =('Next', 23)], [<(22, 25), is(23, +(22, 1)), in_range(23, 25, 23)]).
+step(<(22, 25), builtin, [], []).
+step(is(23, +(22, 1)), builtin, [], []).
+step(in_range(23, 25, 23), rule(12), [=('Low', 23), =('High', 25)], [=<(23, 25)]).
+step(=<(23, 25), builtin, [], []).
+step(is(8388608, ^(2, 23)), builtin, [], []).
+step(split(8388608, [37, 8388571]), rule(2), [=('N', 8388608), =('Pair', [37, 8388571])], ['=:='(0, rem(8388608, 2)), >(8388608, 4), once(split_from(8388608, [37, 8388571], 3))]).
+step('=:='(0, rem(8388608, 2)), builtin, [], []).
+step(>(8388608, 4), builtin, [], []).
+step(once(split_from(8388608, [37, 8388571], 3)), control, [], [split_from(8388608, [37, 8388571], 3)]).
+step(split_from(8388608, [37, 8388571], 3), rule(4), [=('N', 8388608), =('Pair', [37, 8388571]), =('P', 3), =('Next', 5)], [<(3, 8388608), once(next_prime(3, 5)), split_from(8388608, [37, 8388571], 5)]).
+step(<(3, 8388608), builtin, [], []).
+step(split_from(8388608, [37, 8388571], 5), rule(4), [=('N', 8388608), =('Pair', [37, 8388571]), =('P', 5), =('Next', 7)], [<(5, 8388608), once(next_prime(5, 7)), split_from(8388608, [37, 8388571], 7)]).
+step(<(5, 8388608), builtin, [], []).
+step(split_from(8388608, [37, 8388571], 7), rule(4), [=('N', 8388608), =('Pair', [37, 8388571]), =('P', 7), =('Next', 11)], [<(7, 8388608), once(next_prime(7, 11)), split_from(8388608, [37, 8388571], 11)]).
+step(<(7, 8388608), builtin, [], []).
+step(split_from(8388608, [37, 8388571], 11), rule(4), [=('N', 8388608), =('Pair', [37, 8388571]), =('P', 11), =('Next', 13)], [<(11, 8388608), once(next_prime(11, 13)), split_from(8388608, [37, 8388571], 13)]).
+step(<(11, 8388608), builtin, [], []).
+step(split_from(8388608, [37, 8388571], 13), rule(4), [=('N', 8388608), =('Pair', [37, 8388571]), =('P', 13), =('Next', 17)], [<(13, 8388608), once(next_prime(13, 17)), split_from(8388608, [37, 8388571], 17)]).
+step(<(13, 8388608), builtin, [], []).
+step(split_from(8388608, [37, 8388571], 17), rule(4), [=('N', 8388608), =('Pair', [37, 8388571]), =('P', 17), =('Next', 19)], [<(17, 8388608), once(next_prime(17, 19)), split_from(8388608, [37, 8388571], 19)]).
+step(<(17, 8388608), builtin, [], []).
+step(split_from(8388608, [37, 8388571], 19), rule(4), [=('N', 8388608), =('Pair', [37, 8388571]), =('P', 19), =('Next', 23)], [<(19, 8388608), once(next_prime(19, 23)), split_from(8388608, [37, 8388571], 23)]).
+step(<(19, 8388608), builtin, [], []).
+step(once(next_prime(19, 23)), control, [], [next_prime(19, 23)]).
+step(next_prime(19, 23), rule(6), [=('P', 19), =('Next', 23), =('Q', 21)], [is(21, +(19, 2)), next_prime(21, 23)]).
+step(is(21, +(19, 2)), builtin, [], []).
+step(next_prime(21, 23), rule(5), [=('P', 21), =('Next', 23)], [is(23, +(21, 2)), is_prime(23)]).
+step(is(23, +(21, 2)), builtin, [], []).
+step(is_prime(23), rule(9), [=('P', 23)], [>(23, 3), '=:='(1, rem(23, 2)), \+(has_factor(23, 3))]).
+step(>(23, 3), builtin, [], []).
+step('=:='(1, rem(23, 2)), builtin, [], []).
+step(\+(has_factor(23, 3)), absent, [], []).
+step(split_from(8388608, [37, 8388571], 23), rule(4), [=('N', 8388608), =('Pair', [37, 8388571]), =('P', 23), =('Next', 29)], [<(23, 8388608), once(next_prime(23, 29)), split_from(8388608, [37, 8388571], 29)]).
+step(<(23, 8388608), builtin, [], []).
+step(once(next_prime(23, 29)), control, [], [next_prime(23, 29)]).
+step(next_prime(23, 29), rule(6), [=('P', 23), =('Next', 29), =('Q', 25)], [is(25, +(23, 2)), next_prime(25, 29)]).
+step(is(25, +(23, 2)), builtin, [], []).
+step(next_prime(25, 29), rule(6), [=('P', 25), =('Next', 29), =('Q', 27)], [is(27, +(25, 2)), next_prime(27, 29)]).
+step(is(27, +(25, 2)), builtin, [], []).
+step(next_prime(27, 29), rule(5), [=('P', 27), =('Next', 29)], [is(29, +(27, 2)), is_prime(29)]).
+step(is(29, +(27, 2)), builtin, [], []).
+step(split_from(8388608, [37, 8388571], 29), rule(4), [=('N', 8388608), =('Pair', [37, 8388571]), =('P', 29), =('Next', 31)], [<(29, 8388608), once(next_prime(29, 31)), split_from(8388608, [37, 8388571], 31)]).
+step(<(29, 8388608), builtin, [], []).
+step(once(next_prime(29, 31)), control, [], [next_prime(29, 31)]).
+step(next_prime(29, 31), rule(5), [=('P', 29), =('Next', 31)], [is(31, +(29, 2)), is_prime(31)]).
+step(is(31, +(29, 2)), builtin, [], []).
+step(is_prime(31), rule(9), [=('P', 31)], [>(31, 3), '=:='(1, rem(31, 2)), \+(has_factor(31, 3))]).
+step(>(31, 3), builtin, [], []).
+step('=:='(1, rem(31, 2)), builtin, [], []).
+step(\+(has_factor(31, 3)), absent, [], []).
+step(split_from(8388608, [37, 8388571], 31), rule(4), [=('N', 8388608), =('Pair', [37, 8388571]), =('P', 31), =('Next', 37)], [<(31, 8388608), once(next_prime(31, 37)), split_from(8388608, [37, 8388571], 37)]).
+step(<(31, 8388608), builtin, [], []).
+step(once(next_prime(31, 37)), control, [], [next_prime(31, 37)]).
+step(next_prime(31, 37), rule(6), [=('P', 31), =('Next', 37), =('Q', 33)], [is(33, +(31, 2)), next_prime(33, 37)]).
+step(is(33, +(31, 2)), builtin, [], []).
+step(next_prime(33, 37), rule(6), [=('P', 33), =('Next', 37), =('Q', 35)], [is(35, +(33, 2)), next_prime(35, 37)]).
+step(is(35, +(33, 2)), builtin, [], []).
+step(next_prime(35, 37), rule(5), [=('P', 35), =('Next', 37)], [is(37, +(35, 2)), is_prime(37)]).
+step(is(37, +(35, 2)), builtin, [], []).
+step(is_prime(37), rule(9), [=('P', 37)], [>(37, 3), '=:='(1, rem(37, 2)), \+(has_factor(37, 3))]).
+step(>(37, 3), builtin, [], []).
+step('=:='(1, rem(37, 2)), builtin, [], []).
+step(\+(has_factor(37, 3)), absent, [], []).
+step(split_from(8388608, [37, 8388571], 37), rule(3), [=('N', 8388608), =('P', 37), =('Q', 8388571)], [is(8388571, -(8388608, 37)), is_prime(8388571)]).
+step(is(8388571, -(8388608, 37)), builtin, [], []).
+step(is_prime(8388571), rule(9), [=('P', 8388571)], [>(8388571, 3), '=:='(1, rem(8388571, 2)), \+(has_factor(8388571, 3))]).
+step(>(8388571, 3), builtin, [], []).
+step('=:='(1, rem(8388571, 2)), builtin, [], []).
+step(\+(has_factor(8388571, 3)), absent, [], []).
+step(goldbach(16777216, [3, 16777213]), rule(14), [=('N', 16777216), =('Pair', [3, 16777213]), =('I', 24)], [in_range(2, 25, 24), is(16777216, ^(2, 24)), split(16777216, [3, 16777213])]).
+step(in_range(2, 25, 24), rule(13), [=('Low', 2), =('High', 25), =('N', 24), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 24)]).
+step(in_range(3, 25, 24), rule(13), [=('Low', 3), =('High', 25), =('N', 24), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 24)]).
+step(in_range(4, 25, 24), rule(13), [=('Low', 4), =('High', 25), =('N', 24), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 24)]).
+step(in_range(5, 25, 24), rule(13), [=('Low', 5), =('High', 25), =('N', 24), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 24)]).
+step(in_range(6, 25, 24), rule(13), [=('Low', 6), =('High', 25), =('N', 24), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 24)]).
+step(in_range(7, 25, 24), rule(13), [=('Low', 7), =('High', 25), =('N', 24), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 24)]).
+step(in_range(8, 25, 24), rule(13), [=('Low', 8), =('High', 25), =('N', 24), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 24)]).
+step(in_range(9, 25, 24), rule(13), [=('Low', 9), =('High', 25), =('N', 24), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 24)]).
+step(in_range(10, 25, 24), rule(13), [=('Low', 10), =('High', 25), =('N', 24), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 24)]).
+step(in_range(11, 25, 24), rule(13), [=('Low', 11), =('High', 25), =('N', 24), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 24)]).
+step(in_range(12, 25, 24), rule(13), [=('Low', 12), =('High', 25), =('N', 24), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 24)]).
+step(in_range(13, 25, 24), rule(13), [=('Low', 13), =('High', 25), =('N', 24), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 24)]).
+step(in_range(14, 25, 24), rule(13), [=('Low', 14), =('High', 25), =('N', 24), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 24)]).
+step(in_range(15, 25, 24), rule(13), [=('Low', 15), =('High', 25), =('N', 24), =('Next', 16)], [<(15, 25), is(16, +(15, 1)), in_range(16, 25, 24)]).
+step(in_range(16, 25, 24), rule(13), [=('Low', 16), =('High', 25), =('N', 24), =('Next', 17)], [<(16, 25), is(17, +(16, 1)), in_range(17, 25, 24)]).
+step(in_range(17, 25, 24), rule(13), [=('Low', 17), =('High', 25), =('N', 24), =('Next', 18)], [<(17, 25), is(18, +(17, 1)), in_range(18, 25, 24)]).
+step(in_range(18, 25, 24), rule(13), [=('Low', 18), =('High', 25), =('N', 24), =('Next', 19)], [<(18, 25), is(19, +(18, 1)), in_range(19, 25, 24)]).
+step(in_range(19, 25, 24), rule(13), [=('Low', 19), =('High', 25), =('N', 24), =('Next', 20)], [<(19, 25), is(20, +(19, 1)), in_range(20, 25, 24)]).
+step(in_range(20, 25, 24), rule(13), [=('Low', 20), =('High', 25), =('N', 24), =('Next', 21)], [<(20, 25), is(21, +(20, 1)), in_range(21, 25, 24)]).
+step(in_range(21, 25, 24), rule(13), [=('Low', 21), =('High', 25), =('N', 24), =('Next', 22)], [<(21, 25), is(22, +(21, 1)), in_range(22, 25, 24)]).
+step(in_range(22, 25, 24), rule(13), [=('Low', 22), =('High', 25), =('N', 24), =('Next', 23)], [<(22, 25), is(23, +(22, 1)), in_range(23, 25, 24)]).
+step(in_range(23, 25, 24), rule(13), [=('Low', 23), =('High', 25), =('N', 24), =('Next', 24)], [<(23, 25), is(24, +(23, 1)), in_range(24, 25, 24)]).
+step(<(23, 25), builtin, [], []).
+step(is(24, +(23, 1)), builtin, [], []).
+step(in_range(24, 25, 24), rule(12), [=('Low', 24), =('High', 25)], [=<(24, 25)]).
+step(=<(24, 25), builtin, [], []).
+step(is(16777216, ^(2, 24)), builtin, [], []).
+step(split(16777216, [3, 16777213]), rule(2), [=('N', 16777216), =('Pair', [3, 16777213])], ['=:='(0, rem(16777216, 2)), >(16777216, 4), once(split_from(16777216, [3, 16777213], 3))]).
+step('=:='(0, rem(16777216, 2)), builtin, [], []).
+step(>(16777216, 4), builtin, [], []).
+step(once(split_from(16777216, [3, 16777213], 3)), control, [], [split_from(16777216, [3, 16777213], 3)]).
+step(split_from(16777216, [3, 16777213], 3), rule(3), [=('N', 16777216), =('P', 3), =('Q', 16777213)], [is(16777213, -(16777216, 3)), is_prime(16777213)]).
+step(is(16777213, -(16777216, 3)), builtin, [], []).
+step(is_prime(16777213), rule(9), [=('P', 16777213)], [>(16777213, 3), '=:='(1, rem(16777213, 2)), \+(has_factor(16777213, 3))]).
+step(>(16777213, 3), builtin, [], []).
+step('=:='(1, rem(16777213, 2)), builtin, [], []).
+step(\+(has_factor(16777213, 3)), absent, [], []).
+step(goldbach(33554432, [61, 33554371]), rule(14), [=('N', 33554432), =('Pair', [61, 33554371]), =('I', 25)], [in_range(2, 25, 25), is(33554432, ^(2, 25)), split(33554432, [61, 33554371])]).
+step(in_range(2, 25, 25), rule(13), [=('Low', 2), =('High', 25), =('N', 25), =('Next', 3)], [<(2, 25), is(3, +(2, 1)), in_range(3, 25, 25)]).
+step(in_range(3, 25, 25), rule(13), [=('Low', 3), =('High', 25), =('N', 25), =('Next', 4)], [<(3, 25), is(4, +(3, 1)), in_range(4, 25, 25)]).
+step(in_range(4, 25, 25), rule(13), [=('Low', 4), =('High', 25), =('N', 25), =('Next', 5)], [<(4, 25), is(5, +(4, 1)), in_range(5, 25, 25)]).
+step(in_range(5, 25, 25), rule(13), [=('Low', 5), =('High', 25), =('N', 25), =('Next', 6)], [<(5, 25), is(6, +(5, 1)), in_range(6, 25, 25)]).
+step(in_range(6, 25, 25), rule(13), [=('Low', 6), =('High', 25), =('N', 25), =('Next', 7)], [<(6, 25), is(7, +(6, 1)), in_range(7, 25, 25)]).
+step(in_range(7, 25, 25), rule(13), [=('Low', 7), =('High', 25), =('N', 25), =('Next', 8)], [<(7, 25), is(8, +(7, 1)), in_range(8, 25, 25)]).
+step(in_range(8, 25, 25), rule(13), [=('Low', 8), =('High', 25), =('N', 25), =('Next', 9)], [<(8, 25), is(9, +(8, 1)), in_range(9, 25, 25)]).
+step(in_range(9, 25, 25), rule(13), [=('Low', 9), =('High', 25), =('N', 25), =('Next', 10)], [<(9, 25), is(10, +(9, 1)), in_range(10, 25, 25)]).
+step(in_range(10, 25, 25), rule(13), [=('Low', 10), =('High', 25), =('N', 25), =('Next', 11)], [<(10, 25), is(11, +(10, 1)), in_range(11, 25, 25)]).
+step(in_range(11, 25, 25), rule(13), [=('Low', 11), =('High', 25), =('N', 25), =('Next', 12)], [<(11, 25), is(12, +(11, 1)), in_range(12, 25, 25)]).
+step(in_range(12, 25, 25), rule(13), [=('Low', 12), =('High', 25), =('N', 25), =('Next', 13)], [<(12, 25), is(13, +(12, 1)), in_range(13, 25, 25)]).
+step(in_range(13, 25, 25), rule(13), [=('Low', 13), =('High', 25), =('N', 25), =('Next', 14)], [<(13, 25), is(14, +(13, 1)), in_range(14, 25, 25)]).
+step(in_range(14, 25, 25), rule(13), [=('Low', 14), =('High', 25), =('N', 25), =('Next', 15)], [<(14, 25), is(15, +(14, 1)), in_range(15, 25, 25)]).
+step(in_range(15, 25, 25), rule(13), [=('Low', 15), =('High', 25), =('N', 25), =('Next', 16)], [<(15, 25), is(16, +(15, 1)), in_range(16, 25, 25)]).
+step(in_range(16, 25, 25), rule(13), [=('Low', 16), =('High', 25), =('N', 25), =('Next', 17)], [<(16, 25), is(17, +(16, 1)), in_range(17, 25, 25)]).
+step(in_range(17, 25, 25), rule(13), [=('Low', 17), =('High', 25), =('N', 25), =('Next', 18)], [<(17, 25), is(18, +(17, 1)), in_range(18, 25, 25)]).
+step(in_range(18, 25, 25), rule(13), [=('Low', 18), =('High', 25), =('N', 25), =('Next', 19)], [<(18, 25), is(19, +(18, 1)), in_range(19, 25, 25)]).
+step(in_range(19, 25, 25), rule(13), [=('Low', 19), =('High', 25), =('N', 25), =('Next', 20)], [<(19, 25), is(20, +(19, 1)), in_range(20, 25, 25)]).
+step(in_range(20, 25, 25), rule(13), [=('Low', 20), =('High', 25), =('N', 25), =('Next', 21)], [<(20, 25), is(21, +(20, 1)), in_range(21, 25, 25)]).
+step(in_range(21, 25, 25), rule(13), [=('Low', 21), =('High', 25), =('N', 25), =('Next', 22)], [<(21, 25), is(22, +(21, 1)), in_range(22, 25, 25)]).
+step(in_range(22, 25, 25), rule(13), [=('Low', 22), =('High', 25), =('N', 25), =('Next', 23)], [<(22, 25), is(23, +(22, 1)), in_range(23, 25, 25)]).
+step(in_range(23, 25, 25), rule(13), [=('Low', 23), =('High', 25), =('N', 25), =('Next', 24)], [<(23, 25), is(24, +(23, 1)), in_range(24, 25, 25)]).
+step(in_range(24, 25, 25), rule(13), [=('Low', 24), =('High', 25), =('N', 25), =('Next', 25)], [<(24, 25), is(25, +(24, 1)), in_range(25, 25, 25)]).
+step(<(24, 25), builtin, [], []).
+step(is(25, +(24, 1)), builtin, [], []).
+step(in_range(25, 25, 25), rule(12), [=('Low', 25), =('High', 25)], [=<(25, 25)]).
+step(=<(25, 25), builtin, [], []).
+step(is(33554432, ^(2, 25)), builtin, [], []).
+step(split(33554432, [61, 33554371]), rule(2), [=('N', 33554432), =('Pair', [61, 33554371])], ['=:='(0, rem(33554432, 2)), >(33554432, 4), once(split_from(33554432, [61, 33554371], 3))]).
+step('=:='(0, rem(33554432, 2)), builtin, [], []).
+step(>(33554432, 4), builtin, [], []).
+step(once(split_from(33554432, [61, 33554371], 3)), control, [], [split_from(33554432, [61, 33554371], 3)]).
+step(split_from(33554432, [61, 33554371], 3), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 3), =('Next', 5)], [<(3, 33554432), once(next_prime(3, 5)), split_from(33554432, [61, 33554371], 5)]).
+step(<(3, 33554432), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 5), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 5), =('Next', 7)], [<(5, 33554432), once(next_prime(5, 7)), split_from(33554432, [61, 33554371], 7)]).
+step(<(5, 33554432), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 7), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 7), =('Next', 11)], [<(7, 33554432), once(next_prime(7, 11)), split_from(33554432, [61, 33554371], 11)]).
+step(<(7, 33554432), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 11), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 11), =('Next', 13)], [<(11, 33554432), once(next_prime(11, 13)), split_from(33554432, [61, 33554371], 13)]).
+step(<(11, 33554432), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 13), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 13), =('Next', 17)], [<(13, 33554432), once(next_prime(13, 17)), split_from(33554432, [61, 33554371], 17)]).
+step(<(13, 33554432), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 17), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 17), =('Next', 19)], [<(17, 33554432), once(next_prime(17, 19)), split_from(33554432, [61, 33554371], 19)]).
+step(<(17, 33554432), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 19), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 19), =('Next', 23)], [<(19, 33554432), once(next_prime(19, 23)), split_from(33554432, [61, 33554371], 23)]).
+step(<(19, 33554432), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 23), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 23), =('Next', 29)], [<(23, 33554432), once(next_prime(23, 29)), split_from(33554432, [61, 33554371], 29)]).
+step(<(23, 33554432), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 29), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 29), =('Next', 31)], [<(29, 33554432), once(next_prime(29, 31)), split_from(33554432, [61, 33554371], 31)]).
+step(<(29, 33554432), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 31), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 31), =('Next', 37)], [<(31, 33554432), once(next_prime(31, 37)), split_from(33554432, [61, 33554371], 37)]).
+step(<(31, 33554432), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 37), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 37), =('Next', 41)], [<(37, 33554432), once(next_prime(37, 41)), split_from(33554432, [61, 33554371], 41)]).
+step(<(37, 33554432), builtin, [], []).
+step(once(next_prime(37, 41)), control, [], [next_prime(37, 41)]).
+step(next_prime(37, 41), rule(6), [=('P', 37), =('Next', 41), =('Q', 39)], [is(39, +(37, 2)), next_prime(39, 41)]).
+step(is(39, +(37, 2)), builtin, [], []).
+step(next_prime(39, 41), rule(5), [=('P', 39), =('Next', 41)], [is(41, +(39, 2)), is_prime(41)]).
+step(is(41, +(39, 2)), builtin, [], []).
+step(is_prime(41), rule(9), [=('P', 41)], [>(41, 3), '=:='(1, rem(41, 2)), \+(has_factor(41, 3))]).
+step(>(41, 3), builtin, [], []).
+step('=:='(1, rem(41, 2)), builtin, [], []).
+step(\+(has_factor(41, 3)), absent, [], []).
+step(split_from(33554432, [61, 33554371], 41), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 41), =('Next', 43)], [<(41, 33554432), once(next_prime(41, 43)), split_from(33554432, [61, 33554371], 43)]).
+step(<(41, 33554432), builtin, [], []).
+step(once(next_prime(41, 43)), control, [], [next_prime(41, 43)]).
+step(next_prime(41, 43), rule(5), [=('P', 41), =('Next', 43)], [is(43, +(41, 2)), is_prime(43)]).
+step(is(43, +(41, 2)), builtin, [], []).
+step(is_prime(43), rule(9), [=('P', 43)], [>(43, 3), '=:='(1, rem(43, 2)), \+(has_factor(43, 3))]).
+step(>(43, 3), builtin, [], []).
+step('=:='(1, rem(43, 2)), builtin, [], []).
+step(\+(has_factor(43, 3)), absent, [], []).
+step(split_from(33554432, [61, 33554371], 43), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 43), =('Next', 47)], [<(43, 33554432), once(next_prime(43, 47)), split_from(33554432, [61, 33554371], 47)]).
+step(<(43, 33554432), builtin, [], []).
+step(once(next_prime(43, 47)), control, [], [next_prime(43, 47)]).
+step(next_prime(43, 47), rule(6), [=('P', 43), =('Next', 47), =('Q', 45)], [is(45, +(43, 2)), next_prime(45, 47)]).
+step(is(45, +(43, 2)), builtin, [], []).
+step(next_prime(45, 47), rule(5), [=('P', 45), =('Next', 47)], [is(47, +(45, 2)), is_prime(47)]).
+step(is(47, +(45, 2)), builtin, [], []).
+step(is_prime(47), rule(9), [=('P', 47)], [>(47, 3), '=:='(1, rem(47, 2)), \+(has_factor(47, 3))]).
+step(>(47, 3), builtin, [], []).
+step('=:='(1, rem(47, 2)), builtin, [], []).
+step(\+(has_factor(47, 3)), absent, [], []).
+step(split_from(33554432, [61, 33554371], 47), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 47), =('Next', 53)], [<(47, 33554432), once(next_prime(47, 53)), split_from(33554432, [61, 33554371], 53)]).
+step(<(47, 33554432), builtin, [], []).
+step(once(next_prime(47, 53)), control, [], [next_prime(47, 53)]).
+step(next_prime(47, 53), rule(6), [=('P', 47), =('Next', 53), =('Q', 49)], [is(49, +(47, 2)), next_prime(49, 53)]).
+step(is(49, +(47, 2)), builtin, [], []).
+step(next_prime(49, 53), rule(6), [=('P', 49), =('Next', 53), =('Q', 51)], [is(51, +(49, 2)), next_prime(51, 53)]).
+step(is(51, +(49, 2)), builtin, [], []).
+step(next_prime(51, 53), rule(5), [=('P', 51), =('Next', 53)], [is(53, +(51, 2)), is_prime(53)]).
+step(is(53, +(51, 2)), builtin, [], []).
+step(is_prime(53), rule(9), [=('P', 53)], [>(53, 3), '=:='(1, rem(53, 2)), \+(has_factor(53, 3))]).
+step(>(53, 3), builtin, [], []).
+step('=:='(1, rem(53, 2)), builtin, [], []).
+step(\+(has_factor(53, 3)), absent, [], []).
+step(split_from(33554432, [61, 33554371], 53), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 53), =('Next', 59)], [<(53, 33554432), once(next_prime(53, 59)), split_from(33554432, [61, 33554371], 59)]).
+step(<(53, 33554432), builtin, [], []).
+step(once(next_prime(53, 59)), control, [], [next_prime(53, 59)]).
+step(next_prime(53, 59), rule(6), [=('P', 53), =('Next', 59), =('Q', 55)], [is(55, +(53, 2)), next_prime(55, 59)]).
+step(is(55, +(53, 2)), builtin, [], []).
+step(next_prime(55, 59), rule(6), [=('P', 55), =('Next', 59), =('Q', 57)], [is(57, +(55, 2)), next_prime(57, 59)]).
+step(is(57, +(55, 2)), builtin, [], []).
+step(next_prime(57, 59), rule(5), [=('P', 57), =('Next', 59)], [is(59, +(57, 2)), is_prime(59)]).
+step(is(59, +(57, 2)), builtin, [], []).
+step(is_prime(59), rule(9), [=('P', 59)], [>(59, 3), '=:='(1, rem(59, 2)), \+(has_factor(59, 3))]).
+step(>(59, 3), builtin, [], []).
+step('=:='(1, rem(59, 2)), builtin, [], []).
+step(\+(has_factor(59, 3)), absent, [], []).
+step(split_from(33554432, [61, 33554371], 59), rule(4), [=('N', 33554432), =('Pair', [61, 33554371]), =('P', 59), =('Next', 61)], [<(59, 33554432), once(next_prime(59, 61)), split_from(33554432, [61, 33554371], 61)]).
+step(<(59, 33554432), builtin, [], []).
+step(once(next_prime(59, 61)), control, [], [next_prime(59, 61)]).
+step(next_prime(59, 61), rule(5), [=('P', 59), =('Next', 61)], [is(61, +(59, 2)), is_prime(61)]).
+step(is(61, +(59, 2)), builtin, [], []).
+step(split_from(33554432, [61, 33554371], 61), rule(3), [=('N', 33554432), =('P', 61), =('Q', 33554371)], [is(33554371, -(33554432, 61)), is_prime(33554371)]).
+step(is(33554371, -(33554432, 61)), builtin, [], []).
+step(is_prime(33554371), rule(9), [=('P', 33554371)], [>(33554371, 3), '=:='(1, rem(33554371, 2)), \+(has_factor(33554371, 3))]).
+step(>(33554371, 3), builtin, [], []).
+step('=:='(1, rem(33554371, 2)), builtin, [], []).
+step(\+(has_factor(33554371, 3)), absent, [], []).
