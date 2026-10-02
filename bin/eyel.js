@@ -1,6 +1,22 @@
 #!/usr/bin/env node
+import module from 'node:module';
 import { readFile } from 'node:fs/promises';
-import { run, checkProof, checkReportTerms } from '../index.js';
+
+// Reuse V8's compilation of the engine between runs. The engine is imported
+// only after the cache is enabled; a static import would already have been
+// compiled by then. enableCompileCache is Node 22.1+, so the call is optional
+// for the Node 18 floor, and an unusable cache directory just leaves startup
+// as it was.
+module.enableCompileCache?.();
+
+// A reader that stops early, as in `eyel --proof p.pl | head`, is a normal end
+// for a command line rather than a crash.
+process.stdout.on('error', (error) => {
+  if (error?.code === 'EPIPE') process.exit(0);
+  throw error;
+});
+
+const { run, checkProof, checkReportTerms } = await import('../index.js');
 
 const help = `Usage: eyel [--proof | --check-proof FILE] [--goal GOAL] [FILE ...]
 Facts and rules use Prolog syntax; :+ rules run to a fixpoint.

@@ -1,5 +1,5 @@
 import { Env, VAR, ATOM, COMPOUND, deref, flattenConjunction, unify, freshTerm, termIsGround } from './kernel/term.js';
-import { parseProgramText } from './kernel/parser.js';
+import { readProgramText } from './kernel/parser.js';
 import { primitiveKeys } from './builtins.js';
 import { key, is, text } from './common.js';
 
@@ -7,27 +7,49 @@ const controls = new Set([',/2', ';/2', '\\+/1', 'call/1', 'once/1', 'findall/3'
 const reserved = new Set(['step/4', 'clause/3']);
 const excludedControls = new Set(['!/0', '->/2', '*->/2', ':/2', ':-/1', '-->/2']);
 const callable = (term) => term?.type === ATOM || term?.type === COMPOUND;
+// The names that can make a goal a control construct or an excluded one. Every
+// goal is checked, so test the name before building a name/arity key for it.
+const CONTROL_NAMES = new Set([',', ';', '\\+', 'call', 'once', 'findall', '!', '->', '*->', ':', ':-', '-->']);
+// Collect a body's goals, splitting only the goals that are conjunctions.
+const isConjunctionGoal = (goal) => goal.type === COMPOUND && goal.name === ',' && goal.args.length === 2;
+function pushGoals(goal, out) {
+  if (isConjunctionGoal(goal)) {
+    for (const item of flattenConjunction(goal)) out.push(item);
+  } else out.push(goal);
+}
 export class Program {
   constructor(source) {
     this.clauses = [];
     this.groups = new Map();
     this.forward = [];
-    for (const parsed of parseProgramText(String(source))) {
+    let stratifying = false;
+    readProgramText(String(source), (parsed) => {
       if (!parsed.head) throw new Error('only facts, :- rules and :+ rules are supported');
       if (is(parsed.head, ':-', 1) || is(parsed.head, '-->', 2)) throw new Error('directives and DCGs are outside eyel');
       const forward = is(parsed.head, ':+', 2);
       if (forward && parsed.body.length) throw new Error('guarded :+ rule declarations are outside eyel');
       const head = forward ? parsed.head.args[0] : parsed.head;
-      const body = (forward ? [parsed.head.args[1]] : parsed.body).flatMap(flattenConjunction);
+      // Keep the parser's body list unless a goal in it is a conjunction to split.
+      let body = parsed.body;
+      if (forward || body.some(isConjunctionGoal)) {
+        body = [];
+        if (forward) pushGoals(parsed.head.args[1], body);
+        else for (const goal of parsed.body) pushGoals(goal, body);
+      }
       const heads = forward ? flattenConjunction(head) : [head];
-      for (const goal of body) validateControls(goal);
+      for (const goal of body) {
+        validateControls(goal);
+        if (!stratifying && mayNeedStratifying(goal)) stratifying = true;
+      }
       for (const item of heads) {
-        if (!callable(item) || is(item, ':', 2) || reserved.has(key(item)) ||
-            ((primitiveKeys.has(key(item)) || controls.has(key(item))) && !(forward && ['true', 'false'].includes(item.name)))) {
+        const id = callable(item) ? key(item) : null;
+        if (id === null || id === ':/2' || reserved.has(id) ||
+            ((primitiveKeys.has(id) || controls.has(id)) && !(forward && (item.name === 'true' || item.name === 'false')))) {
           throw new Error(`unsupported or reserved head ${text(item)}`);
         }
       }
-      const clause = { id: this.clauses.length + 1, head, heads, body, forward, source: parsed.source };
+      // Only a forward rule can have several heads, so only it stores them.
+      const clause = { id: this.clauses.length + 1, head, heads: forward ? heads : null, body, forward, line: parsed.source.line };
       this.clauses.push(clause);
       if (forward) this.forward.push(clause);
       else {
@@ -35,7 +57,7 @@ export class Program {
         if (!this.groups.has(id)) this.groups.set(id, []);
         this.groups.get(id).push(clause);
       }
-    }
+    });
     this.indexes = new Map();
     for (const [id, clauses] of this.groups) {
       this.indexes.set(id, positionIndexes(clauses, (clause) => clause.head, clauses[0].head.arity));
@@ -46,13 +68,14 @@ export class Program {
     for (const clause of this.clauses) {
       if (!clause.forward && !clause.body.length && termIsGround(clause.head)) this.groundFactKeys.add(text(clause.head));
     }
-    this.strata = stratify(this.clauses);
+    this.strata = stratify(this.clauses, stratifying);
   }
-  candidates(goal, env = new Env()) {
-    const id = key(goal);
+  candidates(goal, env = new Env(), id = key(goal)) {
     const clauses = this.groups.get(id) ?? [];
     let chosen = null, matches = null, count = clauses.length;
-    for (const [position, index] of (this.indexes.get(id) ?? []).entries()) {
+    const positions = this.indexes.get(id);
+    for (let position = 0; positions !== undefined && position < positions.length; position++) {
+      const index = positions[position];
       if (index === null) continue;
       const argument = deref(goal.args[position], env);
       if (argument.type !== ATOM) continue;
@@ -92,14 +115,16 @@ function positionIndexes(entries, headOf, arity) {
       if (index === null) continue;
       const argument = head.args[position];
       if (argument.type !== ATOM) { index.other.push(entry); continue; }
-      if (!index.atoms.has(argument.name)) index.atoms.set(argument.name, []);
-      index.atoms.get(argument.name).push(entry);
+      const bucket = index.atoms.get(argument.name);
+      if (bucket === undefined) index.atoms.set(argument.name, [entry]);
+      else bucket.push(entry);
     }
   }
   return positions;
 }
 
 export function validateControls(goal) {
+  if (!CONTROL_NAMES.has(goal.name)) return;
   if (excludedControls.has(key(goal))) throw new Error(`control outside eyel: ${key(goal)}`);
   if (is(goal, ',', 2) || is(goal, ';', 2)) goal.args.forEach(validateControls);
   else if (is(goal, 'call', 1) || is(goal, 'once', 1) || is(goal, '\\+', 1)) validateControls(goal.args[0]);
@@ -125,7 +150,7 @@ function dependencies(goal, closed = false, out = []) {
 function headIndex(clauses) {
   const index = new Map();
   for (const clause of clauses) {
-    for (const head of clause.heads) {
+    for (const head of clause.heads ?? [clause.head]) {
       const id = key(head);
       let entry = index.get(id);
       if (entry == null) { entry = { pairs: [], arity: head.arity, positions: null }; index.set(id, entry); }
@@ -150,6 +175,7 @@ function headCandidates(entry, goal) {
 // Whether a goal could contribute a closed dependency or a dynamic call. Erring
 // towards true only costs the full analysis below, which is always correct.
 function mayNeedStratifying(goal) {
+  if (!CONTROL_NAMES.has(goal.name)) return goal.type === VAR;
   if (is(goal, ',', 2) || is(goal, ';', 2)) {
     return mayNeedStratifying(goal.args[0]) || mayNeedStratifying(goal.args[1]);
   }
@@ -157,18 +183,19 @@ function mayNeedStratifying(goal) {
   if (is(goal, 'once', 1) || is(goal, 'call', 1)) return mayNeedStratifying(goal.args[0]);
   return goal.type === VAR;
 }
-function stratify(clauses) {
+// Edges exist to raise a rank across a closed dependency and to find the
+// dynamic calls a forward rule can reach. A program with neither leaves every
+// rank at zero, so the whole analysis - and the head index it needs - is work
+// with no possible outcome; the constructor notices while it validates goals.
+// Ranks are stored only where the analysis ran: an absent rank is stratum 0.
+function stratify(clauses, stratifying) {
+  if (!stratifying) return new Map();
   const ranks = new Map(clauses.map((clause) => [clause.id, 0]));
-  // Edges exist to raise a rank across a closed dependency and to find the
-  // dynamic calls a forward rule can reach. A program with neither leaves every
-  // rank at zero, so the whole analysis - and the head index it needs - is work
-  // with no possible outcome. Decide that without collecting anything.
-  if (!clauses.some((clause) => clause.body.some(mayNeedStratifying))) return ranks;
   const edges = [];
   const outgoing = new Map();
   const dynamic = new Set();
   const index = headIndex(clauses);
-  const everyHead = clauses.flatMap((clause) => clause.heads.map((head) => ({ clause, head })));
+  const everyHead = clauses.flatMap((clause) => (clause.heads ?? [clause.head]).map((head) => ({ clause, head })));
   for (const clause of clauses) {
     for (const goal of clause.body) for (const dep of dependencies(goal)) {
       const named = dep.goal.type !== VAR;

@@ -22,7 +22,10 @@ export const atom = (name) => new Term(ATOM, name, EMPTY_ARGS);
 export const stringTerm = (value) => new Term(STRING, value, EMPTY_ARGS);
 export const numberTerm = (value) => new Term(NUMBER, value, EMPTY_ARGS);
 export const compound = (name, args = []) => args.length === 0 ? atom(name) : new Term(COMPOUND, name, args);
-export const emptyList = () => atom('[]');
+// Terms are never changed after they are built, so the empty list can be one
+// shared term rather than a new one at the end of every list.
+const EMPTY_LIST = atom('[]');
+export const emptyList = () => EMPTY_LIST;
 export const cons = (head, tail) => compound('.', [head, tail]);
 
 
@@ -107,6 +110,9 @@ export function unify(left, right, env) {
   return true;
 }
 
+// Rename a clause's variables apart. Terms are never changed after they are
+// built, so a subterm with no variable in it is shared rather than copied:
+// renaming a clause then costs only the parts that actually hold variables.
 export function freshTerm(term, suffix, variables = new Map()) {
   if (term.type === VAR) {
     let fresh = variables.get(term.name);
@@ -116,17 +122,19 @@ export function freshTerm(term, suffix, variables = new Map()) {
     }
     return fresh;
   }
-  let fresh;
-  if (term.type === COMPOUND && term.arity === 0) {
-    fresh = atom(term.name);
-  } else {
-    const args = new Array(term.args.length);
-    for (let index = 0; index < args.length; index++) {
-      args[index] = freshTerm(term.args[index], suffix, variables);
+  const count = term.args.length;
+  if (count === 0) return term;
+  let args = null;
+  for (let index = 0; index < count; index++) {
+    const arg = term.args[index];
+    const copy = freshTerm(arg, suffix, variables);
+    if (args === null) {
+      if (copy === arg) continue;
+      args = term.args.slice(0, index);
     }
-    fresh = new Term(term.type, term.name, args);
+    args.push(copy);
   }
-  return fresh;
+  return args === null ? term : new Term(term.type, term.name, args);
 }
 
 export function copyResolved(term, env) {

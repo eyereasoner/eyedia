@@ -140,13 +140,50 @@ integers, floats, compounds, lists and open lists. Double-quoted text is a list
 of characters. The controls are conjunction, disjunction, `call/1`, `once/1`,
 `\+/1` and `findall/3`.
 
-The native predicates cover unification and identity tests, arithmetic and
-comparison, type tests, `functor/3`, `arg/3`, `=../2`, `compare/3`,
-`atom_chars/2`, `atom_codes/2`, `atom_length/2` and `atom_concat/3`. The exact
-list is [src/builtins.js](src/builtins.js). Everything else — membership,
-mapping, sorting, graph traversal, formula inspection — is written as ordinary
-clauses rather than added to the engine. A new native operation has to be
-justified by an example that genuinely cannot be a clause.
+The native predicates are the ones below. In a flow pattern, `+` marks an
+argument that must be bound when the goal runs, `-` one that must be unbound,
+`?` one that may be either, and `@` one that is only inspected. A predicate
+with two patterns works in both directions. Calling a predicate outside its
+patterns usually stops the run with an error rather than failing quietly.
+
+| Predicate | Flow pattern | What it does |
+| --- | --- | --- |
+| `true/0` | `true` | Succeeds. |
+| `fail/0`, `false/0` | `fail` | Fails. |
+| `=/2` | `?X = ?Y` | Unifies `X` and `Y`. |
+| `\=/2` | `@X \= @Y` | Succeeds when `X` and `Y` do not unify; binds nothing. |
+| `==/2` | `@X == @Y` | Succeeds when `X` and `Y` are identical, variables included. |
+| `\==/2` | `@X \== @Y` | Succeeds when `X` and `Y` are not identical. |
+| `compare/3` | `compare(?Order, @X, @Y)` | Unifies `Order` with `<`, `=` or `>` in the standard order of terms. |
+| `is/2` | `?Value is +Expr` | Evaluates `Expr` and unifies the result with `Value`. |
+| `=:=/2`, `=\=/2` | `+Expr1 =:= +Expr2` | Compares two evaluated expressions for equal and unequal. |
+| `</2`, `=</2`, `>/2`, `>=/2` | `+Expr1 < +Expr2` | Compares two evaluated expressions by order. |
+| `var/1`, `nonvar/1` | `var(@X)` | Tests whether `X` is an unbound variable, or is not. |
+| `ground/1` | `ground(@X)` | Tests that `X` contains no unbound variables. |
+| `atom/1`, `number/1` | `atom(@X)` | Tests that `X` is an atom, or a number. |
+| `integer/1`, `float/1` | `integer(@X)` | Tests that `X` is an integer, or a float. |
+| `compound/1` | `compound(@X)` | Tests that `X` is a compound term; a nonempty list is one. |
+| `functor/3` | `functor(+Term, ?Name, ?Arity)`<br>`functor(-Term, +Name, +Arity)` | Takes a term apart into name and arity, or builds a term with fresh arguments. |
+| `arg/3` | `arg(+N, +Term, ?Arg)` | Unifies `Arg` with the `N`th argument of `Term`, counting from 1. |
+| `=../2` | `+Term =.. ?List`<br>`-Term =.. +List` | Converts between a term and the list of its name and arguments. |
+| `atom_chars/2` | `atom_chars(+Atom, ?Chars)`<br>`atom_chars(-Atom, +Chars)` | Converts between an atom and its list of one-character atoms. |
+| `atom_codes/2` | `atom_codes(+Atom, ?Codes)`<br>`atom_codes(-Atom, +Codes)` | Converts between an atom and its list of character codes. |
+| `atom_length/2` | `atom_length(+Atom, ?Length)` | Unifies `Length` with the number of characters in `Atom`. |
+| `atom_concat/3` | `atom_concat(+A, +B, ?AB)`<br>`atom_concat(?A, ?B, +AB)` | Joins two atoms, or enumerates every way to split `AB` in two. |
+
+Arithmetic is exact on integers of any size. Expressions may use `+`, `-`,
+`*`, `/`, `//`, `div`, `mod`, `rem`, `^`, `**`, `min`, `max`, `gcd`, `atan2`,
+the bitwise `/\`, `\/`, `xor`, `\`, `<<` and `>>`, the functions `abs`, `sign`,
+`float`, `truncate`, `round`, `ceiling`, `floor`, `float_integer_part`,
+`float_fractional_part`, `sqrt`, `exp`, `log`, `sin`, `cos`, `tan`, `asin`,
+`acos` and `atan`, and the constants `pi` and `e`. The definitions are in
+[src/builtins.js](src/builtins.js) and
+[src/kernel/iso-arithmetic.js](src/kernel/iso-arithmetic.js).
+
+Everything else — membership, mapping, sorting, graph traversal, formula
+inspection — is written as ordinary clauses rather than added to the engine. A
+new native operation has to be justified by an example that genuinely cannot be
+a clause.
 
 That restraint is what keeps the language learnable, and it reaches further
 than it looks. These are the patterns the examples are built from:
@@ -425,6 +462,10 @@ internal `X#1` can never be confused with a source variable named `X_1`.
 nothing in a program can change how the rest of itself — or any program loaded
 beside it — is read. A source text has exactly one reading, which is why
 [test/syntax.test.js](test/syntax.test.js) can state that reading case by case.
+Large generated programs are mostly one-line clauses of plain names, variables
+and small integers, so those are read directly rather than token by token; the
+test suite checks that the direct reading and the general one agree on every
+example and on thousands of edge cases, errors included.
 There is no separate query syntax to interact with it either: a goal is the
 ordinary clause `true :+ Goal.`, so nothing around it can change how it reads.
 
@@ -436,10 +477,12 @@ their argument patterns do not overlap — which is exactly what you need when
 everything is `t/3`. Positive cycles stay in one stratum; closed dependency
 cycles are rejected, as are dynamic meta-calls reachable from forward rules.
 
-**Proof steps record the first derivation found** for each conclusion. Nodes
-carry the terms they were built from and are resolved once, by whoever consumes
-a complete answer, so a conjunction does not re-copy the proof forest for each
-of its goals.
+**Proof steps record the first derivation found** for each conclusion, and are
+recorded only when a proof is asked for: without one, the search keeps just what
+it needs to find answers. Nodes carry the terms they were built from and are
+resolved once, by whoever consumes a complete answer, so a conjunction does not
+re-copy the proof forest for each of its goals. Renaming a clause apart shares
+every subterm that holds no variable, since terms never change once built.
 
 ## What is deliberately absent
 

@@ -1,5 +1,6 @@
 import test from './progress.js';
 import assert from 'node:assert/strict';
+import { readdirSync, readFileSync } from 'node:fs';
 import { run, parseTermText, parseGoalText } from '../index.js';
 import { parseProgramText } from '../src/kernel/parser.js';
 import { text } from '../src/common.js';
@@ -133,9 +134,11 @@ test('directives and DCGs parse as terms and are refused by the profile', () => 
     assert.equal(parseProgramText(source).length, 1, source);
     assert.throws(() => run(source), /directives and DCGs are outside eyel/, source);
   }
-  // op/3 cannot introduce syntax, so a program using a declared operator is a
-  // syntax error rather than a silently different reading.
-  assert.throws(() => run(':- op(700, xfx, ===).\na === b.\n'), /expected \., got ===/);
+  // op/3 cannot introduce syntax: the directive is refused where it stands, the
+  // first problem in reading order, and the operator it would have declared is
+  // still a syntax error wherever it is used.
+  assert.throws(() => run(':- op(700, xfx, ===).\na === b.\n'), /directives and DCGs are outside eyel/);
+  assert.throws(() => parseProgramText(':- op(700, xfx, ===).\na === b.\n'), /expected \., got ===/);
 });
 
 test('source metadata records the line each clause starts on', () => {
@@ -149,4 +152,29 @@ test('term and goal entry points read one term', () => {
   assert.throws(() => parseTermText('f(a, b)'), /expected \./);
   assert.throws(() => parseTermText('f(a). g(b).'), /expected end of input/);
   assert.throws(() => parseGoalText('a. b.'), /bad goal|expected/);
+});
+
+test('the direct reading of simple clauses agrees with the general parser', () => {
+  // Simple clauses are read directly rather than token by token. Both readings
+  // must give the same clauses, lines and errors, including how variables are
+  // shared and anonymous ones numbered across clause boundaries.
+  const render = (clause) => `${clause.source.line}|${text(clause.head)}|${clause.body.map((goal) => text(goal)).join(',')}`;
+  const read = (source, direct) => {
+    try { return parseProgramText(source, { direct }).map(render); } catch (error) { return `ERROR ${error.message}`; }
+  };
+  const agree = (source) => assert.deepEqual(read(source, true), read(source, false), JSON.stringify(source));
+  const cases = [
+    'p(_, _) :- q(_).\nr(_).', 'p(_) :- mod.\nq(_).', 'p :- is.', 'is :- p.', 'p(is, mod) :- q(rem).', 'mod(A, B) :- div(A, B).',
+    'p. % comment', 'p.%x', 'p.\tq.', 'p./*c*/', 'p :- q.\n\n\nr(X) :- s(X).', 'p(007).', 'p(0).', 'p(12).', "p(0'a).",
+    'p(-1).', 'p(1.5).', 'p(a) :- q(b) , r(c) .', 'p( a ,b ).', 'p(a).q(b).', 'p(a). q(b).', 'p (a).', 'p:-q.', 'p :-- q.',
+    'p :- q;r.', 'p(X) :- X = a.', 'true :+ p(X).', 'p(f(a)).', "p('a').", 'p("a").', 'p(A) :- q(A, _B, _).', 'P.',
+    'p(a', 'p(a) :- .', 'p :- q,.', 'p.\r\nq.', 'p.\fq.', 'café(a).', 'f(a,b,c,d,e,f,g,h,i,j).', ':- p.', 'p(a) :- q(a) .%c',
+  ];
+  for (const first of cases) {
+    agree(first);
+    for (const second of cases) agree(`${first}\n${second}`);
+  }
+  for (const name of readdirSync(new URL('../examples/', import.meta.url)).filter((file) => file.endsWith('.pl'))) {
+    agree(readFileSync(new URL(`../examples/${name}`, import.meta.url), 'utf8'));
+  }
 });

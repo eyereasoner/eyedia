@@ -90,11 +90,13 @@ for JSON output instead of Prolog facts.
 `fibonacci.pl` answers F(0), F(1), F(10), F(100), F(1000) and F(10000), the
 last a 2090-digit integer, then divides successive values to watch the ratio
 converge on the golden ratio. It uses fast doubling, which halves the index at
-each recursive step and fits within the default reasoning limits.
+each recursive step and fits within the default reasoning limits. Its saved
+proof records the arithmetic and recursive clause instances without trusted
+obligations.
 
 The `deep-taxonomy` examples are the deep-taxonomy benchmark: one individual, a
 chain of subclass rules, and two sibling branches at every level that lead
-nowhere. The query has to follow the single productive branch the whole way
+nowhere. The goal has to follow the single productive branch the whole way
 down, so the chain length is also the backward recursion depth. The five sizes
 run from ten to a hundred thousand levels, and each costs exactly one
 resolution step per level, which `--stats` reports and the saved check report
@@ -105,14 +107,15 @@ explicit machine, so the depth costs heap rather than host stack.
 node bin/eyel.js --stats examples/deep-taxonomy-100000.pl
 ```
 
-These are the largest artifacts in the corpus: the hundred-thousand-level
-source is about 10 MB and its certificate about 15 MB, since a certificate
-records every step it claims. Running `npm test` or `npm run examples:update`
-therefore spends most of its time on this one example. Its saved proof records the arithmetic and recursive clause
-instances without trusted obligations.
+These are among the largest artifacts in the corpus: the hundred-thousand-level
+source is about 10 MB and its certificate about 14 MB, since a certificate
+records every step it claims. Only `padovan.pl` has a larger one, at about
+22 MB, because each of its steps carries integers hundreds of digits long.
+Running `npm test` or `npm run examples:update` spends much of its time on these
+two examples.
 
 `path-discovery.pl` contains 7,698 airport records and 37,505 directed
-connections. Its default query finds three routes from Ostend to Prague with
+connections. Its default goal finds three routes from Ostend to Prague with
 at most two stopovers. Use any airport-name atoms and a nonnegative integer
 limit with `path_discovery(From, To, MaxStopovers, Path)`:
 
@@ -122,7 +125,7 @@ node bin/eyel.js --proof --goal "path_discovery('Ostend-Bruges International Air
 node bin/eyel.js --strict-proof --check-proof /tmp/route-proof.pl examples/path-discovery.pl
 ```
 
-`--goal` replaces the default query. Zero stopovers allows only direct flights;
+`--goal` replaces the default goal. Zero stopovers allows only direct flights;
 N stopovers allows at most N+1 flights. Routes follow the recorded direction
 and never repeat an airport. Equal endpoints and unknown names return no
 routes. Negative or noninteger limits also return no routes. You can leave
@@ -133,9 +136,10 @@ disequalities to prevent cycles, so its proofs have no trusted obligations.
 Large bounds on a dense network may still reach the configured reasoning limits.
 
 `peano.pl` represents natural numbers as `zero`, `s(zero)`, and so on. Its
-addition query enumerates every split of a known sum, and a second query chains
-all three relations: `(1*2)+3` is 5, whose factorial is 120 nested successors. `expression-eval.pl`
-evaluates a graph for `(2*3)+(10-4)` and emits `result(example, 12)`.
+addition goal enumerates every split of a known sum, and a second goal chains
+all three relations: `(1*2)+3` is 5, whose factorial is 120 nested successors.
+`expression-eval.pl` evaluates a graph for `(2*3)+(10-4)` and emits
+`result(example, 12)`.
 `concept-alignment.pl` rolls up five concepts to a shared reporting class,
 including a source concept reached through multiple broader links.
 
@@ -167,7 +171,7 @@ node bin/eyel.js --goal "complex_div(complex(1, 0), complex(0, 1), Inverse)" exa
 `modexp.pl` handles billion-sized exponents by repeated squaring without
 constructing the full power. Supply an integer base, a nonnegative integer
 exponent and a positive integer modulus. `queens.pl` returns the first solution
-for an 8x8 board by default; replacing the query enumerates other board sizes:
+for an 8x8 board by default; another goal enumerates other board sizes:
 
 ```sh
 node bin/eyel.js --goal "mod_pow(7, 1000000000, 1000000007, Result)" examples/modexp.pl
@@ -187,8 +191,7 @@ weights and their collected total alongside a floating-point probability.
 mitigation. Rank 1 has the highest score; equal scores share a rank. Output
 follows inference order, with ranks recorded explicitly. Adding the missing
 safeguards removes the affected findings. Both examples expose their collection
-obligations, and policy findings also expose absence obligations. The other
-seven new examples pass strict proof checking.
+obligations, and policy findings also expose absence obligations.
 
 `age.pl` checks whether a person's age strictly exceeds `years(N)` or `days(N)`.
 It uses `as_of(date(2026, 10, 1))` for reproducible output and proofs. Edit that
@@ -207,14 +210,33 @@ rules. Invalid dates, future births, unknown people, and negative or noninteger
 thresholds return no answers. Reference dates are explicit source data rather
 than clock readings, and the example passes strict proof checking.
 
-The classics from `ackermann.pl` to `monkey-bananas.pl` come from the sibling
-eyelet project, which uses the same `:+` rule syntax, and ten of the twelve
-print exactly what eyelet prints. Where eyelet leans on library predicates such
-as `between/3`, `member/2` or `length/2`, these define them as ordinary clauses,
-and where it uses cut they commit with `once/1` or with guards that make the
-alternatives exclusive. `wolf-goat-cabbage.pl` also prints the two shortest
-plans, not only that seven crossings are minimal. `sieve.pl` stops at 100
-instead of 1000, because its certificate records every intermediate list.
+The classics from `ackermann.pl` to `monkey-bananas.pl` are written without a
+library. Relations such as `between/3`, `member/2` or `length/2` are defined in
+each program as ordinary clauses, and a search commits with `once/1`, or with
+guards that make its alternatives exclusive, where Prolog would use cut.
+
+`ackermann.pl` computes A(4, 2), a number with 19,729 digits, through the
+hyperoperation sequence: addition, multiplication and exponentiation have closed
+forms, and every higher level is the one below it iterated. `peasant.pl`
+multiplies and raises to powers using only halving, doubling and addition, and
+`padovan.pl` follows the Padovan sequence to its 3674th value before showing
+successive ratios converge on the plastic ratio, about 1.3247. `sieve.pl` lists
+the primes below 100 by striking out multiples from an explicit list; it stops
+there because its certificate records every intermediate list, which grows far
+faster than the answer.
+
+`goldbach.pl` splits every power of two from 4 to 2^25 into two primes, taking
+the split with the smallest prime. `easter.pl` dates Easter Sunday for 2021 to
+2050 with the anonymous Gregorian algorithm, every step integer arithmetic on
+the year. `turing.pl` is a Turing machine interpreter running a machine that
+adds one to a binary number.
+
+`zebra.pl` solves Einstein's riddle by narrowing a list of five partially known
+houses with unification alone. `four-color.pl` colours the 27 countries of the
+European Union so that no neighbours share a colour. `wolf-goat-cabbage.pl`
+shows that a safe crossing takes seven trips and that no shorter one exists,
+then prints both seven-trip plans. `monkey-bananas.pl` lists every plan of up
+to five moves that gets the monkey the bananas, shortest first.
 
 Certificates that lean on a completed search say so. In `kaprekar.pl` the whole
 verification sits inside one negation, so its certificate is two steps plus an

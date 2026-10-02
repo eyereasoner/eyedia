@@ -33,6 +33,17 @@ const TOK = {
   COMMA: ',', BAR: '|', DOT: '.', IF: ':-'
 };
 
+// Every token has the same shape, so the parser's property reads on tokens stay
+// monomorphic. Only a left parenthesis consults precededByLayout, to tell
+// f(X) from f (X); a quoted name is never an operator.
+const makeToken = (type, text, line, precededByLayout = false, quoted = false) =>
+  ({ type, text, line, precededByLayout, quoted });
+const PUNCTUATION = new Map([
+  ['(', TOK.LPAREN], [')', TOK.RPAREN], ['[', TOK.LBRACKET], [']', TOK.RBRACKET],
+  ['{', TOK.LBRACE], ['}', TOK.RBRACE], [',', TOK.COMMA], ['|', TOK.BAR], ['.', TOK.DOT],
+]);
+const TERM_ENDING_TOKENS = new Set([TOK.VAR, TOK.NUMBER, TOK.STRING, TOK.RPAREN, TOK.RBRACKET, TOK.RBRACE]);
+
 function isWhitespaceCode(code) {
   return (code >= 0 && code <= 32) || code === 127;
 }
@@ -181,13 +192,29 @@ function negatedNumberTerm(value) {
     : numberTerm(numberTextFromDouble(-Number(value)));
 }
 
+// A clause built only from plain names, variables and small integers, on one
+// line, is read directly instead of token by token. Large generated programs
+// are made of exactly these, and tokenizing them costs more than reasoning over
+// them. The pattern admits nothing whose reading could differ from the general
+// parser's: no operators, quotes, comments, line breaks or numbers needing a
+// canonical spelling, and a name that is an operator sends the clause back to
+// the general parser. test/syntax.test.js checks that both readings agree.
+const SIMPLE_ARGUMENT = '(?:[A-Za-z_][A-Za-z0-9_]*|0|[1-9][0-9]*)';
+const SIMPLE_GOAL = `[a-z][A-Za-z0-9_]*(?:\\([ \\t]*${SIMPLE_ARGUMENT}(?:[ \\t]*,[ \\t]*${SIMPLE_ARGUMENT})*[ \\t]*\\))?`;
+const SIMPLE_CLAUSE = new RegExp(
+  `${SIMPLE_GOAL}(?:[ \\t]*:-[ \\t]*${SIMPLE_GOAL}(?:[ \\t]*,[ \\t]*${SIMPLE_GOAL})*)?[ \\t]*\\.(?=[ \\t\\r\\n%]|$)`, 'y');
+const isNameCode = (code) =>
+  (code >= 97 && code <= 122) || (code >= 65 && code <= 90) || (code >= 48 && code <= 57) || code === 95;
+
 class Parser {
-  constructor(source) {
+  constructor(source, options = {}) {
+    this.direct = options.direct !== false;
     this.source = String(source ?? '');
     this.pos = 0;
     this.line = 1;
     this.anonymous = 0;
     this.variables = new Map();
+    this.functors = new Map();
     this.previousToken = null;
     this.token = this.nextToken();
   }
@@ -216,23 +243,25 @@ class Parser {
     return null;
   }
   skipWhitespaceAndComments() {
-    while (true) {
-      while (this.peek() && isWhitespaceCharacter(this.peek())) this.take();
-      if (this.peek() === '%') {
-        while (this.peek() && this.peek() !== '\n') this.take();
-        continue;
+    const source = this.source;
+    while (this.pos < source.length) {
+      const code = source.charCodeAt(this.pos);
+      if (code <= 32 || code === 127) {
+        if (code === 10) this.line++;
+        this.pos++;
+      } else if (code === 37) {
+        const end = source.indexOf('\n', this.pos);
+        this.pos = end < 0 ? source.length : end;
+      } else if (code === 47 && source.charCodeAt(this.pos + 1) === 42) {
+        const end = source.indexOf('*/', this.pos + 2);
+        if (end < 0) throw new Error(`parse line ${this.line}: unterminated block comment`);
+        for (let i = this.pos; i < end; i++) if (source.charCodeAt(i) === 10) this.line++;
+        this.pos = end + 2;
+      } else if (code > 0x7f && isWhitespaceCharacter(source[this.pos])) {
+        this.pos++;
+      } else {
+        return;
       }
-      if (this.peek() === '/' && this.peek(1) === '*') {
-        const line = this.line;
-        this.take();
-        this.take();
-        while (this.peek() && !(this.peek() === '*' && this.peek(1) === '/')) this.take();
-        if (!this.peek()) throw new Error(`parse line ${line}: unterminated block comment`);
-        this.take();
-        this.take();
-        continue;
-      }
-      break;
     }
   }
   integerDigits(digitPattern, line) {
@@ -321,7 +350,7 @@ class Parser {
       value = this.readEscape(line, false);
     }
     const code = value.codePointAt(0);
-    return { type: TOK.NUMBER, text: String(negative ? -code : code), line };
+    return makeToken(TOK.NUMBER, String(negative ? -code : code), line);
   }
   quotedToken(line) {
     const quote = this.take();
@@ -343,7 +372,7 @@ class Parser {
       }
       text += value;
     }
-    return { type: quote === '"' ? TOK.STRING : TOK.ATOM, text, line, quoted: true };
+    return makeToken(quote === '"' ? TOK.STRING : TOK.ATOM, text, line, false, true);
   }
   numberToken(line) {
     const start = this.pos;
@@ -371,7 +400,7 @@ class Parser {
       let integer = 0n;
       for (const digit of digits) integer = integer * BigInt(radix) + BigInt(Number.parseInt(digit, radix));
       if (negative) integer = -integer;
-      return { type: TOK.NUMBER, text: integer.toString(), line };
+      return makeToken(TOK.NUMBER, integer.toString(), line);
     }
 
     const { digits, separated } = this.integerDigits(RE_DECIMAL_DIGIT, line);
@@ -396,82 +425,88 @@ class Parser {
     const text = hasFraction
       ? finiteFloatTokenText(this.source.slice(start, this.pos))
       : BigInt(`${negative ? '-' : ''}${digits}`).toString();
-    return { type: TOK.NUMBER, text, line };
+    return makeToken(TOK.NUMBER, text, line);
   }
   nextToken() {
     // The tokenizer keeps just enough state for useful parse-line errors and
     // treats quoted atoms and quoted strings differently, as Prolog syntax does.
     const beforeLayout = this.pos;
     this.skipWhitespaceAndComments();
+    this.tokenStart = this.pos;
     const precededByLayout = this.pos !== beforeLayout;
     const line = this.line;
+    const source = this.source;
     const ch = this.peek();
-    if (!ch) return { type: TOK.EOF, text: '', line };
+    if (!ch) return makeToken(TOK.EOF, '', line, precededByLayout);
+    const code = ch.charCodeAt(0);
+
+    // Names are by far the most common token, so scan them first and by code.
+    const variableName = code === 95 || (code >= 65 && code <= 90) || (code > 0x7f && isVariableStartCharacter(ch));
+    if (variableName || (code >= 97 && code <= 122) || (code > 0x7f && isPlainAtomStartCharacter(ch))) {
+      const start = this.pos;
+      let i = start + 1;
+      for (;;) {
+        const next = source.charCodeAt(i);
+        if ((next >= 97 && next <= 122) || (next >= 65 && next <= 90) || (next >= 48 && next <= 57) || next === 95 ||
+            (next > 0x7f && isNameContinueCharacter(source[i]))) i++;
+        else break;
+      }
+      this.pos = i;
+      return makeToken(variableName ? TOK.VAR : TOK.ATOM, source.slice(start, i), line, precededByLayout);
+    }
+
     if (ch === '?' && this.peek(1) === '-' &&
         !(graphicAtomChars.includes(this.peek(2)) && !this.terminatingFullStop(this.pos + 2))) {
       this.pos += 2;
-      return { type: TOK.ATOM, text: '?-', line };
+      return makeToken(TOK.ATOM, '?-', line, precededByLayout);
     }
     if (ch === '.' && !this.terminatingFullStop()) {
       const start = this.pos;
       this.take();
       while (isGraphicAtomCharacter(this.peek()) && !this.terminatingFullStop()) this.take();
-      return { type: TOK.ATOM, text: this.source.slice(start, this.pos), line };
+      return makeToken(TOK.ATOM, source.slice(start, this.pos), line, precededByLayout);
     }
     if (ch === '!' || ch === ';') {
-      this.take();
-      return { type: TOK.ATOM, text: ch, line };
+      this.pos++;
+      return makeToken(TOK.ATOM, ch, line, precededByLayout);
     }
-    const punct = {
-      '(': TOK.LPAREN, ')': TOK.RPAREN, '[': TOK.LBRACKET, ']': TOK.RBRACKET,
-      '{': TOK.LBRACE, '}': TOK.RBRACE, ',': TOK.COMMA, '|': TOK.BAR, '.': TOK.DOT,
-    };
-    if (punct[ch]) {
-      this.take();
-      return { type: punct[ch], text: ch, line, precededByLayout };
+    const punctuation = PUNCTUATION.get(ch);
+    if (punctuation !== undefined) {
+      this.pos++;
+      return makeToken(punctuation, ch, line, precededByLayout);
     }
     if (ch === ':' && this.peek(1) === '-' &&
         !(graphicAtomChars.includes(this.peek(2)) && !this.terminatingFullStop(this.pos + 2))) {
       this.pos += 2;
-      return { type: TOK.IF, text: ':-', line };
+      return makeToken(TOK.IF, ':-', line, precededByLayout);
     }
     if (ch === ':' &&
         !(graphicAtomChars.includes(this.peek(1)) && !this.terminatingFullStop(this.pos + 1))) {
-      this.take();
-      return { type: TOK.ATOM, text: ':', line };
+      this.pos++;
+      return makeToken(TOK.ATOM, ':', line, precededByLayout);
     }
     if (ch === '"' || ch === "'") return this.quotedToken(line);
 
     // A signed numeric literal is only recognized where a term may start.
     // Otherwise the minus is the standard infix operator, so compact ISO
     // syntax such as `X-1` must not be read as `X` followed by `-1`.
-    const previousEndsTerm = this.previousToken && (
-      [TOK.VAR, TOK.NUMBER, TOK.STRING, TOK.RPAREN, TOK.RBRACKET, TOK.RBRACE].includes(this.previousToken.type) ||
-      (this.previousToken.type === TOK.ATOM &&
-       !INFIX_OPERATORS.has(this.previousToken.text) &&
-       !PREFIX_OPERATORS.has(this.previousToken.text))
-    );
-    if (isDigitCode(ch.charCodeAt(0)) ||
-        (ch === '-' && isDigitCode(this.peek(1).charCodeAt(0)) && !previousEndsTerm)) {
+    if (isDigitCode(code) || (ch === '-' && isDigitCode(this.peek(1).charCodeAt(0)) && !this.previousEndsTerm())) {
       return this.numberToken(line);
-    }
-
-    if (isVariableStartCharacter(ch) || isPlainAtomStartCharacter(ch)) {
-      const variableName = isVariableStartCharacter(ch);
-      const start = this.pos;
-      this.take();
-      while (isNameContinueCharacter(this.peek())) this.take();
-      return { type: variableName ? TOK.VAR : TOK.ATOM, text: this.source.slice(start, this.pos), line };
     }
 
     if (isGraphicAtomCharacter(ch)) {
       const start = this.pos;
       this.take();
       while (isGraphicAtomCharacter(this.peek()) && !this.terminatingFullStop()) this.take();
-      return { type: TOK.ATOM, text: this.source.slice(start, this.pos), line };
+      return makeToken(TOK.ATOM, source.slice(start, this.pos), line, precededByLayout);
     }
 
     throw new Error(`parse line ${line}: bad character ${JSON.stringify(ch)}`);
+  }
+  previousEndsTerm() {
+    const previous = this.previousToken;
+    return previous !== null && (TERM_ENDING_TOKENS.has(previous.type) ||
+      (previous.type === TOK.ATOM && !INFIX_OPERATORS.has(previous.text) && !PREFIX_OPERATORS.has(previous.text)));
   }
   advance() {
     this.previousToken = this.token;
@@ -666,13 +701,7 @@ class Parser {
     if (this.token.type === TOK.VAR) {
       const name = this.token.text;
       this.advance();
-      if (name === '_') return variable(`__anon${this.anonymous++}`);
-      let term = this.variables.get(name);
-      if (term == null) {
-        term = variable(name);
-        this.variables.set(name, term);
-      }
-      return term;
+      return this.variableTerm(name);
     }
     if (this.token.type === TOK.STRING) return this.parseCharacterList(allowBar);
     if (this.token.type === TOK.NUMBER) {
@@ -725,6 +754,74 @@ class Parser {
     for (let i = items.length - 1; i >= 0; i--) tail = cons(atom(items[i]), tail);
     return tail;
   }
+  // A functor name recurs in every clause that uses it, while there are few of
+  // them, so keep one copy of each.
+  functorName(text) {
+    const known = this.functors.get(text);
+    if (known !== undefined) return known;
+    this.functors.set(text, text);
+    return text;
+  }
+  // Variables are shared by name across the whole program text, and each `_`
+  // is a fresh variable numbered in reading order.
+  variableTerm(name) {
+    if (name === '_') return variable(`__anon${this.anonymous++}`);
+    let term = this.variables.get(name);
+    if (term == null) {
+      term = variable(name);
+      this.variables.set(name, term);
+    }
+    return term;
+  }
+  // Read a simple clause starting at the current token, or return null and
+  // leave the parser exactly as it was.
+  directClause(line) {
+    const source = this.source;
+    SIMPLE_CLAUSE.lastIndex = this.tokenStart;
+    if (!SIMPLE_CLAUSE.test(source)) return null;
+    const end = SIMPLE_CLAUSE.lastIndex;
+    const anonymous = this.anonymous;
+    let i = this.tokenStart;
+    const skip = () => { while (source.charCodeAt(i) === 32 || source.charCodeAt(i) === 9) i++; };
+    const name = () => { const start = i; while (isNameCode(source.charCodeAt(i))) i++; return source.slice(start, i); };
+    const goal = () => {
+      const functor = this.functorName(name());
+      if (source.charCodeAt(i) !== 40) return INFIX_OPERATORS.has(functor) || PREFIX_OPERATORS.has(functor) ? null : atom(functor);
+      i++;
+      const args = [];
+      for (;;) {
+        skip();
+        const code = source.charCodeAt(i);
+        const text = name();
+        args.push(code === 95 || (code >= 65 && code <= 90) ? this.variableTerm(text)
+          : code >= 48 && code <= 57 ? numberTerm(text) : atom(text));
+        skip();
+        if (source.charCodeAt(i++) !== 44) break;
+      }
+      return compound(functor, args);
+    };
+    const head = goal();
+    const body = [];
+    let readable = head !== null;
+    skip();
+    if (readable && source.charCodeAt(i) === 58) {
+      i += 2;
+      for (;;) {
+        skip();
+        const item = goal();
+        if (item === null) { readable = false; break; }
+        body.push(item);
+        skip();
+        if (source.charCodeAt(i) !== 44) break;
+        i++;
+      }
+    }
+    if (!readable) { this.anonymous = anonymous; return null; }
+    this.pos = end;
+    this.previousToken = makeToken(TOK.DOT, '.', line);
+    this.token = this.nextToken();
+    return { head, body, source: { line } };
+  }
   parseStandaloneTerm() {
     // parseTermText consumes one ordinary Prolog term, not a program clause.
     // Commas and operators such as :- and ?- belong to the term itself and
@@ -734,8 +831,11 @@ class Parser {
     this.expect(TOK.EOF, 'end of input');
     return term;
   }
-  parseProgram() {
+  // Each clause goes to `emit` as soon as it is read, so a caller that keeps its
+  // own records does not also hold every parsed record until the end.
+  parseProgram(emit = null) {
     const clauses = [];
+    const accept = emit ?? ((clause) => clauses.push(clause));
     while (this.token.type !== TOK.EOF) {
       const line = this.token.line;
       const source = { line };
@@ -752,8 +852,12 @@ class Parser {
         this.advance();
         const directive = this.parseTerm(0, true);
         this.expectAndAdvance(TOK.DOT, '.');
-        clauses.push({ head: compound(':-', [directive]), body: [], source });
+        accept({ head: compound(':-', [directive]), body: [], source });
         continue;
+      }
+      if (this.direct && this.token.type === TOK.ATOM && !this.token.quoted) {
+        const clause = this.directClause(line);
+        if (clause !== null) { accept(clause); continue; }
       }
       // The clause grammar keeps the priority-1200 neck outside the initial
       // head parse, so a head is read below that priority and the neck,
@@ -793,14 +897,21 @@ class Parser {
         }
       }
       this.expectAndAdvance(TOK.DOT, '.');
-      clauses.push({ head, body, source });
+      accept({ head, body, source });
     }
     return clauses;
   }
 }
 
-export function parseProgramText(source) {
-  return new Parser(source).parseProgram();
+// `direct: false` reads every clause token by token; the tests use it to check
+// that both readings of a program are the same.
+export function parseProgramText(source, options = {}) {
+  return new Parser(source, options).parseProgram();
+}
+
+// Read a program text, handing each clause to `emit` as it is read.
+export function readProgramText(source, emit, options = {}) {
+  new Parser(source, options).parseProgram(emit);
 }
 
 export function parseTermText(text) {

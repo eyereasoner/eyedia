@@ -32,16 +32,26 @@ function resolveNode(node, env) {
   }
   return root;
 }
-const primitiveNode = (goal, by = atom('builtin'), children = []) => ({ goal, by, bindings: [], children });
+const BUILTIN = atom('builtin'), CONTROL = atom('control'), ABSENT = atom('absent'), COLLECTED = atom('collected');
+const primitiveNode = (goal, by = BUILTIN, children = []) => ({ goal, by, bindings: [], children });
 
+// Proof nodes are recorded only when a proof is asked for. Without one, frames
+// share this empty list and a finished body has nothing to hand back, so the
+// search keeps only what it needs to find answers.
+const NO_NODES = Object.freeze([]);
+const QUIET = Object.freeze({ goal: null, by: null, bindings: NO_NODES, cut: null });
 const SPLICE = 'splice';
-const advance = (frame, node) => ({ ...frame, index: frame.index + 1, nodes: [...frame.nodes, node] });
-const childFrame = (parent, goals, pending, depth) => ({ goals, index: 0, nodes: [], parent, pending, depth });
-const controlPending = (goal, cut) => ({ goal, by: atom('control'), bindings: [], cut });
+const advance = (frame, node, recording) =>
+  ({ ...frame, index: frame.index + 1, nodes: recording ? [...frame.nodes, node] : NO_NODES });
+const childFrame = (parent, goals, pending, depth, recording) =>
+  ({ goals, index: 0, nodes: recording ? [] : NO_NODES, parent, pending, depth });
+const controlPending = (goal, cut, recording) =>
+  (recording || cut !== null ? { goal, by: CONTROL, bindings: NO_NODES, cut } : QUIET);
 // A finished body hands its nodes to the frame that started it: a conjunction
 // splices them in place, anything else wraps them as one step's children.
-function closeFrame(frame) {
+function closeFrame(frame, recording) {
   const parent = frame.parent;
+  if (!recording) return { ...parent, index: parent.index + 1 };
   const nodes = frame.pending === SPLICE
     ? [...parent.nodes, ...frame.nodes]
     : [...parent.nodes, {
@@ -50,10 +60,14 @@ function closeFrame(frame) {
   return { ...parent, index: parent.index + 1, nodes };
 }
 
+const alternativeCount = (point) =>
+  (point.kind === 'branch' ? point.alternatives.length : point.facts.length + point.clauses.length);
+
 export class Solver {
   constructor(program, options = {}) {
     this.program = program;
     this.options = options;
+    this.recording = Boolean(options.proof);
     this.serial = 0;
     this.facts = new Map();
     this.factKeys = new Set(program.groundFactKeys);
@@ -80,7 +94,8 @@ export class Solver {
   // trail on backtracking, so an answer's bindings are only valid until the
   // next one is requested. Every consumer here copies what it needs first.
   *solve(goals, env = new Env(), depth = 0) {
-    let frame = { goals, index: 0, nodes: [], parent: null, pending: null, depth };
+    const recording = this.recording;
+    let frame = { goals, index: 0, nodes: recording ? [] : NO_NODES, parent: null, pending: null, depth };
     const choices = [];
     const entry = env.mark();
     let failed = false;
@@ -101,7 +116,7 @@ export class Solver {
           // once/1 commits to its first solution by discarding the choice
           // points its own goal created.
           if (frame.pending.cut != null && choices.length > frame.pending.cut) choices.length = frame.pending.cut;
-          frame = closeFrame(frame);
+          frame = closeFrame(frame, recording);
           continue;
         }
         this.budget(frame.depth);
@@ -119,7 +134,8 @@ export class Solver {
   // Start one goal. Returns the frame to continue from, or null when the goal
   // has no solution at all.
   step(goal, frame, env, choices) {
-    if (is(goal, ',', 2)) return childFrame(frame, flattenConjunction(goal), SPLICE, frame.depth);
+    const recording = this.recording;
+    if (is(goal, ',', 2)) return childFrame(frame, flattenConjunction(goal), SPLICE, frame.depth, recording);
     if (is(goal, '\\+', 1)) {
       // Negation is a test, not a way to bind its variables.
       if (!termIsGround(goal.args[0], env)) throw new Error('negation requires a ground goal');
@@ -127,7 +143,7 @@ export class Solver {
       const iterator = this.solve([goal.args[0]], env, frame.depth + 1);
       let absent;
       try { absent = iterator.next().done; } finally { iterator.return(); env.undo(mark); }
-      return absent ? advance(frame, primitiveNode(goal, atom('absent'))) : null;
+      return absent ? advance(frame, recording ? primitiveNode(goal, ABSENT) : null, recording) : null;
     }
     if (is(goal, 'findall', 3)) {
       const items = [];
@@ -137,25 +153,28 @@ export class Solver {
       }
       env.undo(mark);
       if (!unify(goal.args[2], listFromItems(items), env)) { env.undo(mark); return null; }
-      return advance(frame, primitiveNode(goal, atom('collected')));
+      return advance(frame, recording ? primitiveNode(goal, COLLECTED) : null, recording);
     }
     let point;
+    const id = key(goal);
     if (is(goal, ';', 2)) {
       point = { kind: 'branch', frame, mark: env.mark(), goal, alternatives: goal.args, position: 0 };
     } else if (is(goal, 'call', 1) || is(goal, 'once', 1)) {
       const cut = goal.name === 'once' ? choices.length : null;
-      return childFrame(frame, [goal.args[0]], controlPending(goal, cut), frame.depth + 1);
-    } else if (primitiveKeys.has(key(goal))) {
+      return childFrame(frame, [goal.args[0]], controlPending(goal, cut, recording), frame.depth + 1, recording);
+    } else if (primitiveKeys.has(id)) {
       point = { kind: 'primitive', frame, mark: env.mark(), goal, iterator: primitive(goal, env) };
     } else {
-      const alternatives = [];
-      for (const fact of this.facts.get(key(goal)) ?? []) alternatives.push({ fact });
-      for (const clause of this.program.candidates(goal, env)) alternatives.push({ clause });
-      point = { kind: 'resolve', frame, mark: env.mark(), goal, alternatives, position: 0 };
+      // Derived facts are tried before source clauses. Both lists are read in
+      // place: neither changes while a search runs.
+      point = {
+        kind: 'resolve', frame, mark: env.mark(), goal,
+        facts: this.facts.get(id) ?? NO_NODES, clauses: this.program.candidates(goal, env, id), position: 0,
+      };
     }
     const step = this.retry(point, env);
     if (step === null) return null;
-    if (point.kind === 'primitive' || point.position < point.alternatives.length) choices.push(point);
+    if (point.kind === 'primitive' || point.position < alternativeCount(point)) choices.push(point);
     return step;
   }
   // Take the next untried alternative of a choice point, or null when it has
@@ -163,30 +182,33 @@ export class Solver {
   retry(point, env) {
     if (point.kind === 'primitive') {
       const next = point.iterator.next();
-      return next.done ? null : advance(point.frame, primitiveNode(point.goal));
+      return next.done ? null : advance(point.frame, this.recording ? primitiveNode(point.goal) : null, this.recording);
     }
-    while (point.position < point.alternatives.length) {
-      const alternative = point.alternatives[point.position++];
+    const recording = this.recording;
+    while (point.position < alternativeCount(point)) {
+      const position = point.position++;
       if (point.kind === 'branch') {
-        return childFrame(point.frame, [alternative], controlPending(point.goal, null), point.frame.depth + 1);
+        return childFrame(point.frame, [point.alternatives[position]], controlPending(point.goal, null, recording),
+          point.frame.depth + 1, recording);
       }
-      if (alternative.fact !== undefined) {
-        if (unify(point.goal, alternative.fact.goal, env)) return advance(point.frame, alternative.fact);
+      if (position < point.facts.length) {
+        const fact = point.facts[position];
+        if (unify(point.goal, fact.goal, env)) return advance(point.frame, fact, recording);
         env.undo(point.mark);
         continue;
       }
-      const clause = alternative.clause;
+      const clause = point.clauses[position - point.facts.length];
       const names = new Map();
       const head = freshTerm(clause.head, ++this.serial, names);
       const body = clause.body.map((item) => freshTerm(item, this.serial, names));
       if (!unify(point.goal, head, env)) { env.undo(point.mark); continue; }
-      const pending = {
+      const pending = recording ? {
         goal: point.goal,
         by: compound(body.length ? 'rule' : 'fact', [numberTerm(clause.id)]),
         bindings: [...names],
         cut: null,
-      };
-      return childFrame(point.frame, body, pending, point.frame.depth + 1);
+      } : QUIET;
+      return childFrame(point.frame, body, pending, point.frame.depth + 1, recording);
     }
     return null;
   }
@@ -198,7 +220,7 @@ export class Solver {
     // after every prerequisite has reached its fixpoint.
     const layers = new Map();
     for (const clause of this.program.forward) {
-      const rank = this.program.strata.get(clause.id);
+      const rank = this.program.strata.get(clause.id) ?? 0;
       if (!layers.has(rank)) layers.set(rank, []);
       layers.get(rank).push(clause);
     }
@@ -227,8 +249,8 @@ export class Solver {
             const conclusions = flattenConjunction(head).map((item) => copyResolved(item, answer.env));
             activations.push({
               conclusions,
-              children: answer.nodes.map((node) => resolveNode(node, answer.env)),
-              bindings: [...names].map(([name, value]) => [name, copyResolved(value, answer.env)]),
+              children: this.recording ? answer.nodes.map((node) => resolveNode(node, answer.env)) : NO_NODES,
+              bindings: this.recording ? [...names].map(([name, value]) => [name, copyResolved(value, answer.env)]) : NO_NODES,
               claim: conclusions.some((item) => is(item, 'true', 0))
                 ? copyResolved(conjunction(body), answer.env) : null,
             });
@@ -287,7 +309,7 @@ function reason(source, options) {
         const id = variant(conclusion);
         if (seen.has(id)) continue;
         seen.add(id);
-        for (const node of answer.nodes) roots.push(resolveNode(node, answer.env));
+        if (options.proof) for (const node of answer.nodes) roots.push(resolveNode(node, answer.env));
         claims.push(conclusion);
         bindings.push(Object.fromEntries([...variables(goal)].filter(([name]) => !name.startsWith('_')).map(([name, value]) => [name, text(value, answer.env)])));
       }
