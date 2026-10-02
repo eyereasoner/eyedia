@@ -372,7 +372,7 @@ examples/check/socrates.pl     C1-C7 proof-check report
 | `schema-inference`, `equivalence`, `annotation-evidence`, `property-paths` | Schema rules, identity closure, statement evidence and composed paths |
 | `nested-collections`, `flat-map`, `scoped-audit`, `variable-predicates` | Structured collections, mapping, scoped checks and relation renaming |
 | `family-cousins`, `dog-license`, `paraconsistent-animals`, `record-scopes` | Family branches, counted policies, conflicting observations and witness scope |
-| `hanoi`, `collatz`, `metric-classification`, `sudoku`, `age` | Recursive puzzles, numerical classification, a finite 4x4 grid solver and calendar age checks |
+| `hanoi`, `collatz`, `metric-classification`, `sudoku`, `age` | Recursive puzzles, numerical classification, a 9x9 Sudoku solver and calendar age checks |
 | `good-cobbler`, `peano`, `expression-eval`, `complex` | Structured descriptions, symbolic arithmetic, expression graphs and a complex-number domain |
 | `modexp`, `queens`, `interval-relations` | Modular powers, constraint search and all thirteen interval relations |
 | `concept-alignment`, `bayes-diagnosis`, `policy-risk` | Reporting rollups, normalized fault scores and ranked policy findings |

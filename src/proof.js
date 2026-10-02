@@ -1,5 +1,5 @@
 import {
-  Env, VAR, ATOM, COMPOUND, NUMBER, atom, compound, numberTerm, unify,
+  Env, VAR, ATOM, COMPOUND, NUMBER, atom, compound, numberTerm, unify, deref,
   freshTerm, copyResolved, properListItems, listFromItems, flattenConjunction, termIsGround,
 } from './kernel/term.js';
 import { parseProgramText, parseGoalText } from './kernel/parser.js';
@@ -10,6 +10,18 @@ import { is, key, text, conjunction } from './common.js';
 function template(term) {
   if (term.type === VAR) return compound('var', [atom(term.name)]);
   return term.type === COMPOUND ? compound(term.name, term.args.map(template)) : term;
+}
+// Whether term, read through env, is exactly target, variables included. This is
+// the comparison of their printed forms, made without copying or printing.
+function resolvesTo(term, env, target) {
+  const pending = [term, target];
+  while (pending.length) {
+    const expected = pending.pop();
+    const actual = deref(pending.pop(), env);
+    if (actual.type !== expected.type || actual.name !== expected.name || actual.args.length !== expected.args.length) return false;
+    for (let i = actual.args.length - 1; i >= 0; i--) pending.push(actual.args[i], expected.args[i]);
+  }
+  return true;
 }
 export function renderProof(program, claims, roots) {
   const steps = new Map();
@@ -95,7 +107,7 @@ export function checkProof(source, document, options = {}) {
       if (clause.body.length) return false;
       const head = freshTerm(clause.head, 'given');
       const env = new Env();
-      return unify(head, goal, env) && text(copyResolved(head, env)) === text(goal);
+      return unify(head, goal, env) && resolvesTo(head, env, goal);
     });
   }
   for (const claim of claims) if (!flattenConjunction(claim).every((part) => steps.has(text(part)))) {
@@ -130,8 +142,8 @@ export function checkProof(source, document, options = {}) {
         for (let i = 0; matches && i < body.length; i++) {
           if (!unify(body[i], uses[i], env)) matches = false;
         }
-        if (matches && text(copyResolved(candidate, env)) === text(goal) &&
-            body.every((item, i) => text(copyResolved(item, env)) === text(uses[i]))) resolution = true;
+        if (matches && resolvesTo(candidate, env, goal) &&
+            body.every((item, i) => resolvesTo(item, env, uses[i]))) resolution = true;
         env.undo(mark);
       }
       if (!valid || !resolution) fail('C1', `not an instance of source clause ${id}: ${text(goal)}`, goal);
@@ -141,7 +153,7 @@ export function checkProof(source, document, options = {}) {
       let agrees = false;
       try {
         for (const env of primitive(goal, new Env())) {
-          if (text(copyResolved(goal, env)) === text(goal)) { agrees = true; break; }
+          if (resolvesTo(goal, env, goal)) { agrees = true; break; }
         }
       } catch { /* A primitive that cannot be recomputed does not pass C5. */ }
       if (!agrees) fail('C5', `primitive disagrees: ${text(goal)}`, goal);
@@ -227,7 +239,7 @@ export function checkProof(source, document, options = {}) {
   const instanceOf = (claim, question) => {
     const env = new Env();
     const pattern = freshTerm(question, `asked${++serial}`);
-    return unify(pattern, claim, env) && text(copyResolved(pattern, env)) === text(claim);
+    return unify(pattern, claim, env) && resolvesTo(pattern, env, claim);
   };
   const asked = (options.goals ?? []).map((goal) => (typeof goal === 'string' ? parseGoalText(goal) : goal));
   const halted = claims.some((claim) => is(claim, 'false', 0));

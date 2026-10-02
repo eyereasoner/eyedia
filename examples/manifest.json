@@ -214,7 +214,7 @@
   },
   {
     "name": "sudoku",
-    "description": "A finite 4x4 grid solved with ordinary clauses",
+    "description": "A 9x9 Sudoku solved by backtracking, most constrained cells first",
     "trusted": []
   },
   {

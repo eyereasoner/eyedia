@@ -53,7 +53,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [metric-classification.pl](metric-classification.pl) | Measurement normalization and numerical classification |
 | [variable-predicates.pl](variable-predicates.pl) | Relations selected and renamed through data bindings |
 | [record-scopes.pl](record-scopes.pl) | Distinct per-rule structured witnesses |
-| [sudoku.pl](sudoku.pl) | A finite 4x4 grid solved with ordinary clauses |
+| [sudoku.pl](sudoku.pl) | A 9x9 Sudoku solved by backtracking, most constrained cells first |
 | [good-cobbler.pl](good-cobbler.pl) | Trade-specific classification from structured descriptions |
 | [peano.pl](peano.pl) | Symbolic arithmetic, relational addition and a chained derivation |
 | [expression-eval.pl](expression-eval.pl) | Recursive expression graphs used in forward inference |
@@ -178,6 +178,16 @@ node bin/eyel.js --goal "mod_pow(7, 1000000000, 1000000007, Result)" examples/mo
 node bin/eyel.js --goal "queens(4, Columns)" examples/queens.pl
 node bin/eyel.js --goal "add(A, B, s(s(s(zero))))" examples/peano.pl
 ```
+
+`sudoku.pl` solves the 9x9 puzzle from Wikipedia's Sudoku article with nothing
+but backtracking. The given digits are placed first, then the blanks that see
+the most givens, so the search meets contradictions early: it takes about
+136,000 inferences, against 586,000 when the blanks are filled in row order. Each blank is
+checked only against the cells placed before it in its row, column or box, and
+that plan is worked out once before the search starts. Every check is
+arithmetic, so the proof passes strict checking without trusted obligations. It
+is also one of the larger certificates, about 13 MB, because each step of the
+plan carries the lists it walks.
 
 `interval-relations.pl` uses half-open intervals with integer-minute endpoints.
 It completes endpoints from durations and classifies each valid interval pair
