@@ -39,7 +39,11 @@ function isWhitespaceCode(code) {
 
 function isWhitespaceCharacter(character) {
   if (!character) return false;
-  return isWhitespaceCode(character.charCodeAt(0)) || /\p{White_Space}/u.test(character);
+  const code = character.charCodeAt(0);
+  // Deciding ASCII by code keeps the Unicode property escapes off the scan's
+  // hot path, where nearly every character is ASCII.
+  if (code <= 0x7f) return isWhitespaceCode(code);
+  return /\p{White_Space}/u.test(character);
 }
 
 function isUnicodeUpperCharacter(character) {
@@ -61,22 +65,23 @@ function isDigitCode(code) {
 function isNameContinueCharacter(character) {
   if (!character) return false;
   const code = character.charCodeAt(0);
-  return code === 95 || (code >= 48 && code <= 57) ||
-    (code >= 65 && code <= 90) || (code >= 97 && code <= 122) ||
-    isUnicodeNameContinueCharacter(character);
+  if (code === 95 || (code >= 48 && code <= 57) ||
+      (code >= 65 && code <= 90) || (code >= 97 && code <= 122)) return true;
+  return code > 0x7f && isUnicodeNameContinueCharacter(character);
 }
 
 function isVariableStartCharacter(character) {
   if (!character) return false;
   const code = character.charCodeAt(0);
-  return code === 95 || (code >= 65 && code <= 90) || isUnicodeUpperCharacter(character);
+  if (code === 95 || (code >= 65 && code <= 90)) return true;
+  return code > 0x7f && isUnicodeUpperCharacter(character);
 }
 
 function isPlainAtomStartCharacter(character) {
   if (!character) return false;
   const code = character.charCodeAt(0);
-  return (code >= 97 && code <= 122) ||
-    (isUnicodeLetterCharacter(character) && !isUnicodeUpperCharacter(character));
+  if (code >= 97 && code <= 122) return true;
+  return code > 0x7f && isUnicodeLetterCharacter(character) && !isUnicodeUpperCharacter(character);
 }
 
 const graphicAtomChars = '#$&*+-./<=>?@^~\\:';

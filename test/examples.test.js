@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { checkProof } from '../index.js';
+import { Program, checkProof } from '../index.js';
 import { examplesRoot, manifest, evaluateExample } from '../tools/example-artifacts.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -30,11 +30,11 @@ for (const entry of manifest) {
     for (const kind of ['output', 'proof', 'check']) {
       assert.equal(artifacts[kind], read(`${kind}/${entry.name}.pl`), `${kind} changed; review before running npm run examples:update`);
     }
-    const source = read(`${entry.name}.pl`);
+    const program = Program.parse(read(`${entry.name}.pl`));
     const savedProof = read(`proof/${entry.name}.pl`);
-    const report = checkProof(source, savedProof, { allowTrusted: entry.trusted.length > 0 });
+    const report = checkProof(program, savedProof, { allowTrusted: entry.trusted.length > 0 });
     assert.equal(report.valid, true, JSON.stringify(report.failures));
-    assert.equal(checkProof(source, savedProof + '\nunjustified_example_claim.\n').valid, false);
+    assert.equal(checkProof(program, savedProof + '\nunjustified_example_claim.\n').valid, false);
   });
   test(`example ${entry.name}: CLI output, proof and saved-proof checking`, () => {
     const file = `examples/${entry.name}.pl`;

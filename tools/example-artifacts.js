@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { run, checkProof, checkReportTerms } from '../index.js';
+import { Program, run, checkReportTerms } from '../index.js';
 
 export const examplesRoot = new URL('../examples/', import.meta.url);
 export const manifest = JSON.parse(readFileSync(new URL('manifest.json', examplesRoot), 'utf8'));
@@ -14,10 +14,12 @@ for (const entry of manifest) {
 }
 
 export function evaluateExample(entry) {
-  const source = readFileSync(new URL(`${entry.name}.pl`, examplesRoot), 'utf8');
-  const output = run(source);
-  const proved = run(source, { proof: true });
-  const report = checkProof(source, proved.proof);
+  // Parse once: a large example costs more to parse than to reason over, and
+  // the generated proof has already been checked by the run that made it.
+  const program = Program.parse(readFileSync(new URL(`${entry.name}.pl`, examplesRoot), 'utf8'));
+  const output = run(program);
+  const proved = run(program, { proof: true });
+  const report = proved.proofReport;
   if (!report.valid || !report.steps || !report.claims) throw new Error(`${entry.name}: no valid nonempty proof`);
   if (output.haltCode !== (entry.haltCode ?? null) || proved.haltCode !== output.haltCode) {
     throw new Error(`${entry.name}: unexpected halt code`);

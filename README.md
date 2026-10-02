@@ -104,8 +104,10 @@ console.log(result.bindings); // [{ X: 'socrates' }]
 console.log(checkProof(source, result.proof).valid); // true
 ```
 
-`run()` returns `answers`, `bindings`, `inferred`, `stdout`, `proof`, `stats`
-and `haltCode`. Bindings and answers contain printable Prolog text. `Program.parse()`
+`run()` returns `answers`, `bindings`, `inferred`, `stdout`, `proof`,
+`proofReport`, `stats` and `haltCode`. A generated proof is checked before it
+is returned, and `proofReport` is that report, so a caller that wants it does
+not check the same document again. Bindings and answers contain printable Prolog text. `Program.parse()`
 creates a reusable parsed program; each run has its own inference state.
 Options include `goal`, `goals`, `proof`, `maxDepth` (1000000), `maxIterations`
 (1000 per stratum) and `maxInferences` (1000000). Exceeding a bound throws;

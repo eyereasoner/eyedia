@@ -299,13 +299,17 @@ function reason(source, options) {
   }
   const answers = claims.map((claim) => text(claim));
   const proof = options.proof ? renderProof(program, claims, roots) : null;
+  let proofReport = null;
   if (proof && claims.length) {
-    const report = checkProof(program, proof);
-    if (!report.valid) throw new Error(`cannot certify this result: ${report.failures[0].detail}`);
+    proofReport = checkProof(program, proof);
+    if (!proofReport.valid) throw new Error(`cannot certify this result: ${proofReport.failures[0].detail}`);
   }
   return {
     answers, bindings, inferred: solver.derived.map((node) => text(node.goal)),
     stdout: proof ?? answers.map((answer) => `${answer}.\n`).join(''),
-    proof, stats: solver.stats, haltCode: solver.haltCode,
+    // The generated proof is checked before it is returned, so hand back that
+    // report rather than making a caller that wants it check the same document
+    // a second time.
+    proof, proofReport, stats: solver.stats, haltCode: solver.haltCode,
   };
 }
