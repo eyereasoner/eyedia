@@ -1,7 +1,7 @@
 [
   {
     "name": "socrates",
-    "description": "A first forward inference",
+    "description": "Class membership derived through a subclass rule",
     "trusted": []
   },
   {
@@ -155,7 +155,7 @@
   },
   {
     "name": "property-paths",
-    "description": "Composed and repeatable relationship paths",
+    "description": "Composed, inverse and repeatable relationship paths",
     "trusted": []
   },
   {
@@ -205,6 +205,11 @@
   {
     "name": "expression-eval",
     "description": "Recursive expression graphs used by forward inference",
+    "trusted": []
+  },
+  {
+    "name": "complex",
+    "description": "Complex arithmetic, exact over Gaussian integers and polar beyond them",
     "trusted": []
   },
   {

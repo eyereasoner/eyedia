@@ -1,11 +1,47 @@
-% Conflicting observations are retained as data and summarized locally.
+% Conflicting observations are kept as data rather than repaired. Each property
+% is summarized locally as true only, false only or both, and only an
+% unconflicted summary is allowed to drive a decision.
 bird(tweety).
 penguin(tweety).
 bird(falco).
 penguin(opus).
+mammal(batsy).
+bat(batsy).
+fish(nemo).
+bird(mythic).
+% An explicit observation that contradicts the rule for birds.
+observed(mythic, flies, false).
+
+% Domain rules that may conflict with one another.
 flies(X, true) :+ bird(X).
+wings(X, true) :+ bird(X).
 flies(X, false) :+ penguin(X).
+wings(X, false) :+ mammal(X).
+(flies(X, true), wings(X, true)) :+ bat(X).
+(swims(X, true), wings(X, false)) :+ fish(X).
+flies(X, Value) :+ observed(X, flies, Value).
+
+% Local summaries. These inspect the rule conclusions, so they run only after
+% the stratum above has reached its fixpoint.
 flight_status(X, both) :+ flies(X, true), flies(X, false).
 flight_status(X, true_only) :+ flies(X, true), \+ flies(X, false).
 flight_status(X, false_only) :+ flies(X, false), \+ flies(X, true).
-true :+ flight_status(Animal, Status).
+wing_status(X, both) :+ wings(X, true), wings(X, false).
+wing_status(X, true_only) :+ wings(X, true), \+ wings(X, false).
+wing_status(X, false_only) :+ wings(X, false), \+ wings(X, true).
+
+% A conflicting summary is reported rather than silently resolved.
+(inconsistent(X, flies), needs_review(X, flies)) :+ flight_status(X, both).
+(inconsistent(X, wings), needs_review(X, wings)) :+ wing_status(X, both).
+
+% Decisions read the summary, so a contradiction yields undecided instead of
+% both answers at once.
+flies_safely(X, true) :+ flight_status(X, true_only).
+flies_safely(X, false) :+ flight_status(X, false_only).
+flies_safely(X, undecided) :+ flight_status(X, both).
+wings_safely(X, true) :+ wing_status(X, true_only).
+wings_safely(X, false) :+ wing_status(X, false_only).
+wings_safely(X, undecided) :+ wing_status(X, both).
+(moves_by(X, flying), migrates(X, true)) :+ flight_status(X, true_only).
+(moves_by(X, walking), migrates(X, false)) :+ flight_status(X, false_only).
+(moves_by(X, unknown), migrates(X, undecided)) :+ flight_status(X, both).

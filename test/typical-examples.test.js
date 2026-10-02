@@ -166,3 +166,69 @@ test('N-queens enumerates both 4x4 solutions and yields a valid 8x8 board', () =
   assert.deepEqual(run(p, { goal: 'queens(2, Columns)' }).answers, []);
   assert.deepEqual(run(p, { goal: 'queens(-1, Columns)' }).answers, []);
 });
+
+test('complex arithmetic obeys the field laws and keeps Gaussian integers exact', () => {
+  const p = Program.parse(source('complex'));
+  const answer = (goal) => {
+    const result = run(p, { goal });
+    assert.equal(result.answers.length, 1, goal);
+    // A conjunctive goal answers with the whole conjunction; the value asked
+    // for is the last argument of its rightmost conjunct.
+    let term = parseTermText(`${result.answers[0]}.`);
+    while (term.name === ',' && term.arity === 2) term = term.args[1];
+    return term.args.at(-1);
+  };
+  const c = (re, im) => `complex(${re}, ${im})`;
+  const pair = (term) => {
+    assert.equal(term.name, 'complex');
+    return term.args.map((arg) => Number(arg.name));
+  };
+  const samples = [[1, 2], [3, -4], [-2, 5], [0, 1]];
+
+  // The fixed conclusions the example publishes.
+  assert.deepEqual(new Set(proved(p).answers), new Set([
+    'sum(complex(4, 6))', 'product(complex(-5, 10))', 'quotient(complex(3, 4))',
+    'ratio(complex(2.2, -0.4))', 'unit_square(complex(-1, 0))',
+    'conjugate_product(z, complex(25, 0))', 'conjugate_product(w, complex(5, 0))',
+    'norm_multiplicative(25, 5, 125)', 'integer_power(8, complex(16, 0))',
+    'modulus(z, 5.0)', 'modulus(w, 2.23606797749979)',
+    'power(root, complex(6.123233995736766e-17, 1.0))',
+    'power(euler, complex(-1.0, 1.2246467991473532e-16))',
+    'power(self_power, complex(0.20787957635076193, 0.0))',
+    'power(real_power, complex(0.20787957635177984, 0.0))',
+    'arcsine(complex(2, 0), complex(1.5707963267948966, 1.3169578969248166))',
+    'arccosine(complex(2, 0), complex(0.0, -1.3169578969248166))',
+  ]));
+
+  for (const [a, b] of samples) {
+    // Multiplying by the conjugate leaves the norm on the real axis.
+    assert.deepEqual(pair(answer(`complex_conjugate(${c(a, b)}, C), complex_mul(${c(a, b)}, C, P)`)),
+      [a * a + b * b, 0]);
+    for (const [x, y] of samples) {
+      const sum = pair(answer(`complex_add(${c(a, b)}, ${c(x, y)}, S)`));
+      const product = pair(answer(`complex_mul(${c(a, b)}, ${c(x, y)}, P)`));
+      assert.deepEqual(sum, [a + x, b + y]);
+      assert.deepEqual(product, [a * x - b * y, a * y + b * x]);
+      // Addition and multiplication commute.
+      assert.deepEqual(pair(answer(`complex_mul(${c(x, y)}, ${c(a, b)}, P)`)), product);
+      assert.deepEqual(pair(answer(`complex_add(${c(x, y)}, ${c(a, b)}, S)`)), sum);
+      // Subtraction inverts addition, and every component stays an integer.
+      assert.deepEqual(pair(answer(`complex_sub(${c(...sum)}, ${c(x, y)}, D)`)), [a, b]);
+      assert.ok(sum.every(Number.isInteger) && product.every(Number.isInteger));
+      // The norm is multiplicative, so dividing a product by a factor is exact.
+      assert.equal(Number(answer(`complex_norm(${c(...product)}, N)`).name),
+        (a * a + b * b) * (x * x + y * y));
+      if (x || y) assert.deepEqual(pair(answer(`complex_div(${c(...product)}, ${c(x, y)}, Q)`)), [a, b]);
+    }
+  }
+
+  // Repeated squaring agrees with repeated multiplication.
+  let expected = [1, 0];
+  for (let exponent = 0; exponent <= 12; exponent++) {
+    assert.deepEqual(pair(answer(`complex_power(${c(1, 1)}, ${exponent}, P)`)), expected);
+    expected = [expected[0] - expected[1], expected[0] + expected[1]];
+  }
+  // Division by zero and a negative exponent have no answer.
+  assert.deepEqual(run(p, { goal: `complex_div(${c(1, 1)}, ${c(0, 0)}, Q)` }).answers, []);
+  assert.deepEqual(run(p, { goal: `complex_power(${c(1, 1)}, -1, P)` }).answers, []);
+});

@@ -6,4 +6,9 @@ fib_pair(0, 0, 1).
 fib_pair(N, A, B) :- N > 0, Half is N//2, fib_pair(Half, X, Y), C is X*(2*Y-X), D is X*X+Y*Y, parity_pair(N, C, D, A, B).
 parity_pair(N, C, D, A, B) :- 0 =:= N mod 2, A=C, B=D.
 parity_pair(N, C, D, A, B) :- 1 =:= N mod 2, A=D, B is C+D.
+?- fib(0, F).
+?- fib(1, F).
+?- fib(10, F).
+?- fib(100, F).
+?- fib(1000, F).
 ?- fib(10000, F).

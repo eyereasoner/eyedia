@@ -10,16 +10,17 @@ const cli = (args = [], input) => {
   return result;
 };
 test('CLI runs files, stdin, multiple sources and goals', () => {
-  assert.equal(cli(['examples/socrates.pl']).stdout, 'mortal(socrates).\n');
+  assert.equal(cli(['examples/socrates.pl']).stdout, 'type(socrates, mortal).\n');
   assert.equal(cli([], 'p(a). q(X) :+ p(X).').stdout, 'q(a).\n');
-  assert.equal(cli(['examples/socrates.pl', '-', '--goal', 'mortal(X)'], 'human(plato).').stdout, 'mortal(socrates).\nmortal(plato).\n');
+  assert.equal(cli(['examples/socrates.pl', '-', '--goal', 'type(X, mortal)'], 'type(plato, human).').stdout,
+    'type(socrates, mortal).\ntype(plato, mortal).\n');
 });
 test('proof generation pipes into proof checking', () => {
   const generated = cli(['--proof', 'examples/socrates.pl']);
   assert.equal(generated.status, 0, generated.stderr);
   const checked = cli(['--check-proof', '-', 'examples/socrates.pl'], generated.stdout);
   assert.equal(checked.status, 0, checked.stderr);
-  assert.match(checked.stdout, /condition\('C1', resolution, ok, 2\)\./);
+  assert.match(checked.stdout, /condition\('C1', resolution, ok, 3\)\./);
   assert.match(checked.stdout, /verdict\(checked\)\./);
   const json = cli(['--json', '--check-proof', '-', 'examples/socrates.pl'], generated.stdout);
   assert.equal(json.status, 0);

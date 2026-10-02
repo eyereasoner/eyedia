@@ -1,14 +1,19 @@
-condition('C1', resolution, ok, 11).
-condition('C2', well_founded, ok, 13).
-condition('C3', justification, ok, 13).
-condition('C4', coverage, ok, 13).
+condition('C1', resolution, ok, 59).
+condition('C2', well_founded, ok, 66).
+condition('C3', justification, ok, 66).
+condition('C4', coverage, ok, 110).
 condition('C5', re_decision, ok, 0).
 obligation(absent, theory_scoped, \+(flies(falco, false))).
+obligation(absent, theory_scoped, \+(flies(batsy, false))).
 obligation(absent, theory_scoped, \+(flies(opus, true))).
-steps(13).
-verified(11).
+obligation(absent, theory_scoped, \+(wings(tweety, false))).
+obligation(absent, theory_scoped, \+(wings(falco, false))).
+obligation(absent, theory_scoped, \+(wings(mythic, false))).
+obligation(absent, theory_scoped, \+(wings(nemo, true))).
+steps(66).
+verified(59).
 recomputed(0).
 composed(0).
-trusted(2).
-claims(3).
+trusted(7).
+claims(50).
 verdict(checked_with_obligations).

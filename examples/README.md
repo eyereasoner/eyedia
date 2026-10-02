@@ -14,10 +14,10 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 
 | Program | Demonstrates |
 | --- | --- |
-| [socrates.pl](socrates.pl) | A first forward inference |
+| [socrates.pl](socrates.pl) | Class membership derived through a subclass rule |
 | [family.pl](family.pl) | Recursive family relationships |
 | [backward.pl](backward.pl) | Backward definitions inside forward bodies |
-| [fibonacci.pl](fibonacci.pl) | Fast doubling for exact Fibonacci numbers, including F(10000) |
+| [fibonacci.pl](fibonacci.pl) | Fast doubling for exact Fibonacci numbers, F(0) through F(10000) |
 | [graphs.pl](graphs.pl) | Base data, negation and collection |
 | [terms.pl](terms.pl) | Quoted graphs, triple terms and residual witnesses |
 | [reachability.pl](reachability.pl) | Finite closure in a graph containing a cycle |
@@ -42,7 +42,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [hanoi.pl](hanoi.pl) | Recursive construction of a disk-move sequence |
 | [collatz.pl](collatz.pl) | A parity-based recursive trajectory |
 | [flat-map.pl](flat-map.pl) | Predicate-based mapping with multiple or missing values |
-| [property-paths.pl](property-paths.pl) | Composed and repeatable relationship paths |
+| [property-paths.pl](property-paths.pl) | Composed, inverse and repeatable relationship paths |
 | [paraconsistent-animals.pl](paraconsistent-animals.pl) | Local summaries of conflicting observations |
 | [scoped-audit.pl](scoped-audit.pl) | Presence and absence within separate quoted graphs |
 | [metric-classification.pl](metric-classification.pl) | Measurement normalization and numerical classification |
@@ -50,8 +50,9 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [record-scopes.pl](record-scopes.pl) | Distinct per-rule structured witnesses |
 | [sudoku.pl](sudoku.pl) | A finite 4x4 grid solved with ordinary clauses |
 | [good-cobbler.pl](good-cobbler.pl) | Trade-specific classification from structured descriptions |
-| [peano.pl](peano.pl) | Symbolic arithmetic and relational addition |
+| [peano.pl](peano.pl) | Symbolic arithmetic, relational addition and a chained derivation |
 | [expression-eval.pl](expression-eval.pl) | Recursive expression graphs used in forward inference |
+| [complex.pl](complex.pl) | Complex arithmetic, exact over Gaussian integers and polar beyond them |
 | [modexp.pl](modexp.pl) | Exact modular exponentiation by repeated squaring |
 | [concept-alignment.pl](concept-alignment.pl) | Vocabulary alignment and reporting rollups |
 | [interval-relations.pl](interval-relations.pl) | All thirteen interval relations and endpoint completion |
@@ -69,9 +70,9 @@ a `verdict/1` fact. Reports with failures include `failure/3`; reports with
 trusted boundaries include `obligation/3`. Add `--json` to the check command
 for JSON output instead of Prolog facts.
 
-`fibonacci.pl` computes F(10000), a 2090-digit integer. It uses fast doubling,
-which halves the index at each recursive step and fits within the default
-reasoning limits. Its saved proof records the arithmetic and recursive clause
+`fibonacci.pl` answers F(0), F(1), F(10), F(100), F(1000) and F(10000), the
+last a 2090-digit integer. It uses fast doubling, which halves the index at each
+recursive step and fits within the default reasoning limits. Its saved proof records the arithmetic and recursive clause
 instances without trusted obligations.
 
 `path-discovery.pl` contains 7,698 airport records and 37,505 directed
@@ -96,10 +97,33 @@ disequalities to prevent cycles, so its proofs have no trusted obligations.
 Large bounds on a dense network may still reach the configured reasoning limits.
 
 `peano.pl` represents natural numbers as `zero`, `s(zero)`, and so on. Its
-addition query enumerates every split of a known sum. `expression-eval.pl`
+addition query enumerates every split of a known sum, and a second query chains
+all three relations: `(1*2)+3` is 5, whose factorial is 120 nested successors. `expression-eval.pl`
 evaluates a graph for `(2*3)+(10-4)` and emits `result(example, 12)`.
 `concept-alignment.pl` rolls up five concepts to a shared reporting class,
 including a source concept reached through multiple broader links.
+
+`complex.pl` adds a numeric domain the engine knows nothing about. A complex
+number is the ordinary term `complex(Real, Imaginary)`, and addition,
+multiplication, conjugation, division, norm, modulus and integer powers are all
+ordinary clauses over integer arithmetic. Components stay exact wherever the
+arithmetic allows it: dividing `complex(-5, 10)` by `complex(1, 2)` recovers
+`complex(3, 4)` as integers because the norm divides both parts, while the same
+division applied to `complex(3, 4)` yields the float pair `complex(2.2, -0.4)`.
+The example also derives `i*i = -1` from the multiplication clause rather than
+assuming it, confirms that the Gaussian norm is multiplicative, and raises
+`complex(1, 1)` to the eighth power by repeated squaring.
+
+Polar form then leaves the integers altogether, so a complex number can be
+raised to a complex power. The square root of -1 is `i`, `e` to the power `i*pi`
+is -1, `i` to the power `i` is the real number 0.20787957635076193, and the
+inverse sine and cosine of 2 are complex. The example passes strict proof
+checking, so every component of every conclusion is recomputed by the checker:
+
+```sh
+node bin/eyel.js --goal "complex_power(complex(1, 1), 16, Result)" examples/complex.pl
+node bin/eyel.js --goal "complex_div(complex(1, 0), complex(0, 1), Inverse)" examples/complex.pl
+```
 
 `modexp.pl` handles billion-sized exponents by repeated squaring without
 constructing the full power. Supply an integer base, a nonnegative integer

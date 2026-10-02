@@ -16,4 +16,3 @@ branch(grace, c).
 generation(Child, Next) :+ parent(Parent, Child), generation(Parent, N), Next is N+1.
 branch(Child, Branch) :+ parent(Parent, Child), branch(Parent, Branch).
 cousin(X, Y) :+ generation(X, N), generation(Y, N), branch(X, A), branch(Y, B), A \= B.
-true :+ cousin(X, Y).

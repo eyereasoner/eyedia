@@ -1,1 +1,1 @@
-mortal(socrates).
+type(socrates, mortal).

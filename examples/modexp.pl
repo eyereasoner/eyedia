@@ -12,7 +12,9 @@ power_mod(Base, Exponent, Modulus, Result) :-
 finish_power(Exponent, _, Partial, _, Partial) :- 0 =:= Exponent mod 2.
 finish_power(Exponent, Base, Partial, Modulus, Result) :-
     1 =:= Exponent mod 2, Result is (Base*Partial) mod Modulus.
-?- mod_pow(7, 13, 97, Result).
+% A small case checked against the naive power-then-remainder computation.
+?- Naive is 7^13 mod 97, mod_pow(7, 13, 97, Fast).
 ?- mod_pow(7, 1000000000, 1000000007, Result).
-?- mod_pow(3, 33554432, 1000000007, Result).
-?- mod_pow(2, 1048576, 1000000000000, Result).
+% The exponents themselves are computed: 2^25 and 2^20.
+?- Exponent is 2^25, mod_pow(3, Exponent, 1000000007, Result).
+?- Exponent is 2^20, mod_pow(2, Exponent, 1000000000000, Result).

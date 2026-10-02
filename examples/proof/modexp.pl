@@ -1,7 +1,7 @@
-mod_pow(7, 13, 97, 38).
+','(is(38, mod(^(7, 13), 97)), mod_pow(7, 13, 97, 38)).
 mod_pow(7, 1000000000, 1000000007, 312556845).
-mod_pow(3, 33554432, 1000000007, 849572438).
-mod_pow(2, 1048576, 1000000000000, 940335579136).
+','(is(33554432, ^(2, 25)), mod_pow(3, 33554432, 1000000007, 849572438)).
+','(is(1048576, ^(2, 20)), mod_pow(2, 1048576, 1000000000000, 940335579136)).
 
 clause(1, mod_pow(var('Base'), var('Exponent'), var('Modulus'), var('Result')), ','(integer(var('Base')), ','(integer(var('Exponent')), ','(integer(var('Modulus')), ','(>=(var('Exponent'), 0), ','(>(var('Modulus'), 0), ','(is(var('Reduced'), mod(var('Base'), var('Modulus'))), power_mod(var('Reduced'), var('Exponent'), var('Modulus'), var('Result'))))))))).
 clause(2, power_mod(var('__anon0'), 0, var('Modulus'), var('Result')), is(var('Result'), mod(1, var('Modulus')))).
@@ -9,6 +9,7 @@ clause(3, power_mod(var('Base'), var('Exponent'), var('Modulus'), var('Result'))
 clause(4, finish_power(var('Exponent'), var('__anon1'), var('Partial'), var('__anon2'), var('Partial')), '=:='(0, mod(var('Exponent'), 2))).
 clause(5, finish_power(var('Exponent'), var('Base'), var('Partial'), var('Modulus'), var('Result')), ','('=:='(1, mod(var('Exponent'), 2)), is(var('Result'), mod(*(var('Base'), var('Partial')), var('Modulus'))))).
 
+step(is(38, mod(^(7, 13), 97)), builtin, [], []).
 step(mod_pow(7, 13, 97, 38), rule(1), '.'(=('Base', 7), '.'(=('Exponent', 13), '.'(=('Modulus', 97), '.'(=('Result', 38), '.'(=('Reduced', 7), []))))), '.'(integer(7), '.'(integer(13), '.'(integer(97), '.'(>=(13, 0), '.'(>(97, 0), '.'(is(7, mod(7, 97)), '.'(power_mod(7, 13, 97, 38), [])))))))).
 step(integer(7), builtin, [], []).
 step(integer(13), builtin, [], []).
@@ -240,6 +241,7 @@ step(finish_power(500000000, 49, 312556845, 1000000007, 312556845), rule(4), '.'
 step('=:='(0, mod(500000000, 2)), builtin, [], []).
 step(finish_power(1000000000, 7, 312556845, 1000000007, 312556845), rule(4), '.'(=('Exponent', 1000000000), '.'(=('__anon1', 7), '.'(=('Partial', 312556845), '.'(=('__anon2', 1000000007), [])))), '.'('=:='(0, mod(1000000000, 2)), [])).
 step('=:='(0, mod(1000000000, 2)), builtin, [], []).
+step(is(33554432, ^(2, 25)), builtin, [], []).
 step(mod_pow(3, 33554432, 1000000007, 849572438), rule(1), '.'(=('Base', 3), '.'(=('Exponent', 33554432), '.'(=('Modulus', 1000000007), '.'(=('Result', 849572438), '.'(=('Reduced', 3), []))))), '.'(integer(3), '.'(integer(33554432), '.'(integer(1000000007), '.'(>=(33554432, 0), '.'(>(1000000007, 0), '.'(is(3, mod(3, 1000000007)), '.'(power_mod(3, 33554432, 1000000007, 849572438), [])))))))).
 step(integer(3), builtin, [], []).
 step(integer(33554432), builtin, [], []).
@@ -400,6 +402,7 @@ step(finish_power(16777216, 9, 849572438, 1000000007, 849572438), rule(4), '.'(=
 step('=:='(0, mod(16777216, 2)), builtin, [], []).
 step(finish_power(33554432, 3, 849572438, 1000000007, 849572438), rule(4), '.'(=('Exponent', 33554432), '.'(=('__anon1', 3), '.'(=('Partial', 849572438), '.'(=('__anon2', 1000000007), [])))), '.'('=:='(0, mod(33554432, 2)), [])).
 step('=:='(0, mod(33554432, 2)), builtin, [], []).
+step(is(1048576, ^(2, 20)), builtin, [], []).
 step(mod_pow(2, 1048576, 1000000000000, 940335579136), rule(1), '.'(=('Base', 2), '.'(=('Exponent', 1048576), '.'(=('Modulus', 1000000000000), '.'(=('Result', 940335579136), '.'(=('Reduced', 2), []))))), '.'(integer(2), '.'(integer(1048576), '.'(integer(1000000000000), '.'(>=(1048576, 0), '.'(>(1000000000000, 0), '.'(is(2, mod(2, 1000000000000)), '.'(power_mod(2, 1048576, 1000000000000, 940335579136), [])))))))).
 step(integer(2), builtin, [], []).
 step(integer(1048576), builtin, [], []).
