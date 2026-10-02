@@ -36,12 +36,12 @@
   },
   {
     "name": "backward",
-    "description": "Backward definitions in forward bodies",
+    "description": "Backward definitions inside forward bodies",
     "trusted": []
   },
   {
     "name": "fibonacci",
-    "description": "Exact Fibonacci numbers using fast doubling",
+    "description": "Fast doubling for exact Fibonacci numbers, and the golden ratio",
     "trusted": []
   },
   {
@@ -59,7 +59,7 @@
   },
   {
     "name": "reachability",
-    "description": "Finite graph closure with cycles",
+    "description": "Finite closure in a graph containing a cycle",
     "trusted": []
   },
   {
@@ -71,7 +71,7 @@
   },
   {
     "name": "path-discovery",
-    "description": "Configurable airport routes with bounded stopovers and cycle prevention",
+    "description": "Full airport network with configurable endpoints and maximum stopovers",
     "trusted": []
   },
   {
@@ -131,7 +131,7 @@
   },
   {
     "name": "schema-inference",
-    "description": "Subclass, subproperty, domain and range inference",
+    "description": "Subclasses, subproperties, domains and ranges",
     "trusted": []
   },
   {
@@ -146,17 +146,17 @@
   },
   {
     "name": "nested-collections",
-    "description": "Inspection of lists containing records and lists",
+    "description": "Lists containing property records and other lists",
     "trusted": []
   },
   {
     "name": "family-cousins",
-    "description": "Generation and branch propagation with cousin relationships",
+    "description": "Generations, family branches and cousin relationships",
     "trusted": []
   },
   {
     "name": "dog-license",
-    "description": "Licensing from a collected count of owned dogs",
+    "description": "A licensing threshold based on collected dog counts",
     "trusted": [
       "collected"
     ]
@@ -168,7 +168,7 @@
   },
   {
     "name": "collatz",
-    "description": "Parity-based recursive trajectories",
+    "description": "Parity-based recursive trajectories over a range of starts",
     "trusted": []
   },
   {
@@ -229,17 +229,17 @@
   },
   {
     "name": "good-cobbler",
-    "description": "Structured descriptions and trade-specific classification",
+    "description": "Trade-specific classification from structured descriptions",
     "trusted": []
   },
   {
     "name": "peano",
-    "description": "Symbolic natural-number arithmetic and relational addition",
+    "description": "Symbolic arithmetic, relational addition and a chained derivation",
     "trusted": []
   },
   {
     "name": "expression-eval",
-    "description": "Recursive expression graphs used by forward inference",
+    "description": "Recursive expression graphs used in forward inference",
     "trusted": []
   },
   {
@@ -271,14 +271,14 @@
   },
   {
     "name": "bayes-diagnosis",
-    "description": "Exact likelihood weights and normalized printer-fault scores",
+    "description": "Normalized probabilities for illustrative printer faults",
     "trusted": [
       "collected"
     ]
   },
   {
     "name": "policy-risk",
-    "description": "Ranked clause findings with explanations and mitigations",
+    "description": "Ranked findings with explanations and suggested mitigations",
     "trusted": [
       "absent",
       "collected"
@@ -291,7 +291,7 @@
   },
   {
     "name": "age",
-    "description": "Calendar-year and elapsed-day age thresholds at an explicit date",
+    "description": "Calendar-year and elapsed-day age checks at an explicit reference date",
     "trusted": []
   },
   {

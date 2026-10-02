@@ -1,6 +1,6 @@
 {
   "name": "eyel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A standalone, dependency-free Prolog rule language with forward and backward reasoning and checkable proofs.",
   "type": "module",
   "main": "./index.js",

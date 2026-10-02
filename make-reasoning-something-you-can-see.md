@@ -105,7 +105,7 @@ from what you know.
 **Backward rules** use `:-`. They define a relation that is explored when a
 question asks for it. This is ordinary Prolog resolution: goal-directed search.
 
-A forward rule's body may call backward definitions. A backward query may use
+A forward rule's body may call backward definitions. A backward goal may use
 facts that forward reasoning established. You let knowledge accumulate, then
 ask a focused question about it:
 
@@ -122,7 +122,7 @@ related(X, Y) :- ancestor(Y, X).
 true :+ related(alice, carol).
 ```
 
-The closure establishes ancestry once. The query expresses the relationship you
+The closure establishes ancestry once. The goal expresses the relationship you
 want to inspect. Each part has one job.
 
 Output follows from how you ask. With nothing asked, the newly materialized
@@ -450,6 +450,8 @@ there is no build step.
 | [src/engine.js](src/engine.js) | Backward resolution, forward fixpoints, proof recording |
 | [src/proof.js](src/proof.js) | Certificate rendering and checking, with no solver dependency |
 | [bin/eyel.js](bin/eyel.js) | Source loading and the command-line interface |
+| [playground/](playground/), [src/playground-worker.js](src/playground-worker.js) | The browser playground, and the worker that runs each program off the page |
+| [tools/](tools/) | Regenerating the saved example output, proofs and check reports |
 
 **Search is an explicit machine, not nested host calls.** A frame is one body
 being worked through; frames are immutable, so a choice point only has to
@@ -477,7 +479,7 @@ beside it — is read. A source text has exactly one reading, which is why
 Large generated programs are mostly one-line clauses of plain names, variables
 and small integers, so those are read directly rather than token by token; the
 test suite checks that the direct reading and the general one agree on every
-example and on thousands of edge cases, errors included.
+example and on 41 edge cases and every pair of them, errors included.
 There is no separate query syntax to interact with it either: a goal is the
 ordinary clause `true :+ Goal.`, so nothing around it can change how it reads.
 
@@ -500,7 +502,8 @@ every subterm that holds no variable, since terms never change once built.
 
 Modules, directives, DCGs, cut, conditional commitment, mutable databases,
 attributed variables, constraint libraries, tabling, filesystem and network
-built-ins, RDF parsers, streaming adapters, browser packaging.
+built-ins, RDF parsers, streaming adapters, a bundled browser build. The
+playground loads the same source files as modules, unbundled.
 
 Some of these are omissions of convenience; several are load-bearing. No
 directives means a fixed operator table and one reading per source text. No cut

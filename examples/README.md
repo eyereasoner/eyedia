@@ -118,7 +118,7 @@ source is about 10 MB and its certificate about 14 MB, since a certificate
 records every step it claims. Only `padovan.pl` has a larger one, at about
 22 MB, because each of its steps carries integers hundreds of digits long.
 Running `npm test` or `npm run examples:update` spends much of its time on these
-two examples.
+two examples and on `sudoku.pl`, whose certificate is about 13 MB.
 
 `path-discovery.pl` contains 7,698 airport records and 37,505 directed
 connections. Its default goal finds three routes from Ostend to Prague with
@@ -127,11 +127,12 @@ limit with `path_discovery(From, To, MaxStopovers, Path)`:
 
 ```sh
 node bin/eyel.js --goal "path_discovery('Liège Airport', 'Václav Havel Airport Prague', 1, Path)" examples/path-discovery.pl
-node bin/eyel.js --proof --goal "path_discovery('Ostend-Bruges International Airport', 'Liège Airport', 0, Path)" examples/path-discovery.pl > /tmp/route-proof.pl
-node bin/eyel.js --strict-proof --check-proof /tmp/route-proof.pl examples/path-discovery.pl
+goal="path_discovery('Ostend-Bruges International Airport', 'Liège Airport', 0, Path)"
+node bin/eyel.js --proof --goal "$goal" examples/path-discovery.pl > /tmp/route-proof.pl
+node bin/eyel.js --strict-proof --check-proof /tmp/route-proof.pl --goal "$goal" examples/path-discovery.pl
 ```
 
-`--goal` replaces the default goal. Zero stopovers allows only direct flights;
+`--goal` replaces the default goal, so checking that proof names the same goal. Zero stopovers allows only direct flights;
 N stopovers allows at most N+1 flights. Routes follow the recorded direction
 and never repeat an airport. Equal endpoints and unknown names return no
 routes. Negative or noninteger limits also return no routes. You can leave
