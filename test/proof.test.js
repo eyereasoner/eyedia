@@ -15,7 +15,7 @@ test('proofs are checked against source rather than display records', () => {
 });
 test('altered conclusion, premise, binding and source citation fail resolution', () => {
   invalid(proof().replace('step(q(a)', 'step(q(b)'), 'C1');
-  invalid(proof().replace("'.'(p(a), [])", "'.'(p(b), [])"), 'C1');
+  invalid(proof().replace('[p(a)]', '[p(b)]'), 'C1');
   invalid(proof().replace("=('X', a)", "=('X', b)"), 'C1');
   invalid(proof().replace('rule(2)', 'rule(999)'), 'C1');
 });

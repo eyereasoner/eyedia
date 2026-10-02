@@ -89,37 +89,25 @@ function writeString(value) {
   return out + '"';
 }
 
-// A list of one-character atoms is the character-list reading of double-quoted
-// text, so write it back that way. A partial one keeps its tail after the
-// normal-profile `||` splice, which has priority 0 on the right.
-function quotedListSplice(term, env) {
-  const characters = [];
-  let cursor = term;
-  while (true) {
-    cursor = deref(cursor, env);
-    if (isEmptyList(cursor) || !isCons(cursor)) {
-      if (characters.length === 0) return null;
-      return { text: characters.join(''), tail: isEmptyList(cursor) ? null : cursor };
-    }
-    const item = deref(cursor.args[0], env);
-    if (item.type !== ATOM || Array.from(item.name).length !== 1) return null;
-    characters.push(item.name);
-    cursor = cursor.args[1];
-  }
-}
-
 function format(term, env, variableNames) {
   const resolved = deref(term, env);
   if (resolved.type === VAR) return variableNames.get(resolved.name) ?? writeVariable(resolved.name);
   if (resolved.type === STRING) return writeString(resolved.name);
   if (resolved.type === NUMBER) return resolved.name;
   if (resolved.type === ATOM) return writeAtom(resolved.name);
+  // List notation is core ISO syntax, not an operator, so it reads back without
+  // any declaration or flag - unlike double-quoted text, whose meaning depends
+  // on double_quotes. Walking the spine iteratively also keeps a long list from
+  // costing one level of recursion per element.
   if (isCons(resolved)) {
-    const splice = quotedListSplice(resolved, env);
-    if (splice != null) {
-      const prefix = writeString(splice.text);
-      return splice.tail == null ? prefix : `${prefix}||${format(splice.tail, env, variableNames)}`;
+    const items = [];
+    let cursor = resolved;
+    while (isCons(cursor)) {
+      items.push(format(cursor.args[0], env, variableNames));
+      cursor = deref(cursor.args[1], env);
     }
+    const tail = isEmptyList(cursor) ? '' : `|${format(cursor, env, variableNames)}`;
+    return `[${items.join(', ')}${tail}]`;
   }
   const args = resolved.args.map((arg) => format(arg, env, variableNames));
   return `${writeAtom(resolved.name)}(${args.join(', ')})`;

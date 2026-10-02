@@ -1,5 +1,5 @@
-append([], "ab", "ab").
-append("a", "b", "ab").
-append("ab", [], "ab").
+append([], [a, b], [a, b]).
+append([a], [b], [a, b]).
+append([a, b], [], [a, b]).
 matching_pair(pair(same, same)).
-head_tail("abc", a, "bc").
+head_tail([a, b, c], a, [b, c]).

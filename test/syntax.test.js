@@ -74,11 +74,13 @@ test('numbers keep ISO lexical syntax and canonical spelling', () => {
 });
 
 test('atoms, strings and lists read as their canonical forms', () => {
-  reads('?- X = "ab".', 'query:=(X, "ab")');
-  // A list of one-character atoms is the same term as the double-quoted text.
-  reads('?- X = [a, b].', 'query:=(X, "ab")');
-  reads('?- X = [1, 2].', "query:=(X, '.'(1, '.'(2, [])))");
-  reads('?- X = [a|T].', 'query:=(X, "a"||T)');
+  // Double-quoted text reads as a list of one-character atoms, and is written
+  // back as one: list notation needs no flag to read back the same term.
+  reads('?- X = "ab".', 'query:=(X, [a, b])');
+  reads('?- X = [a, b].', 'query:=(X, [a, b])');
+  reads('?- X = [1, 2].', 'query:=(X, [1, 2])');
+  reads('?- X = [a|T].', 'query:=(X, [a|T])');
+  reads('?- X = "ab"||T.', 'query:=(X, [a, b|T])');
   reads('?- X = [].', 'query:=(X, [])');
   reads('?- X = {a, b}.', "query:=(X, {}(','(a, b)))");
   reads('?- X = {}.', 'query:=(X, {})');
@@ -130,7 +132,7 @@ test('source metadata records the line each clause starts on', () => {
 });
 
 test('term and goal entry points read one term', () => {
-  assert.equal(text(parseTermText('f(a, [1, 2]).')), "f(a, '.'(1, '.'(2, [])))");
+  assert.equal(text(parseTermText('f(a, [1, 2]).')), 'f(a, [1, 2])');
   assert.equal(text(parseGoalText('X = 1, Y = 2')), "','(=(X, 1), =(Y, 2))");
   assert.throws(() => parseTermText('f(a, b)'), /expected \./);
   assert.throws(() => parseTermText('f(a). g(b).'), /expected end of input/);
