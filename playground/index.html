@@ -221,7 +221,7 @@
   <header>
     <h1>The eyel Playground</h1>
     <p>Write facts and rules, see what follows, and check the proof of every conclusion — in your browser.
-      <a href="make-reasoning-something-you-can-see.md">What is eyel?</a></p>
+      <a href="https://github.com/eyereasoner/eyel/blob/main/make-reasoning-something-you-can-see.md">What is eyel?</a></p>
   </header>
   <main>
     <section aria-labelledby="examples-heading">
@@ -302,7 +302,8 @@
       </div>
       <div class="panel-body">
         <p class="hint">Serve the checkout over HTTP to use the playground — for example <code>npx serve .</code> or
-          <code>python3 -m http.server</code> — then open <code>playground.html</code>. Browsers do not run module
+          <code>python3 -m http.server</code> — then open <code>/playground/</code>, or use the hosted copy at
+          <a href="https://eyereasoner.github.io/eyel/playground/">eyereasoner.github.io/eyel/playground</a>. Browsers do not run module
           workers or load examples from <code>file://</code>.</p>
       </div>
     </section>
@@ -400,7 +401,7 @@ true :+ ancestor(alice, Who).
 
     async function loadManifest() {
       try {
-        const response = await fetch(new URL('./examples/manifest.json', location.href), { cache: 'no-store' });
+        const response = await fetch(new URL('../examples/manifest.json', location.href), { cache: 'no-store' });
         if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
         examples = (await response.json()).sort((a, b) => a.name.localeCompare(b.name));
       } catch (error) {
@@ -428,7 +429,7 @@ true :+ ancestor(alice, Who).
       if (!name) return;
       try {
         setStatus(`Loading examples/${name}.pl…`);
-        const text = await fetchText(new URL(`./examples/${name}.pl`, location.href));
+        const text = await fetchText(new URL(`../examples/${name}.pl`, location.href));
         setSource(text, `examples/${name}.pl`, { kind: 'example', name });
         exampleSelect.value = name;
         setStatus(`Loaded examples/${name}.pl.`);
@@ -502,7 +503,7 @@ true :+ ancestor(alice, Who).
         limits,
       };
       const started = performance.now();
-      const current = new Worker(new URL('./src/playground-worker.js', location.href), { type: 'module' });
+      const current = new Worker(new URL('../src/playground-worker.js', location.href), { type: 'module' });
       worker = current;
       startupTimer = setTimeout(() => {
         if (worker === current) finish({ ok: false, error: 'The reasoning worker did not start. Serve the checkout over HTTP and reload.' });
@@ -759,7 +760,7 @@ true :+ ancestor(alice, Who).
 
     async function loadVersion() {
       try {
-        const pkg = JSON.parse(await fetchText(new URL('./package.json', location.href)));
+        const pkg = JSON.parse(await fetchText(new URL('../package.json', location.href)));
         $('#version').textContent = `eyel v${pkg.version}`;
       } catch { /* the version is decoration */ }
     }

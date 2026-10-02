@@ -1,6 +1,6 @@
-// Runs one program for playground.html. Reasoning happens off the page's main
-// thread, so a long search cannot freeze the editor, and stopping a run is a
-// matter of terminating this worker.
+// Runs one program for the playground in playground/index.html. Reasoning
+// happens off the page's main thread, so a long search cannot freeze the
+// editor, and stopping a run is a matter of terminating this worker.
 import { run, checkProof, checkReportTerms } from '../index.js';
 
 self.onmessage = ({ data }) => {

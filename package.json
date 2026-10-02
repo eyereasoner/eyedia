@@ -6,7 +6,7 @@
   "main": "./index.js",
   "exports": "./index.js",
   "bin": { "eyel": "./bin/eyel.js" },
-  "files": ["index.js", "src", "bin", "examples", "test", "tools", "README.md", "make-reasoning-something-you-can-see.md", "playground.html", "LICENSE.md"],
+  "files": ["index.js", "src", "bin", "examples", "test", "tools", "README.md", "make-reasoning-something-you-can-see.md", "playground", "LICENSE.md"],
   "scripts": {
     "test": "node test/run.js",
     "test:examples": "node test/examples.test.js",

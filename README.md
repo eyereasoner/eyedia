@@ -33,8 +33,9 @@ npm test
 The executable becomes `eyel` when the package is installed. Run `eyel --help`
 for the full command line.
 
-Or in the browser: serve the checkout (`python3 -m http.server`) and open
-[playground.html](playground.html) to edit, run and check any example.
+Or in the browser: the [playground](https://eyereasoner.github.io/eyel/playground/) edits, runs and checks any
+example. To run it from a checkout, serve it (`python3 -m http.server`) and open
+`/playground/`.
 
 ## From JavaScript
 
@@ -54,6 +55,8 @@ console.log(checkProof(source, result.proof).valid);    // true
   not establish, and how the engine works.
 - **[Examples](examples/README.md)** — 63 complete programs, each with its saved
   conclusions, proof and C1-C5 check report.
+- **[Playground](https://eyereasoner.github.io/eyel/playground/)** — write a program in the browser, run it, check
+  its proof, and share a link to exactly what you see.
 - **[src/builtins.js](src/builtins.js)** — the exact native predicate list.
 
 ## License
