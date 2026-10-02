@@ -1,9 +1,9 @@
-import test from './progress.js';
+import test, { phase } from './progress.js';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { Program, checkProof } from '../index.js';
+import { checkProof } from '../index.js';
 import { examplesRoot, manifest, evaluateExample } from '../tools/example-artifacts.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -26,26 +26,37 @@ test('example manifest covers every source and all three artifact directories', 
 });
 for (const entry of manifest) {
   test(`example ${entry.name}: output, proof and check snapshots`, () => {
-    const artifacts = evaluateExample(entry);
-    for (const kind of ['output', 'proof', 'check']) {
-      assert.equal(artifacts[kind], read(`${kind}/${entry.name}.pl`), `${kind} changed; review before running npm run examples:update`);
-    }
-    const program = Program.parse(read(`${entry.name}.pl`));
-    const savedProof = read(`proof/${entry.name}.pl`);
-    const report = checkProof(program, savedProof, { allowTrusted: entry.trusted.length > 0 });
-    assert.equal(report.valid, true, JSON.stringify(report.failures));
-    assert.equal(checkProof(program, savedProof + '\nunjustified_example_claim.\n').valid, false);
+    const artifacts = evaluateExample(entry, phase);
+    phase('compare saved artifacts', () => {
+      for (const kind of ['output', 'proof', 'check']) {
+        assert.equal(artifacts[kind], read(`${kind}/${entry.name}.pl`), `${kind} changed; review before running npm run examples:update`);
+      }
+    });
+    // The saved certificate was just shown to be the one this run generated,
+    // and generating it checked it. Verifying the file on disk from scratch is
+    // the CLI test below. What is left to establish here is that the checker
+    // refuses a document it has not justified.
+    phase('refuse a tampered certificate', () => {
+      const tampered = read(`proof/${entry.name}.pl`) + '\nunjustified_example_claim.\n';
+      assert.equal(checkProof(artifacts.program, tampered).valid, false);
+    });
   });
   test(`example ${entry.name}: CLI output, proof and saved-proof checking`, () => {
     const file = `examples/${entry.name}.pl`;
-    const output = cli([file]);
-    assert.equal(output.status, entry.haltCode ?? 0);
-    assert.equal(output.stdout, read(`output/${entry.name}.pl`));
-    const proof = cli(['--proof', file]);
-    assert.equal(proof.status, entry.haltCode ?? 0);
-    assert.equal(proof.stdout, read(`proof/${entry.name}.pl`));
-    const check = cli(['--check-proof', `examples/proof/${entry.name}.pl`, file]);
-    assert.equal(check.status, 0);
-    assert.equal(check.stdout, read(`check/${entry.name}.pl`));
+    phase('eyel FILE', () => {
+      const output = cli([file]);
+      assert.equal(output.status, entry.haltCode ?? 0);
+      assert.equal(output.stdout, read(`output/${entry.name}.pl`));
+    });
+    phase('eyel --proof FILE', () => {
+      const proof = cli(['--proof', file]);
+      assert.equal(proof.status, entry.haltCode ?? 0);
+      assert.equal(proof.stdout, read(`proof/${entry.name}.pl`));
+    });
+    phase('eyel --check-proof PROOF FILE', () => {
+      const check = cli(['--check-proof', `examples/proof/${entry.name}.pl`, file]);
+      assert.equal(check.status, 0);
+      assert.equal(check.stdout, read(`check/${entry.name}.pl`));
+    });
   });
 }

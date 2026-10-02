@@ -13,12 +13,14 @@ for (const entry of manifest) {
   names.add(entry.name);
 }
 
-export function evaluateExample(entry) {
+// `phase` lets a caller report and time each stage; by default they just run.
+export function evaluateExample(entry, phase = (label, work) => work()) {
   // Parse once: a large example costs more to parse than to reason over, and
   // the generated proof has already been checked by the run that made it.
-  const program = Program.parse(readFileSync(new URL(`${entry.name}.pl`, examplesRoot), 'utf8'));
-  const output = run(program);
-  const proved = run(program, { proof: true });
+  const program = phase('parse the program',
+    () => Program.parse(readFileSync(new URL(`${entry.name}.pl`, examplesRoot), 'utf8')));
+  const output = phase('reason', () => run(program));
+  const proved = phase('reason and certify', () => run(program, { proof: true }));
   const report = proved.proofReport;
   if (!report.valid || !report.steps || !report.claims) throw new Error(`${entry.name}: no valid nonempty proof`);
   if (output.haltCode !== (entry.haltCode ?? null) || proved.haltCode !== output.haltCode) {
@@ -28,6 +30,7 @@ export function evaluateExample(entry) {
   const trusted = [...new Set(report.trusted.map((boundary) => boundary.kind))].sort();
   if (JSON.stringify(trusted) !== JSON.stringify([...entry.trusted].sort())) throw new Error(`${entry.name}: unexpected proof obligations`);
   return {
+    program,
     output: output.stdout,
     proof: proved.proof,
     check: checkReportTerms(report),
