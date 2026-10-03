@@ -351,7 +351,7 @@ language does not hand you a certificate it has not verified.
 
 ## The examples
 
-The [example collection](examples/README.md) is 70 complete programs. Each one
+The [example collection](examples/README.md) is 57 complete programs. Each one
 ships with its conclusions, its proof and its C1–C7 check report, all saved to
 disk:
 
@@ -364,23 +364,22 @@ examples/check/socrates.pl     C1-C7 proof-check report
 
 | Examples | What they demonstrate |
 | --- | --- |
-| `socrates`, `family`, `backward` | Basic inference, recursive relationships and mixed chaining |
+| `socrates`, `backward` | Basic inference and mixed chaining |
 | `deep-taxonomy-10` through `deep-taxonomy-100000` | A subclass chain whose branches lead nowhere, at five sizes |
 | `reachability`, `shortest-path`, `path-discovery` | Cyclic graph closure, weighted paths and airport routes with bounded stopovers |
-| `fibonacci`, `arithmetic`, `lists` | Recursive computation, exact integers and list operations |
+| `fibonacci`, `lists` | Recursive computation with exact integers, and list operations |
 | `strings`, `unification`, `alternatives` | Unicode, structural matching and goal-directed choices |
 | `graphs`, `terms`, `witnesses` | Separate graph views, quoted data and structured witnesses |
-| `inventory`, `permissions`, `state-transitions`, `integrity` | Aggregation, policy checks, event logs and constraints |
-| `schema-inference`, `equivalence`, `annotation-evidence`, `property-paths` | Schema rules, identity closure, statement evidence and composed paths |
-| `nested-collections`, `flat-map`, `scoped-audit`, `variable-predicates` | Structured collections, mapping, scoped checks and relation renaming |
-| `family-cousins`, `dog-license`, `paraconsistent-animals`, `record-scopes` | Family branches, counted policies, conflicting observations and witness scope |
-| `hanoi`, `collatz`, `metric-classification`, `control-system`, `lldm`, `sudoku`, `age` | Recursive puzzles, numerical classification, actuator control, a leg length measurement, a 9x9 Sudoku solver and calendar age checks |
+| `inventory`, `dog-license`, `permissions`, `state-transitions`, `integrity` | Aggregation, counted policies, policy checks, event logs and constraints |
+| `schema-inference`, `family-cousins`, `paraconsistent-animals` | Schema rules, family branches and conflicting observations |
+| `flat-map`, `scoped-audit`, `variable-predicates` | Mapping, scoped checks and relation renaming |
+| `hanoi`, `collatz`, `control-system`, `lldm`, `age` | Recursive puzzles, actuator control, a leg length measurement and calendar age checks |
 | `good-cobbler`, `peano`, `expression-eval`, `complex`, `polynomial` | Structured descriptions, symbolic arithmetic, expression graphs, a complex-number domain and polynomial roots |
-| `modexp`, `queens`, `interval-relations` | Modular powers, constraint search and all thirteen interval relations |
-| `concept-alignment`, `bayes-diagnosis`, `policy-risk` | Reporting rollups, normalized fault scores and ranked policy findings |
-| `ackermann`, `peasant`, `padovan`, `sieve`, `goldbach`, `kaprekar` | Exact hyperoperations, ancient arithmetic, number sequences and number-theory checks |
+| `queens`, `interval-relations` | Constraint search and all thirteen interval relations |
+| `bayes-diagnosis`, `policy-risk` | Normalized fault scores and ranked policy findings |
+| `ackermann`, `peasant`, `sieve`, `goldbach`, `kaprekar` | Exact hyperoperations, ancient arithmetic and number-theory checks |
 | `easter`, `turing`, `superdense-coding`, `teleportation` | Calendar arithmetic, a Turing machine interpreter and discrete quantum protocols |
-| `zebra`, `four-color`, `wolf-goat-cabbage`, `monkey-bananas`, `gps`, `enigma1225` | Classic constraint puzzles, planning problems and a combinatorial board puzzle |
+| `zebra`, `four-color`, `wolf-goat-cabbage`, `monkey-bananas`, `gps` | Classic constraint puzzles and planning problems |
 
 A few are worth singling out. [Ackermann](examples/ackermann.pl) computes
 A(4, 2), a number with 19,729 digits, exactly. The [zebra puzzle](examples/zebra.pl)

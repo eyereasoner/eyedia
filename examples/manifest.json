@@ -30,11 +30,6 @@
     "trusted": []
   },
   {
-    "name": "family",
-    "description": "Recursive family relationships",
-    "trusted": []
-  },
-  {
     "name": "backward",
     "description": "Backward definitions inside forward bodies",
     "trusted": []
@@ -77,11 +72,6 @@
   {
     "name": "lists",
     "description": "Concatenation, mapping and summation",
-    "trusted": []
-  },
-  {
-    "name": "arithmetic",
-    "description": "Factorial, greatest common divisor and large integers",
     "trusted": []
   },
   {
@@ -135,21 +125,6 @@
     "trusted": []
   },
   {
-    "name": "equivalence",
-    "description": "Explicit identity closure and name propagation",
-    "trusted": []
-  },
-  {
-    "name": "annotation-evidence",
-    "description": "Authors and dates attached to quoted statements",
-    "trusted": []
-  },
-  {
-    "name": "nested-collections",
-    "description": "Lists containing property records and other lists",
-    "trusted": []
-  },
-  {
     "name": "family-cousins",
     "description": "Generations, family branches and cousin relationships",
     "trusted": []
@@ -179,11 +154,6 @@
     ]
   },
   {
-    "name": "property-paths",
-    "description": "Composed, inverse and repeatable relationship paths",
-    "trusted": []
-  },
-  {
     "name": "paraconsistent-animals",
     "description": "Local summaries of conflicting observations",
     "trusted": [
@@ -198,11 +168,6 @@
     ]
   },
   {
-    "name": "metric-classification",
-    "description": "Measurement normalization and numerical classification",
-    "trusted": []
-  },
-  {
     "name": "control-system",
     "description": "Feedforward and nonlinear feedback commands for two actuators",
     "trusted": []
@@ -215,16 +180,6 @@
   {
     "name": "variable-predicates",
     "description": "Relations selected and renamed through data bindings",
-    "trusted": []
-  },
-  {
-    "name": "record-scopes",
-    "description": "Distinct per-rule structured witnesses",
-    "trusted": []
-  },
-  {
-    "name": "sudoku",
-    "description": "A 9x9 Sudoku solved by backtracking, most constrained cells first",
     "trusted": []
   },
   {
@@ -253,16 +208,6 @@
     "trusted": [
       "collected"
     ]
-  },
-  {
-    "name": "modexp",
-    "description": "Exact modular exponentiation by repeated squaring",
-    "trusted": []
-  },
-  {
-    "name": "concept-alignment",
-    "description": "Vocabulary alignment and reporting rollups",
-    "trusted": []
   },
   {
     "name": "interval-relations",
@@ -302,11 +247,6 @@
   {
     "name": "peasant",
     "description": "Peasant multiplication and exponentiation by halving and doubling",
-    "trusted": []
-  },
-  {
-    "name": "padovan",
-    "description": "The Padovan sequence and its convergence on the plastic ratio",
     "trusted": []
   },
   {
@@ -366,11 +306,6 @@
   {
     "name": "gps",
     "description": "Goal-driven parallel sequences: routes to a goal state within duration, cost, belief and comfort limits",
-    "trusted": []
-  },
-  {
-    "name": "enigma1225",
-    "description": "New Scientist Enigma 1225: the best board whose transpose is a row permutation of itself",
     "trusted": []
   },
   {

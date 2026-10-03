@@ -17,7 +17,11 @@ function cli(args) {
   assert.equal(result.stderr, '', result.stderr);
   return result;
 }
-test('example manifest covers every source and all three artifact directories', () => {
+// npm test runs each of these tests in its own process, naming it in
+// EYEL_EXAMPLE_TEST as manifest, NAME:snapshot or NAME:cli; without it, all run.
+const only = process.env.EYEL_EXAMPLE_TEST;
+const selected = (id) => !only || only === id;
+if (selected('manifest')) test('example manifest covers every source and all three artifact directories', () => {
   const expected = manifest.map((entry) => `${entry.name}.pl`).sort();
   assert.deepEqual(readdirSync(examplesRoot).filter((file) => file.endsWith('.pl')).sort(), expected);
   for (const kind of ['output', 'proof', 'check']) {
@@ -25,7 +29,7 @@ test('example manifest covers every source and all three artifact directories', 
   }
 });
 for (const entry of manifest) {
-  test(`example ${entry.name}: output, proof and check snapshots`, () => {
+  if (selected(`${entry.name}:snapshot`)) test(`example ${entry.name}: output, proof and check snapshots`, () => {
     const artifacts = evaluateExample(entry, phase);
     phase('compare saved artifacts', () => {
       for (const kind of ['output', 'proof', 'check']) {
@@ -41,7 +45,7 @@ for (const entry of manifest) {
       assert.equal(checkProof(artifacts.program, tampered).valid, false);
     });
   });
-  test(`example ${entry.name}: CLI output, proof and saved-proof checking`, () => {
+  if (selected(`${entry.name}:cli`)) test(`example ${entry.name}: CLI output, proof and saved-proof checking`, () => {
     const file = `examples/${entry.name}.pl`;
     phase('eyel FILE', () => {
       const output = cli([file]);

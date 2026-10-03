@@ -22,11 +22,6 @@ test('recursive graph closure terminates on cycles and suppresses duplicates', (
   const source = 'edge(a,b). edge(b,a). path(X,Y) :+ edge(X,Y). path(X,Z) :+ path(X,Y), edge(Y,Z).';
   assert.deepEqual(new Set(proven(source).answers), new Set(['path(a, b)', 'path(b, a)', 'path(a, a)', 'path(b, b)']));
 });
-test('family translation computes transitive ancestry', () => {
-  const result = proven(example('family'));
-  assert.equal(result.answers.length, 7);
-  assert.ok(result.answers.includes('t(x, descended_from, c)'));
-});
 test('lists, quoted formulas, triple terms and existential conclusion sharing', () => {
   const result = proven(example('terms'));
   assert.equal(result.answers.length, 2);

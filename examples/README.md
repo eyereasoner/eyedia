@@ -20,7 +20,6 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [deep-taxonomy-1000.pl](deep-taxonomy-1000.pl) | The same taxonomy benchmark at a thousand levels |
 | [deep-taxonomy-10000.pl](deep-taxonomy-10000.pl) | The same taxonomy benchmark at ten thousand levels |
 | [deep-taxonomy-100000.pl](deep-taxonomy-100000.pl) | The same taxonomy benchmark at a hundred thousand levels |
-| [family.pl](family.pl) | Recursive family relationships |
 | [backward.pl](backward.pl) | Backward definitions inside forward bodies |
 | [fibonacci.pl](fibonacci.pl) | Fast doubling for exact Fibonacci numbers, and the golden ratio |
 | [graphs.pl](graphs.pl) | Base data, negation and collection |
@@ -29,9 +28,9 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [shortest-path.pl](shortest-path.pl) | Weighted paths and stratified minimum selection |
 | [path-discovery.pl](path-discovery.pl) | Full airport network with configurable endpoints and maximum stopovers |
 | [lists.pl](lists.pl) | Concatenation, mapping and summation |
-| [arithmetic.pl](arithmetic.pl) | Factorial, greatest common divisor and large integers |
 | [strings.pl](strings.pl) | Text construction and Unicode inspection |
 | [inventory.pl](inventory.pl) | An invoice from collected line totals |
+| [dog-license.pl](dog-license.pl) | A licensing threshold based on collected dog counts |
 | [permissions.pl](permissions.pl) | Role permissions with exclusions |
 | [witnesses.pl](witnesses.pl) | Structured witnesses and shared multi-head conclusions |
 | [state-transitions.pl](state-transitions.pl) | Account balances from an ordered event log |
@@ -39,30 +38,20 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [alternatives.pl](alternatives.pl) | Alternative routes, disjunction and once |
 | [unification.pl](unification.pl) | Open lists and repeated-variable constraints |
 | [schema-inference.pl](schema-inference.pl) | Subclasses, subproperties, domains and ranges |
-| [equivalence.pl](equivalence.pl) | Explicit identity closure and name propagation |
-| [annotation-evidence.pl](annotation-evidence.pl) | Authors and dates attached to quoted statements |
-| [nested-collections.pl](nested-collections.pl) | Lists containing property records and other lists |
 | [family-cousins.pl](family-cousins.pl) | Generations, family branches and cousin relationships |
-| [dog-license.pl](dog-license.pl) | A licensing threshold based on collected dog counts |
 | [hanoi.pl](hanoi.pl) | Recursive construction of a disk-move sequence |
 | [collatz.pl](collatz.pl) | Parity-based recursive trajectories over a range of starts |
 | [flat-map.pl](flat-map.pl) | Predicate-based mapping with multiple or missing values |
-| [property-paths.pl](property-paths.pl) | Composed, inverse and repeatable relationship paths |
 | [paraconsistent-animals.pl](paraconsistent-animals.pl) | Local summaries of conflicting observations |
 | [scoped-audit.pl](scoped-audit.pl) | Presence and absence within separate quoted graphs |
-| [metric-classification.pl](metric-classification.pl) | Measurement normalization and numerical classification |
 | [control-system.pl](control-system.pl) | Feedforward and nonlinear feedback commands for two actuators |
 | [lldm.pl](lldm.pl) | Leg length discrepancy measured from radiograph landmarks, with an alarm and its reason |
 | [variable-predicates.pl](variable-predicates.pl) | Relations selected and renamed through data bindings |
-| [record-scopes.pl](record-scopes.pl) | Distinct per-rule structured witnesses |
-| [sudoku.pl](sudoku.pl) | A 9x9 Sudoku solved by backtracking, most constrained cells first |
 | [good-cobbler.pl](good-cobbler.pl) | Trade-specific classification from structured descriptions |
 | [peano.pl](peano.pl) | Symbolic arithmetic, relational addition and a chained derivation |
 | [expression-eval.pl](expression-eval.pl) | Recursive expression graphs used in forward inference |
 | [complex.pl](complex.pl) | Complex arithmetic, exact over Gaussian integers and polar beyond them |
 | [polynomial.pl](polynomial.pl) | Complex roots of polynomials up to degree 4 by Cardan and Lagrange |
-| [modexp.pl](modexp.pl) | Exact modular exponentiation by repeated squaring |
-| [concept-alignment.pl](concept-alignment.pl) | Vocabulary alignment and reporting rollups |
 | [interval-relations.pl](interval-relations.pl) | All thirteen interval relations and endpoint completion |
 | [bayes-diagnosis.pl](bayes-diagnosis.pl) | Normalized probabilities for illustrative printer faults |
 | [policy-risk.pl](policy-risk.pl) | Ranked findings with explanations and suggested mitigations |
@@ -70,7 +59,6 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [age.pl](age.pl) | Calendar-year and elapsed-day age checks at an explicit reference date |
 | [ackermann.pl](ackermann.pl) | The Ackermann function through the hyperoperation sequence, exactly |
 | [peasant.pl](peasant.pl) | Peasant multiplication and exponentiation by halving and doubling |
-| [padovan.pl](padovan.pl) | The Padovan sequence and its convergence on the plastic ratio |
 | [sieve.pl](sieve.pl) | The sieve of Eratosthenes over an explicit list of integers |
 | [goldbach.pl](goldbach.pl) | Goldbach splits of every power of two up to 2^25 |
 | [kaprekar.pl](kaprekar.pl) | Every four-digit Kaprekar routine reaches 6174 within seven steps |
@@ -81,7 +69,6 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [wolf-goat-cabbage.pl](wolf-goat-cabbage.pl) | The river crossing, with seven crossings shown to be minimal |
 | [monkey-bananas.pl](monkey-bananas.pl) | Every plan of up to five moves that gets the monkey the bananas |
 | [gps.pl](gps.pl) | Goal-driven parallel sequences: routes to a goal state within duration, cost, belief and comfort limits |
-| [enigma1225.pl](enigma1225.pl) | New Scientist Enigma 1225: the best board whose transpose is a row permutation of itself |
 | [superdense-coding.pl](superdense-coding.pl) | Superdense coding in discrete quantum theory, with interference as odd path counts |
 | [teleportation.pl](teleportation.pl) | Quantum teleportation in discrete quantum theory, checked for every state and outcome |
 
@@ -114,12 +101,10 @@ explicit machine, so the depth costs heap rather than host stack.
 node bin/eyel.js --stats examples/deep-taxonomy-100000.pl
 ```
 
-These are among the largest artifacts in the corpus: the hundred-thousand-level
+These are the largest artifacts in the corpus: the hundred-thousand-level
 source is about 10 MB and its certificate about 14 MB, since a certificate
-records every step it claims. Only `padovan.pl` has a larger one, at about
-22 MB, because each of its steps carries integers hundreds of digits long.
-Running `npm test` or `npm run examples:update` spends much of its time on these
-two examples and on `sudoku.pl`, whose certificate is about 13 MB.
+records every step it claims. Running `npm test` or `npm run examples:update`
+spends much of its time on this one example.
 
 `path-discovery.pl` contains 7,698 airport records and 37,505 directed
 connections. Its default goal finds three routes from Ostend to Prague with
@@ -148,8 +133,6 @@ addition goal enumerates every split of a known sum, and a second goal chains
 all three relations: `(1*2)+3` is 5, whose factorial is 120 nested successors.
 `expression-eval.pl` evaluates a graph for `(2*3)+(10-4)` and emits
 `result(example, 12)`.
-`concept-alignment.pl` rolls up five concepts to a shared reporting class,
-including a source concept reached through multiple broader links.
 
 `complex.pl` adds a numeric domain the engine knows nothing about. A complex
 number is the ordinary term `complex(Real, Imaginary)`, and addition,
@@ -195,26 +178,13 @@ instead. For a cubic it passes strict checking:
 node bin/eyel.js --proof --goal "racine([[1, 0], [-6, 0], [11, 0], [-6, 0]], Z)" examples/polynomial.pl
 ```
 
-`modexp.pl` handles billion-sized exponents by repeated squaring without
-constructing the full power. Supply an integer base, a nonnegative integer
-exponent and a positive integer modulus. `queens.pl` returns the first solution
-for an 8x8 board by default; another goal enumerates other board sizes:
+`queens.pl` returns the first solution for an 8x8 board by default; another
+goal enumerates other board sizes:
 
 ```sh
-node bin/eyel.js --goal "mod_pow(7, 1000000000, 1000000007, Result)" examples/modexp.pl
 node bin/eyel.js --goal "queens(4, Columns)" examples/queens.pl
 node bin/eyel.js --goal "add(A, B, s(s(s(zero))))" examples/peano.pl
 ```
-
-`sudoku.pl` solves the 9x9 puzzle from Wikipedia's Sudoku article with nothing
-but backtracking. The given digits are placed first, then the blanks that see
-the most givens, so the search meets contradictions early: it takes about
-136,000 inferences, against 586,000 when the blanks are filled in row order.
-Each blank is checked only against the cells placed before it in its row,
-column or box, and that plan is worked out once before the search starts. Every check is
-arithmetic, so the proof passes strict checking without trusted obligations. It
-is also one of the larger certificates, about 13 MB, because each step of the
-plan carries the lists it walks.
 
 `interval-relations.pl` uses half-open intervals with integer-minute endpoints.
 It completes endpoints from durations and classifies each valid interval pair
@@ -271,12 +241,10 @@ guards that make its alternatives exclusive, where Prolog would use cut.
 `ackermann.pl` computes A(4, 2), a number with 19,729 digits, through the
 hyperoperation sequence: addition, multiplication and exponentiation have closed
 forms, and every higher level is the one below it iterated. `peasant.pl`
-multiplies and raises to powers using only halving, doubling and addition, and
-`padovan.pl` follows the Padovan sequence to its 3674th value before showing
-successive ratios converge on the plastic ratio, about 1.3247. `sieve.pl` lists
-the primes below 100 by striking out multiples from an explicit list; it stops
-there because its certificate records every intermediate list, which grows far
-faster than the answer.
+multiplies and raises to powers using only halving, doubling and addition.
+`sieve.pl` lists the primes below 100 by striking out multiples from an
+explicit list; it stops there because its certificate records every
+intermediate list, which grows far faster than the answer.
 
 `goldbach.pl` splits every power of two from 4 to 2^25 into two primes, taking
 the split with the smallest prime. `easter.pl` dates Easter Sunday for 2021 to
@@ -302,16 +270,6 @@ retracting fluents as it moves; here the state is a list of fluents passed
 along the search, so every step is an ordinary clause instance and the
 certificate passes strict checking. Stages are counted as changes of map plus
 one, where the original stops counting at two.
-
-`enigma1225.pl` solves New Scientist Enigma 1225 for an 8x8 board. Permuting
-the rows by a permutation without fixed points must give the transpose, and no
-two rows may be alike. That forces cells into classes, which are numbered from
-the smallest class up, and the board scores the sum of its entries. The
-published Prolog solution finds the classes by unifying variables and sorts
-them in the standard order of terms. Here each cell is a number instead, and its
-class is its orbit under (I, J) -> (Perm(J), I), so every step is arithmetic and
-the certificate needs no trusted obligations. For every size from 4 to 9 it
-gives the same board as the original.
 
 `superdense-coding.pl` sends two classical bits through one qubit in discrete
 quantum theory, where amplitudes come from a finite field and the merge of
