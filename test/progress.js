@@ -15,16 +15,3 @@ export default function test(name, body) {
     await body(context);
   });
 }
-
-// Report the stages of a long test while it runs. The label is written before
-// the work starts and the duration when it finishes, so whatever a slow test is
-// currently doing is on screen rather than only visible once it is over.
-export function phase(label, work) {
-  process.stdout.write(`         ${label.padEnd(32)}`);
-  const started = performance.now();
-  try {
-    return work();
-  } finally {
-    process.stdout.write(`${(performance.now() - started).toFixed(0).padStart(7)} ms\n`);
-  }
-}
