@@ -38,6 +38,13 @@ const groups = [
 const total = groups.reduce((sum, group) => sum + group.jobs.reduce((n, job) => n + job.tests, 0), 0);
 const width = String(total).length;
 
+// A passing mark is green, a failing one red and a summary line yellow, on a
+// terminal that shows color. ✓, ✗ and ● have no emoji form, so unlike ✔, ✖ and
+// ℹ no terminal draws them from a color emoji font that ignores the color.
+const colors = process.stdout.hasColors?.() ?? false;
+const paint = (code, mark) => (colors ? `\x1b[${code}m${mark}\x1b[0m` : mark);
+const marks = { '✔': paint('1;92', '✓'), '✖': paint('1;91', '✗'), 'ℹ': paint('1;93', '●') };
+
 const totals = { tests: 0, pass: 0, fail: 0 };
 const failed = [];
 const started = performance.now();
@@ -55,7 +62,7 @@ function report(job, text) {
     else if (/^[✔✖] /.test(line)) {
       const label = job.file.endsWith('examples.test.js') ? '' : `${job.label}: `;
       const result = line.slice(2).replace(/ \(([\d.]+)ms\)$/, (_, ms) => `  ${Math.round(Number(ms))} ms`);
-      process.stdout.write(`[${String(++reported).padStart(width)}/${total}] ${line[0]} ${label}${result}\n`);
+      process.stdout.write(`[${String(++reported).padStart(width)}/${total}] ${marks[line[0]]} ${label}${result}\n`);
       for (const stage of stages) process.stdout.write(`${' '.repeat(2 * width + 7)}${stage.trimStart()}\n`);
       stages = [];
     }
@@ -90,6 +97,7 @@ for (const group of groups) {
 for (const { job, text } of failed) {
   process.stdout.write(`\n── failed: ${job.test ?? job.file} ${'─'.repeat(40)}\n${text.trimEnd()}\n`);
 }
-process.stdout.write(`\nℹ tests ${totals.tests}\nℹ pass ${totals.pass}\nℹ fail ${totals.fail}\n`);
-process.stdout.write(`ℹ duration_ms ${(performance.now() - started).toFixed(0)}\n`);
+const info = marks['ℹ'];
+process.stdout.write(`\n${info} tests ${totals.tests}\n${info} pass ${totals.pass}\n${info} fail ${totals.fail}\n`);
+process.stdout.write(`${info} duration_ms ${(performance.now() - started).toFixed(0)}\n`);
 if (failed.length) process.exitCode = 1;
