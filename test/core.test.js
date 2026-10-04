@@ -124,8 +124,8 @@ test('finite-tree unification rejects cycles and nested identity resolves bindin
 test('computed calls work backward and forward dependency analysis rejects hidden calls', () => {
   assert.deepEqual(proven('p(a). apply(G) :- call(G).', { goal: 'apply(p(a))' }).answers, ['apply(p(a))']);
   assert.throws(() => run('p(a). apply(G) :- call(G). q :+ apply(p(a)).'), /statically named/);
-  assert.throws(() => run('p :- !.', { goal: 'p' }), /outside eyel/);
-  assert.throws(() => run('apply(G) :- call(G).', { goal: 'apply(!)' }), /outside eyel/);
+  assert.throws(() => run('p :- !.', { goal: 'p' }), /outside eyeris/);
+  assert.throws(() => run('apply(G) :- call(G).', { goal: 'apply(!)' }), /outside eyeris/);
 });
 test('parsed programs can be reused without sharing derived state', () => {
   const program = Program.parse('p(a). q(X) :+ p(X).');

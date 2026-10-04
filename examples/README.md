@@ -3,9 +3,9 @@
 Run a source, generate its proof, or check its saved proof:
 
 ```sh
-node bin/eyel.js examples/socrates.pl
-node bin/eyel.js --proof examples/socrates.pl
-node bin/eyel.js --check-proof examples/proof/socrates.pl examples/socrates.pl
+node bin/eyeris.js examples/socrates.pl
+node bin/eyeris.js --proof examples/socrates.pl
+node bin/eyeris.js --check-proof examples/proof/socrates.pl examples/socrates.pl
 ```
 
 Each program has a matching conclusion file in `output/`, a certificate in
@@ -98,7 +98,7 @@ confirms: `deep-taxonomy-100000` verifies 100001 steps. Backward search is an
 explicit machine, so the depth costs heap rather than host stack.
 
 ```sh
-node bin/eyel.js --stats examples/deep-taxonomy-100000.pl
+node bin/eyeris.js --stats examples/deep-taxonomy-100000.pl
 ```
 
 These are the largest artifacts in the corpus: the hundred-thousand-level
@@ -112,10 +112,10 @@ at most two stopovers. Use any airport-name atoms and a nonnegative integer
 limit with `path_discovery(From, To, MaxStopovers, Path)`:
 
 ```sh
-node bin/eyel.js --goal "path_discovery('Liège Airport', 'Václav Havel Airport Prague', 1, Path)" examples/path-discovery.pl
+node bin/eyeris.js --goal "path_discovery('Liège Airport', 'Václav Havel Airport Prague', 1, Path)" examples/path-discovery.pl
 goal="path_discovery('Ostend-Bruges International Airport', 'Liège Airport', 0, Path)"
-node bin/eyel.js --proof --goal "$goal" examples/path-discovery.pl > /tmp/route-proof.pl
-node bin/eyel.js --strict-proof --check-proof /tmp/route-proof.pl --goal "$goal" examples/path-discovery.pl
+node bin/eyeris.js --proof --goal "$goal" examples/path-discovery.pl > /tmp/route-proof.pl
+node bin/eyeris.js --strict-proof --check-proof /tmp/route-proof.pl --goal "$goal" examples/path-discovery.pl
 ```
 
 `--goal` replaces the default goal, so checking that proof names the same goal. Zero stopovers allows only direct flights;
@@ -155,8 +155,8 @@ passes strict proof checking, so every component of every conclusion is
 recomputed by the checker:
 
 ```sh
-node bin/eyel.js --goal "complex_power(complex(1, 1), 16, Result)" examples/complex.pl
-node bin/eyel.js --goal "complex_div(complex(1, 0), complex(0, 1), Inverse)" examples/complex.pl
+node bin/eyeris.js --goal "complex_power(complex(1, 1), 16, Result)" examples/complex.pl
+node bin/eyeris.js --goal "complex_div(complex(1, 0), complex(0, 1), Inverse)" examples/complex.pl
 ```
 
 `polynomial.pl` is Alain Colmerauer's solver for polynomial equations up to
@@ -175,15 +175,15 @@ for one root at a time and every arithmetic step is in the certificate
 instead. For a cubic it passes strict checking:
 
 ```sh
-node bin/eyel.js --proof --goal "racine([[1, 0], [-6, 0], [11, 0], [-6, 0]], Z)" examples/polynomial.pl
+node bin/eyeris.js --proof --goal "racine([[1, 0], [-6, 0], [11, 0], [-6, 0]], Z)" examples/polynomial.pl
 ```
 
 `queens.pl` returns the first solution for an 8x8 board by default; another
 goal enumerates other board sizes:
 
 ```sh
-node bin/eyel.js --goal "queens(4, Columns)" examples/queens.pl
-node bin/eyel.js --goal "add(A, B, s(s(s(zero))))" examples/peano.pl
+node bin/eyeris.js --goal "queens(4, Columns)" examples/queens.pl
+node bin/eyeris.js --goal "add(A, B, s(s(s(zero))))" examples/peano.pl
 ```
 
 `interval-relations.pl` uses half-open intervals with integer-minute endpoints.
@@ -221,9 +221,9 @@ It uses `as_of(date(2026, 10, 1))` for reproducible output and proofs. Edit that
 fact to change the default date, or pass a reference date directly:
 
 ```sh
-node bin/eyel.js examples/age.pl
-node bin/eyel.js --goal "age_above(pat_h, years(80), date(2024, 8, 22))" examples/age.pl
-node bin/eyel.js --goal "age_days(pat_h, date(2026, 10, 1), Days)" examples/age.pl
+node bin/eyeris.js examples/age.pl
+node bin/eyeris.js --goal "age_above(pat_h, years(80), date(2024, 8, 22))" examples/age.pl
+node bin/eyeris.js --goal "age_days(pat_h, date(2026, 10, 1), Days)" examples/age.pl
 ```
 
 Exactly on the threshold anniversary, `age_above/3` fails; it succeeds on the

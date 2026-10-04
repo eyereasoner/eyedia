@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>eyel Playground</title>
+  <title>eyeris Playground</title>
   <link rel="icon" href="data:,">
   <style>
     :root {
@@ -219,9 +219,9 @@
 </head>
 <body>
   <header>
-    <h1>The eyel Playground</h1>
+    <h1>The eyeris Playground</h1>
     <p>Write facts and rules, see what follows, and check the proof of every conclusion — in your browser.
-      <a href="https://github.com/eyereasoner/eyel/blob/main/make-reasoning-something-you-can-see.md">What is eyel?</a></p>
+      <a href="https://github.com/eyereasoner/eyeris/blob/main/make-reasoning-something-you-can-see.md">What is eyeris?</a></p>
   </header>
   <main>
     <section aria-labelledby="examples-heading">
@@ -270,7 +270,7 @@
         <div id="line-numbers" class="line-numbers" aria-hidden="true"><div class="line-numbers-inner"></div></div>
         <div id="error-line-marker" class="error-line-marker" aria-hidden="true"></div>
         <pre id="highlight" aria-hidden="true"><code></code></pre>
-        <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editable eyel program"></textarea>
+        <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editable eyeris program"></textarea>
       </div>
       <div class="toolbar" aria-label="Run options">
         <label for="goal">Goal</label>
@@ -298,18 +298,18 @@
       <pre id="output" class="output">(no output yet)</pre>
       <div class="status">
         <span id="status">Ready.</span>
-        <span id="version">eyel</span>
+        <span id="version">eyeris</span>
       </div>
       <div class="panel-body">
         <p class="hint">Serve the checkout over HTTP to use the playground — for example <code>npx serve .</code> or
           <code>python3 -m http.server</code> — then open <code>/playground/</code>, or use the hosted copy at
-          <a href="https://eyereasoner.github.io/eyel/playground/">eyereasoner.github.io/eyel/playground</a>. Browsers do not run module
+          <a href="https://eyereasoner.github.io/eyeris/playground/">eyereasoner.github.io/eyeris/playground</a>. Browsers do not run module
           workers or load examples from <code>file://</code>.</p>
       </div>
     </section>
   </main>
   <footer>
-    Powered by <a href="https://github.com/eyereasoner/eyel">eyel</a>, a dependency-free Prolog rule language
+    Powered by <a href="https://github.com/eyereasoner/eyeris">eyeris</a>, a dependency-free Prolog rule language
     with forward and backward reasoning and checkable proofs.
   </footer>
 
@@ -761,7 +761,7 @@ true :+ ancestor(alice, Who).
     async function loadVersion() {
       try {
         const pkg = JSON.parse(await fetchText(new URL('../package.json', location.href)));
-        $('#version').textContent = `eyel v${pkg.version}`;
+        $('#version').textContent = `eyeris v${pkg.version}`;
       } catch { /* the version is decoration */ }
     }
 

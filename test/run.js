@@ -2,7 +2,7 @@
 // each example test in its own process, a few at a time. Within a group the
 // jobs are handed out heaviest first, judged by source and certificate size,
 // and every test is reported as it completes, numbered across the whole run,
-// with the stages of a long test indented beneath it. EYEL_TEST_JOBS sets how
+// with the stages of a long test indented beneath it. EYERIS_TEST_JOBS sets how
 // many run at once; the default leaves a core free and allows about 1.25 GB
 // per job, since the largest examples need that much while proving.
 import { spawn } from 'node:child_process';
@@ -13,7 +13,7 @@ import { manifest } from '../tools/example-artifacts.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const size = (path) => statSync(new URL(`../${path}`, import.meta.url)).size;
-const jobs = Number(process.env.EYEL_TEST_JOBS) ||
+const jobs = Number(process.env.EYERIS_TEST_JOBS) ||
   Math.max(1, Math.min(availableParallelism() - 1, Math.floor(totalmem() / 1.25e9)));
 
 // Every regression test is a top-level test(...) call, so counting those gives
@@ -63,8 +63,8 @@ function report(job, text) {
 }
 function run(job) {
   return new Promise((resolve) => {
-    const env = { ...process.env, EYEL_EXAMPLE_TEST: job.test ?? '' };
-    if (!job.test) delete env.EYEL_EXAMPLE_TEST;
+    const env = { ...process.env, EYERIS_EXAMPLE_TEST: job.test ?? '' };
+    if (!job.test) delete env.EYERIS_EXAMPLE_TEST;
     delete env.FORCE_COLOR;
     const child = spawn(process.execPath, ['--test-reporter=spec', job.file], { cwd: root, env });
     let text = '';

@@ -24,9 +24,9 @@ export class Program {
     let stratifying = false;
     readProgramText(String(source), (parsed) => {
       if (!parsed.head) throw new Error('only facts, :- rules and :+ rules are supported');
-      if (is(parsed.head, ':-', 1) || is(parsed.head, '-->', 2)) throw new Error('directives and DCGs are outside eyel');
+      if (is(parsed.head, ':-', 1) || is(parsed.head, '-->', 2)) throw new Error('directives and DCGs are outside eyeris');
       const forward = is(parsed.head, ':+', 2);
-      if (forward && parsed.body.length) throw new Error('guarded :+ rule declarations are outside eyel');
+      if (forward && parsed.body.length) throw new Error('guarded :+ rule declarations are outside eyeris');
       const head = forward ? parsed.head.args[0] : parsed.head;
       // Keep the parser's body list unless a goal in it is a conjunction to split.
       let body = parsed.body;
@@ -124,7 +124,7 @@ function positionIndexes(entries, headOf, arity) {
 
 export function validateControls(goal) {
   if (!CONTROL_NAMES.has(goal.name)) return;
-  if (excludedControls.has(key(goal))) throw new Error(`control outside eyel: ${key(goal)}`);
+  if (excludedControls.has(key(goal))) throw new Error(`control outside eyeris: ${key(goal)}`);
   if (is(goal, ',', 2) || is(goal, ';', 2)) goal.args.forEach(validateControls);
   else if (is(goal, 'call', 1) || is(goal, 'once', 1) || is(goal, '\\+', 1)) validateControls(goal.args[0]);
   else if (is(goal, 'findall', 3)) validateControls(goal.args[1]);

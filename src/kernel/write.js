@@ -1,4 +1,4 @@
-// Canonical term output. eyel prints one spelling per term: quoted,
+// Canonical term output. eyeris prints one spelling per term: quoted,
 // functional notation, with character lists written back in double-quoted
 // form. Operator notation, numbervars and the layout variants a general
 // writeq/1 offers are deliberately absent, so printed output reads back as the
