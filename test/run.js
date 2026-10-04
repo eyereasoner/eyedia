@@ -40,6 +40,7 @@ const width = String(total).length;
 const colors = process.stdout.hasColors?.() ?? false;
 const paint = (code, mark) => (colors ? `\x1b[${code}m${mark}\x1b[0m` : mark);
 const marks = { '✔': paint('1;92', '✓'), '✖': paint('1;91', '✗'), 'ℹ': paint('1;93', '●') };
+const DIFF_LINES = 12;
 
 const totals = { tests: 0, pass: 0, fail: 0 };
 const failed = [];
@@ -83,6 +84,35 @@ function run(job, show) {
     });
   });
 }
+// The part of a failed job's output that explains it: each failing test with
+// its message, a diff cut to DIFF_LINES lines and the stack frames in this
+// repository. Progress lines, passing tests, counters, Node's internal frames
+// and the error's own properties, which repeat the diff, are left out.
+function explain(text) {
+  const start = text.indexOf('✖ failing tests:');
+  // Without a closing summary the process died before reporting: show it all.
+  if (start < 0) return text.trimEnd();
+  const out = [];
+  let skipping = false;
+  let diff = 0;
+  for (const raw of text.slice(start).split('\n').slice(1)) {
+    if (skipping) { if (raw === '  }') skipping = false; continue; }
+    let line = raw;
+    if (line.endsWith(' {') && /^\s+at /.test(line)) { skipping = true; line = line.slice(0, -2); }
+    const diffLine = /^ {2}[+-] /.test(line) || (diff > 0 && /^ {2}[+-] {3}/.test(line));
+    if (!diffLine && diff > DIFF_LINES) out.push(paint('2', `  … ${diff - DIFF_LINES} more diff lines`));
+    diff = diffLine ? diff + 1 : 0;
+    if (diffLine && diff > DIFF_LINES) continue;
+    if (/^test at /.test(line) || /^\s+at .*(node:internal|test\/progress\.js)/.test(line)) continue;
+    if (/^✖ /.test(line)) out.push(`${marks['✖']} ${paint('1', line.slice(2).replace(/ \(([\d.]+)ms\)$/, (_, ms) => `  ${Math.round(Number(ms))} ms`))}`);
+    else if (/^\s+at /.test(line)) out.push(paint('2', line));
+    else if (/^ {2}\+ /.test(line) && !/^ {2}\+ actual - expected$/.test(line)) out.push(paint('32', line));
+    else if (/^ {2}- /.test(line)) out.push(paint('31', line));
+    else out.push(line);
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
 for (const group of groups) {
   const tests = group.jobs.reduce((n, job) => n + job.tests, 0);
   process.stdout.write(`\n── ${group.title}, ${tests} tests ${'─'.repeat(Math.max(3, 60 - group.title.length))}\n`);
@@ -108,7 +138,7 @@ for (const group of groups) {
   }));
 }
 for (const { job, text } of failed) {
-  process.stdout.write(`\n── failed: ${job.test ?? job.file} ${'─'.repeat(40)}\n${text.trimEnd()}\n`);
+  process.stdout.write(`\n${paint('1;91', `── failed: ${job.test ?? job.file} ${'─'.repeat(40)}`)}\n${explain(text)}\n`);
 }
 const info = marks['ℹ'];
 process.stdout.write(`\n${info} tests ${totals.tests}\n${info} pass ${totals.pass}\n${info} fail ${totals.fail}\n`);
