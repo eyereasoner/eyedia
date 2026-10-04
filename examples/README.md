@@ -1,5 +1,9 @@
 # Examples
 
+![EYE](https://josd.github.io/images/eye.png)
+
+*Eyedia — reasoning you can see.*
+
 Run a source, generate its proof, or check its saved proof:
 
 ```sh
