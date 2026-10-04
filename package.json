@@ -1,19 +1,37 @@
 {
   "name": "eyedia",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Eyedia — reasoning you can see. A standalone, dependency-free Prolog rule language with forward and backward reasoning and checkable proofs.",
   "type": "module",
   "main": "./index.js",
   "exports": "./index.js",
-  "repository": { "type": "git", "url": "git+https://github.com/eyereasoner/eyedia.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eyereasoner/eyedia.git"
+  },
   "homepage": "https://github.com/eyereasoner/eyedia#readme",
-  "bin": { "eyedia": "./bin/eyedia.js" },
-  "files": ["index.js", "src", "bin", "examples", "test", "tools", "README.md", "make-reasoning-something-you-can-see.md", "playground", "LICENSE.md"],
+  "bin": {
+    "eyedia": "./bin/eyedia.js"
+  },
+  "files": [
+    "index.js",
+    "src",
+    "bin",
+    "examples",
+    "test",
+    "tools",
+    "README.md",
+    "make-reasoning-something-you-can-see.md",
+    "playground",
+    "LICENSE.md"
+  ],
   "scripts": {
     "test": "node test/run.js",
     "test:examples": "node test/examples.test.js",
     "examples:update": "node tools/update-examples.js"
   },
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "license": "MIT"
 }
