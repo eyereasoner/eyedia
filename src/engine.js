@@ -1,16 +1,15 @@
 import {
-  Env, ATOM, COMPOUND, compound, atom, numberTerm,
+  Env, compound, atom, numberTerm,
   deref, unify, freshTerm, copyResolved, termIsGround, listFromItems,
   flattenConjunction,
 } from './kernel/term.js';
 import { parseGoalText } from './kernel/parser.js';
 import { primitive, primitiveKeys } from './builtins.js';
-import { key, is, text, variables, conjunction, variant } from './common.js';
+import { key, is, text, callable, addTo, freshClause, variables, conjunction, variant } from './common.js';
 import { renderProof, checkProof } from './proof.js';
-
 import { Program, validateControls } from './program.js';
+
 export { Program } from './program.js';
-const callable = (term) => term?.type === ATOM || term?.type === COMPOUND;
 
 // A derivation chain is as deep as the search that produced it, so resolve the
 // forest with an explicit stack rather than by recursion.
@@ -198,9 +197,7 @@ export class Solver {
         continue;
       }
       const clause = point.clauses[position - point.facts.length];
-      const names = new Map();
-      const head = freshTerm(clause.head, ++this.serial, names);
-      const body = clause.body.map((item) => freshTerm(item, this.serial, names));
+      const { head, body, names } = freshClause(clause, ++this.serial);
       if (!unify(point.goal, head, env)) { env.undo(point.mark); continue; }
       const pending = recording ? {
         goal: point.goal,
@@ -219,11 +216,7 @@ export class Solver {
     // Each rule's heads share a stratum. A rule with multiple heads runs only
     // after every prerequisite has reached its fixpoint.
     const layers = new Map();
-    for (const clause of this.program.forward) {
-      const rank = this.program.strata.get(clause.id) ?? 0;
-      if (!layers.has(rank)) layers.set(rank, []);
-      layers.get(rank).push(clause);
-    }
+    for (const clause of this.program.forward) addTo(layers, this.program.strata.get(clause.id) ?? 0, clause);
     for (const [, rules] of [...layers].sort(([a], [b]) => a - b)) {
       let changed = true;
       let rounds = 0;
@@ -232,9 +225,7 @@ export class Solver {
         this.stats.rounds++; changed = false;
         for (const clause of rules) {
           if (!reporting && clause.heads.every((item) => is(item, 'true', 0))) continue;
-          const names = new Map();
-          const head = freshTerm(clause.head, ++this.serial, names);
-          const body = clause.body.map((item) => freshTerm(item, this.serial, names));
+          const { head, body, names } = freshClause(clause, ++this.serial);
           // An answer's bindings last only until the next one is requested, and
           // adding facts mid-scan would extend a live search, so copy each
           // activation out first and add the conclusions afterwards.
@@ -259,15 +250,16 @@ export class Solver {
           for (const { conclusions, children, bindings, claim } of activations) {
             for (const conclusion of conclusions) {
               if (is(conclusion, 'true', 0)) {
-                if (!this.reported.has(text(claim))) this.reported.set(text(claim), { claim, children });
+                const id = text(claim);
+                if (!this.reported.has(id)) this.reported.set(id, { claim, children });
                 continue;
               }
               const node = { goal: conclusion, by: compound('rule', [numberTerm(clause.id)]), bindings, children };
               if (is(conclusion, 'false', 0)) { this.derived.push(node); this.haltCode = 65; return; }
-              if (this.factKeys.has(text(conclusion))) continue;
-              this.factKeys.add(text(conclusion));
-              if (!this.facts.has(key(conclusion))) this.facts.set(key(conclusion), []);
-              this.facts.get(key(conclusion)).push(node);
+              const id = text(conclusion);
+              if (this.factKeys.has(id)) continue;
+              this.factKeys.add(id);
+              addTo(this.facts, key(conclusion), node);
               this.derived.push(node); this.stats.derived++; changed = true;
             }
           }

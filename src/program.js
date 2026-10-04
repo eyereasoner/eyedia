@@ -1,12 +1,11 @@
 import { Env, VAR, ATOM, COMPOUND, deref, flattenConjunction, unify, freshTerm, termIsGround } from './kernel/term.js';
 import { readProgramText } from './kernel/parser.js';
 import { primitiveKeys } from './builtins.js';
-import { key, is, text } from './common.js';
+import { key, is, text, callable, addTo } from './common.js';
 
-const controls = new Set([',/2', ';/2', '\\+/1', 'call/1', 'once/1', 'findall/3']);
+export const controlKeys = new Set([',/2', ';/2', '\\+/1', 'call/1', 'once/1', 'findall/3']);
 const reserved = new Set(['step/4', 'clause/3']);
 const excludedControls = new Set(['!/0', '->/2', '*->/2', ':/2', ':-/1', '-->/2']);
-const callable = (term) => term?.type === ATOM || term?.type === COMPOUND;
 // The names that can make a goal a control construct or an excluded one. Every
 // goal is checked, so test the name before building a name/arity key for it.
 const CONTROL_NAMES = new Set([',', ';', '\\+', 'call', 'once', 'findall', '!', '->', '*->', ':', ':-', '-->']);
@@ -44,7 +43,7 @@ export class Program {
       for (const item of heads) {
         const id = callable(item) ? key(item) : null;
         if (id === null || id === ':/2' || reserved.has(id) ||
-            ((primitiveKeys.has(id) || controls.has(id)) && !(forward && (item.name === 'true' || item.name === 'false')))) {
+            ((primitiveKeys.has(id) || controlKeys.has(id)) && !(forward && (item.name === 'true' || item.name === 'false')))) {
           // A proof document parses as Prolog text, but its records and claims
           // are data for the checker, so say what it is rather than which head
           // came first.
@@ -56,11 +55,7 @@ export class Program {
       const clause = { id: this.clauses.length + 1, head, heads: forward ? heads : null, body, forward, line: parsed.source.line };
       this.clauses.push(clause);
       if (forward) this.forward.push(clause);
-      else {
-        const id = key(head);
-        if (!this.groups.has(id)) this.groups.set(id, []);
-        this.groups.get(id).push(clause);
-      }
+      else addTo(this.groups, key(head), clause);
     });
     this.indexes = new Map();
     for (const [id, clauses] of this.groups) {
@@ -208,8 +203,7 @@ function stratify(clauses, stratifying) {
         if (unify(freshTerm(dep.goal, 'dependency'), freshTerm(candidate.head, 'head'), new Env())) {
           const edge = { head: clause.id, id: candidate.clause.id, closed: dep.closed };
           edges.push(edge);
-          if (!outgoing.has(clause.id)) outgoing.set(clause.id, []);
-          outgoing.get(clause.id).push(edge);
+          addTo(outgoing, clause.id, edge);
         }
       }
     }

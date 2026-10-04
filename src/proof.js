@@ -3,9 +3,9 @@ import {
   freshTerm, copyResolved, properListItems, listFromItems, flattenConjunction, termIsGround,
 } from './kernel/term.js';
 import { parseProgramText, parseGoalText } from './kernel/parser.js';
-import { Program } from './program.js';
+import { Program, controlKeys } from './program.js';
 import { primitive, primitiveKeys } from './builtins.js';
-import { is, key, text, conjunction } from './common.js';
+import { is, key, text, callable, addTo, freshClause, conjunction } from './common.js';
 
 function template(term) {
   if (term.type === VAR) return compound('var', [atom(term.name)]);
@@ -57,23 +57,46 @@ export function renderProof(program, claims, roots) {
 export function checkProof(source, document, options = {}) {
   const program = source instanceof Program ? source : Program.parse(source);
   const failures = [];
-  const trusted = [];
-  const claims = [];
-  const steps = new Map();
-  let verified = 0;
-  let redecided = 0;
-  let composed = 0;
-  let confronted = 0;
-  const boundaries = [];
-  const withTerm = (record, term) => {
-    // Keep the printable report easy to serialize while retaining the actual
-    // conclusion term for a report another Prolog program can reason over.
-    if (term) Object.defineProperty(record, 'term', { value: term });
-    return record;
-  };
   const fail = (condition, detail, term = null) => failures.push(withTerm({
     condition, detail, ...(term ? { conclusion: text(term) } : {}),
   }, term));
+  const { claims, steps } = readDocument(program, document, fail);
+  if (!steps.size || !claims.length) fail('C4', 'a proof needs claims and steps');
+  for (const claim of claims) if (!flattenConjunction(claim).every((part) => steps.has(text(part)))) {
+    fail('C4', `unjustified claim ${text(claim)}`, claim);
+  }
+  const { verified, redecided, composed, boundaries, trusted } = checkSteps(program, steps, options, fail);
+  const confronted = checkBoundaries(program, steps, boundaries, fail);
+  checkRelevance(program, claims, steps, options, fail);
+  checkWellFounded(steps, fail);
+
+  const uses = [...steps.values()].reduce((count, step) => count + step.uses.length, 0);
+  const failed = (condition) => failures.filter((failure) => failure.condition === condition).length;
+  const conditions = [
+    { id: 'C1', name: 'resolution', covered: verified, failed: failed('C1') },
+    { id: 'C2', name: 'well_founded', covered: steps.size, failed: failed('C2') },
+    { id: 'C3', name: 'justification', covered: steps.size, failed: failed('C3') },
+    { id: 'C4', name: 'coverage', covered: claims.length + uses, failed: failed('C4') },
+    { id: 'C5', name: 're_decision', covered: redecided + composed, failed: failed('C5') },
+    { id: 'C6', name: 'boundary_consistency', covered: confronted, failed: failed('C6') },
+    { id: 'C7', name: 'relevance', covered: claims.length + steps.size, failed: failed('C7') },
+  ];
+  return { valid: failures.length === 0, steps: steps.size, claims: claims.length,
+    verified, redecided, composed, uses, trusted, failures, conditions };
+}
+
+// Keep the printable report easy to serialize while retaining the actual
+// conclusion term for a report another Prolog program can reason over.
+function withTerm(record, term) {
+  if (term) Object.defineProperty(record, 'term', { value: term });
+  return record;
+}
+
+// C3: split a document into its claims and its steps, keyed by the text of the
+// goal each step justifies. clause/3 records are compared with the source.
+function readDocument(program, document, fail) {
+  const claims = [];
+  const steps = new Map();
   try {
     for (const entry of parseProgramText(String(document))) {
       if (!entry.head || entry.body.length || entry.kind || is(entry.head, ':-', 1)) {
@@ -97,9 +120,15 @@ export function checkProof(source, document, options = {}) {
       steps.set(id, { goal, by, bindings, uses });
     }
   } catch (error) { fail('C3', error.message); }
-  if (!steps.size || !claims.length) fail('C4', 'a proof needs claims and steps');
+  return { claims, steps };
+}
 
-  function covered(goal) {
+// C4, C1, C3 and C5 for each step in turn: every use is justified, and the step
+// is an instance of the clause it cites, a recomputed primitive, a control
+// composed of its uses, or a trusted boundary the later checks confront.
+function checkSteps(program, steps, options, fail) {
+  const tally = { verified: 0, redecided: 0, composed: 0, boundaries: [], trusted: [] };
+  const covered = (goal) => {
     if (is(goal, ',', 2)) return flattenConjunction(goal).every(covered);
     if (steps.has(text(goal))) return true;
     // Source facts are available as leaves, including universal fact clauses.
@@ -109,45 +138,12 @@ export function checkProof(source, document, options = {}) {
       const env = new Env();
       return unify(head, goal, env) && resolvesTo(head, env, goal);
     });
-  }
-  for (const claim of claims) if (!flattenConjunction(claim).every((part) => steps.has(text(part)))) {
-    fail('C4', `unjustified claim ${text(claim)}`, claim);
-  }
+  };
   for (const step of steps.values()) {
     const { goal, by, bindings, uses } = step;
     for (const use of uses) if (!covered(use)) fail('C4', `unjustified use ${text(use)}`, goal);
     if (is(by, 'rule', 1) || is(by, 'fact', 1)) {
-      const cited = by.args[0];
-      const id = Number(cited.name);
-      const clause = cited.type === NUMBER && /^\d+$/.test(cited.name) && program.clauses[id - 1];
-      if (!clause) { fail('C1', `unknown clause ${text(by)}`, goal); continue; }
-      if (by.name === 'fact' && (clause.forward || clause.body.length)) { fail('C1', 'fact justification cites a rule', goal); continue; }
-      const names = new Map();
-      const head = freshTerm(clause.head, `check${id}`, names);
-      const body = clause.body.map((item) => freshTerm(item, `check${id}`, names));
-      const env = new Env();
-      const seen = new Set();
-      let valid = true;
-      for (const binding of bindings) {
-        if (!is(binding, '=', 2) || binding.args[0].type !== ATOM ||
-            !names.has(binding.args[0].name) || seen.has(binding.args[0].name)) { valid = false; break; }
-        seen.add(binding.args[0].name);
-        if (!unify(names.get(binding.args[0].name), binding.args[1], env)) valid = false;
-      }
-      const heads = clause.forward ? flattenConjunction(head) : [head];
-      let resolution = false;
-      for (const candidate of heads) {
-        const mark = env.mark();
-        let matches = unify(candidate, goal, env) && body.length === uses.length;
-        for (let i = 0; matches && i < body.length; i++) {
-          if (!unify(body[i], uses[i], env)) matches = false;
-        }
-        if (matches && resolvesTo(candidate, env, goal) &&
-            body.every((item, i) => resolvesTo(item, env, uses[i]))) resolution = true;
-        env.undo(mark);
-      }
-      if (!valid || !resolution) fail('C1', `not an instance of source clause ${id}: ${text(goal)}`, goal);
-      else verified++;
+      if (checkResolution(program, step, fail)) tally.verified++;
     } else if (is(by, 'builtin', 0)) {
       if (bindings.length || uses.length || !primitiveKeys.has(key(goal))) { fail('C3', 'invalid builtin justification', goal); continue; }
       let agrees = false;
@@ -157,7 +153,7 @@ export function checkProof(source, document, options = {}) {
         }
       } catch { /* A primitive that cannot be recomputed does not pass C5. */ }
       if (!agrees) fail('C5', `primitive disagrees: ${text(goal)}`, goal);
-      else redecided++;
+      else tally.redecided++;
     } else if (is(by, 'control', 0)) {
       let candidates = [];
       if (is(goal, 'call', 1) || is(goal, 'once', 1)) candidates = [goal.args[0]];
@@ -167,38 +163,73 @@ export function checkProof(source, document, options = {}) {
         return parts.length === uses.length && parts.every((part, i) => text(part) === text(uses[i]));
       });
       if (!valid) fail('C5', `control step does not follow from its uses: ${text(goal)}`, goal);
-      else composed++;
+      else tally.composed++;
     } else if ((is(by, 'absent', 0) && is(goal, '\\+', 1)) ||
                (is(by, 'collected', 0) && is(goal, 'findall', 3))) {
       if (bindings.length || uses.length) fail('C3', 'trusted boundaries cannot have bindings or uses', goal);
-      boundaries.push(goal);
-      trusted.push(withTerm({ kind: by.name, conclusion: text(goal) }, goal));
+      tally.boundaries.push(goal);
+      tally.trusted.push(withTerm({ kind: by.name, conclusion: text(goal) }, goal));
       if (options.allowTrusted === false) fail('C5', `trusted boundary forbidden: ${by.name}`, goal);
     } else fail('C3', `unknown justification ${text(by)}`, goal);
   }
+  return tally;
+}
 
-  // C6: a trusted boundary cannot be proved, but it can be refuted by evidence
-  // already at hand. An absence fails when a source fact, a step of this
-  // certificate or a recomputed primitive is a solution; a collection fails
-  // when such a solution is missing from its list.
-  const stepGoals = new Map();
-  for (const { goal } of steps.values()) {
-    if (goal.type === VAR) continue;
-    if (!stepGoals.has(key(goal))) stepGoals.set(key(goal), []);
-    stepGoals.get(key(goal)).push(goal);
+// C1: a rule or fact step names a source clause, its bindings name distinct
+// variables of that clause, and under them one of the clause's heads is the
+// step's goal and its body is exactly the step's uses.
+function checkResolution(program, { goal, by, bindings, uses }, fail) {
+  const cited = by.args[0];
+  const id = Number(cited.name);
+  const clause = cited.type === NUMBER && /^\d+$/.test(cited.name) && program.clauses[id - 1];
+  if (!clause) { fail('C1', `unknown clause ${text(by)}`, goal); return false; }
+  if (by.name === 'fact' && (clause.forward || clause.body.length)) { fail('C1', 'fact justification cites a rule', goal); return false; }
+  const { head, body, names } = freshClause(clause, `check${id}`);
+  const env = new Env();
+  const seen = new Set();
+  let valid = true;
+  for (const binding of bindings) {
+    if (!is(binding, '=', 2) || binding.args[0].type !== ATOM ||
+        !names.has(binding.args[0].name) || seen.has(binding.args[0].name)) { valid = false; break; }
+    seen.add(binding.args[0].name);
+    if (!unify(names.get(binding.args[0].name), binding.args[1], env)) valid = false;
   }
+  const heads = clause.forward ? flattenConjunction(head) : [head];
+  let resolution = false;
+  for (const candidate of heads) {
+    const mark = env.mark();
+    let matches = unify(candidate, goal, env) && body.length === uses.length;
+    for (let i = 0; matches && i < body.length; i++) {
+      if (!unify(body[i], uses[i], env)) matches = false;
+    }
+    if (matches && resolvesTo(candidate, env, goal) &&
+        body.every((item, i) => resolvesTo(item, env, uses[i]))) resolution = true;
+    env.undo(mark);
+  }
+  if (!valid || !resolution) { fail('C1', `not an instance of source clause ${id}: ${text(goal)}`, goal); return false; }
+  return true;
+}
+
+// C6: a trusted boundary cannot be proved, but it can be refuted by evidence
+// already at hand. An absence fails when a source fact, a step of this
+// certificate or a recomputed primitive is a solution; a collection fails
+// when such a solution is missing from its list. Returns how many boundaries
+// the evidence could speak for.
+function checkBoundaries(program, steps, boundaries, fail) {
+  const stepGoals = new Map();
+  for (const { goal } of steps.values()) if (goal.type !== VAR) addTo(stepGoals, key(goal), goal);
   let serial = 0;
+  let confronted = 0;
   // Each solution of a simple goal that the evidence shows, as a term to unify
   // with it; a goal the evidence cannot speak for yields null.
   const evidence = (goal) => {
-    if (goal.type !== ATOM && goal.type !== COMPOUND) return null;
+    if (!callable(goal)) return null;
     if (primitiveKeys.has(key(goal))) {
       if (!termIsGround(goal, new Env())) return null;
       try { for (const _ of primitive(goal, new Env())) return [goal]; } catch { return null; }
       return [];
     }
-    if (is(goal, ',', 2) || is(goal, ';', 2) || is(goal, '\\+', 1) || is(goal, 'findall', 3) ||
-        is(goal, 'call', 1) || is(goal, 'once', 1)) return null;
+    if (controlKeys.has(key(goal))) return null;
     const facts = (program.groups.get(key(goal)) ?? []).filter((clause) => !clause.body.length && !clause.forward)
       .map((clause) => freshTerm(clause.head, `evidence${++serial}`));
     return [...facts, ...(stepGoals.get(key(goal)) ?? []).map((item) => freshTerm(item, `evidence${++serial}`))];
@@ -222,20 +253,24 @@ export function checkProof(source, document, options = {}) {
       confronted++;
       for (const item of shown) {
         const names = new Map();
-        const template = freshTerm(boundary.args[0], `collect${++serial}`, names);
+        const pattern = freshTerm(boundary.args[0], `collect${++serial}`, names);
         const goal = freshTerm(parts[0], `collect${serial}`, names);
         const env = new Env();
         if (!unify(goal, item, env)) continue;
-        const answer = copyResolved(template, env);
+        const answer = copyResolved(pattern, env);
         const listed = items.some((element) => unify(answer, freshTerm(element, `listed${++serial}`), new Env()));
         if (!listed) { fail('C6', `collection misses ${text(answer)}: ${text(boundary)}`, boundary); break; }
       }
     }
   }
+  return confronted;
+}
 
-  // C7: the certificate answers the question that was asked and carries
-  // nothing beside it. A claim is an instance of a goal asked from outside,
-  // of a `true :+ Goal` goal or, for printed conclusions, of a forward head.
+// C7: the certificate answers the question that was asked and carries
+// nothing beside it. A claim is an instance of a goal asked from outside,
+// of a `true :+ Goal` goal or, for printed conclusions, of a forward head.
+function checkRelevance(program, claims, steps, options, fail) {
+  let serial = 0;
   const instanceOf = (claim, question) => {
     const env = new Env();
     const pattern = freshTerm(question, `asked${++serial}`);
@@ -246,8 +281,7 @@ export function checkProof(source, document, options = {}) {
   const questions = [];
   if (asked.length && !halted) questions.push(...asked);
   else {
-    for (const clause of program.clauses) {
-      if (!clause.forward) continue;
+    for (const clause of program.forward) {
       const heads = flattenConjunction(clause.head);
       if (heads.some((head) => is(head, 'true', 0))) {
         if (!halted && clause.body.length) questions.push(conjunction(clause.body));
@@ -268,9 +302,12 @@ export function checkProof(source, document, options = {}) {
     for (const use of steps.get(id).uses) for (const part of flattenConjunction(use)) reach.push(text(part));
   }
   for (const [id, step] of steps) if (!reached.has(id)) fail('C7', `step serves no claim: ${id}`, step.goal);
+}
 
-  // Walk the derivation iteratively: a certificate is as deep as the search
-  // that produced it, which can be far deeper than the host stack allows.
+// C2: no step depends on itself. Walk the derivation iteratively: a certificate
+// is as deep as the search that produced it, which can be far deeper than the
+// host stack allows.
+function checkWellFounded(steps, fail) {
   const visiting = new Set();
   const visited = new Set();
   const supports = (id) => {
@@ -296,19 +333,6 @@ export function checkProof(source, document, options = {}) {
       stack.push({ id: next, used: supports(next), index: 0 });
     }
   }
-  const uses = [...steps.values()].reduce((count, step) => count + step.uses.length, 0);
-  const failed = (condition) => failures.filter((failure) => failure.condition === condition).length;
-  const conditions = [
-    { id: 'C1', name: 'resolution', covered: verified, failed: failed('C1') },
-    { id: 'C2', name: 'well_founded', covered: steps.size, failed: failed('C2') },
-    { id: 'C3', name: 'justification', covered: steps.size, failed: failed('C3') },
-    { id: 'C4', name: 'coverage', covered: claims.length + uses, failed: failed('C4') },
-    { id: 'C5', name: 're_decision', covered: redecided + composed, failed: failed('C5') },
-    { id: 'C6', name: 'boundary_consistency', covered: confronted, failed: failed('C6') },
-    { id: 'C7', name: 'relevance', covered: claims.length + steps.size, failed: failed('C7') },
-  ];
-  return { valid: failures.length === 0, steps: steps.size, claims: claims.length,
-    verified, redecided, composed, uses, trusted, failures, conditions };
 }
 
 function verdictTerm(report) {
