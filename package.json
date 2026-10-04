@@ -5,6 +5,8 @@
   "type": "module",
   "main": "./index.js",
   "exports": "./index.js",
+  "repository": { "type": "git", "url": "git+https://github.com/eyereasoner/eyedia.git" },
+  "homepage": "https://github.com/eyereasoner/eyedia#readme",
   "bin": { "eyedia": "./bin/eyedia.js" },
   "files": ["index.js", "src", "bin", "examples", "test", "tools", "README.md", "make-reasoning-something-you-can-see.md", "playground", "LICENSE.md"],
   "scripts": {

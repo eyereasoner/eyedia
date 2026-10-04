@@ -1,5 +1,7 @@
 # eyedia
 
+[![npm version](https://img.shields.io/npm/v/eyedia.svg)](https://www.npmjs.com/package/eyedia)
+
 ![EYE](https://josd.github.io/images/eye.png)
 
 *Eyedia — reasoning you can see.*
