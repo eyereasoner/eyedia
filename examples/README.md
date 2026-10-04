@@ -19,7 +19,6 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [deep-taxonomy-100.pl](deep-taxonomy-100.pl) | The same taxonomy benchmark at a hundred levels |
 | [deep-taxonomy-1000.pl](deep-taxonomy-1000.pl) | The same taxonomy benchmark at a thousand levels |
 | [deep-taxonomy-10000.pl](deep-taxonomy-10000.pl) | The same taxonomy benchmark at ten thousand levels |
-| [deep-taxonomy-100000.pl](deep-taxonomy-100000.pl) | The same taxonomy benchmark at a hundred thousand levels |
 | [backward.pl](backward.pl) | Backward definitions inside forward bodies |
 | [fibonacci.pl](fibonacci.pl) | Fast doubling for exact Fibonacci numbers, and the golden ratio |
 | [graphs.pl](graphs.pl) | Base data, negation and collection |
@@ -91,20 +90,20 @@ obligations.
 The `deep-taxonomy` examples are the deep-taxonomy benchmark: one individual, a
 chain of subclass rules, and two sibling branches at every level that lead
 nowhere. The goal has to follow the single productive branch the whole way
-down, so the chain length is also the backward recursion depth. The five sizes
-run from ten to a hundred thousand levels, and each costs exactly one
-resolution step per level, which `--stats` reports and the saved check report
-confirms: `deep-taxonomy-100000` verifies 100001 steps. Backward search is an
-explicit machine, so the depth costs heap rather than host stack.
+down, so the chain length is also the backward recursion depth. The four sizes
+run from ten to ten thousand levels, and each costs exactly one resolution
+step per level, which `--stats` reports and the saved check report confirms:
+`deep-taxonomy-10000` verifies 10001 steps. Backward search is an explicit
+machine, so the depth costs heap rather than host stack.
 
 ```sh
-node bin/eyedia.js --stats examples/deep-taxonomy-100000.pl
+node bin/eyedia.js --stats examples/deep-taxonomy-10000.pl
 ```
 
-These are the largest artifacts in the corpus: the hundred-thousand-level
-source is about 10 MB and its certificate about 14 MB, since a certificate
-records every step it claims. Running `npm test` or `npm run examples:update`
-spends much of its time on this one example.
+Time, proof size and checking all grow linearly with the depth, so a longer
+chain only costs proportionally more; the ten-thousand-level source is about
+1 MB and its certificate about 1.3 MB, since a certificate records every step
+it claims.
 
 `path-discovery.pl` contains 7,698 airport records and 37,505 directed
 connections. Its default goal finds three routes from Ostend to Prague with

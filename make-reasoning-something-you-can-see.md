@@ -355,7 +355,7 @@ language does not hand you a certificate it has not verified.
 
 ## The examples
 
-The [example collection](examples/README.md) is 57 complete programs. Each one
+The [example collection](examples/README.md) is 56 complete programs. Each one
 ships with its conclusions, its proof and its C1–C7 check report, all saved to
 disk:
 
@@ -369,7 +369,7 @@ examples/check/socrates.pl     C1-C7 proof-check report
 | Examples | What they demonstrate |
 | --- | --- |
 | `socrates`, `backward` | Basic inference and mixed chaining |
-| `deep-taxonomy-10` through `deep-taxonomy-100000` | A subclass chain whose branches lead nowhere, at five sizes |
+| `deep-taxonomy-10` through `deep-taxonomy-10000` | A subclass chain whose branches lead nowhere, at four sizes |
 | `reachability`, `shortest-path`, `path-discovery` | Cyclic graph closure, weighted paths and airport routes with bounded stopovers |
 | `fibonacci`, `lists` | Recursive computation with exact integers, and list operations |
 | `strings`, `unification`, `alternatives` | Unicode, structural matching and goal-directed choices |
@@ -393,9 +393,9 @@ stopover budget and ask again. The [interval example](examples/interval-relation
 distinguishes all thirteen basic relations between two intervals. The
 [policy example](examples/policy-risk.pl) carries scores, ranks, reasons and
 suggested mitigations into its conclusions. The
-[deep-taxonomy benchmark](examples/deep-taxonomy-100000.pl) follows a
-hundred-thousand-step chain and produces a certificate in which every one of
-those 100,001 steps is independently verified.
+[deep-taxonomy benchmark](examples/deep-taxonomy-10000.pl) follows a
+ten-thousand-step chain and produces a certificate in which every one of
+those 10,001 steps is independently verified.
 
 These are meant to be edited. Read one, change a fact, run it, look at what
 changed. The [playground](https://eyereasoner.github.io/eyedia/playground/) does that in a browser: load any
