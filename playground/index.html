@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>eyeris Playground</title>
-  <link rel="icon" href="data:,">
+  <title>eyedia Playground</title>
+  <link rel="icon" href="https://josd.github.io/images/eye.png">
   <style>
     :root {
       color-scheme: light dark;
@@ -68,9 +68,11 @@
       font: 15px/1.5 var(--sans);
     }
     header, main, footer { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
-    header { padding-top: 28px; padding-bottom: 8px; }
-    header h1 { margin: 0 0 4px; font-size: 26px; letter-spacing: -0.01em; }
+    header { display: flex; gap: 16px; align-items: center; padding-top: 28px; padding-bottom: 8px; }
+    header img { flex: none; width: 64px; height: 64px; border-radius: 50%; }
+    header h1 { margin: 0 0 2px; font-size: 26px; letter-spacing: -0.01em; }
     header p { margin: 0; color: var(--muted); }
+    header p.tagline { color: var(--text); font-weight: 600; margin-bottom: 4px; }
     header a, footer a { color: var(--accent); }
     main { display: grid; gap: 16px; padding-top: 12px; padding-bottom: 24px; }
     section {
@@ -198,6 +200,7 @@
       word-break: break-word;
     }
     .output.error { color: var(--danger); }
+    .output .tok-comment { font-style: normal; }
     .status {
       display: flex;
       justify-content: space-between;
@@ -219,9 +222,13 @@
 </head>
 <body>
   <header>
-    <h1>The eyeris Playground</h1>
-    <p>Write facts and rules, see what follows, and check the proof of every conclusion — in your browser.
-      <a href="https://github.com/eyereasoner/eyeris/blob/main/make-reasoning-something-you-can-see.md">What is eyeris?</a></p>
+    <img src="https://josd.github.io/images/eye.png" alt="" width="64" height="64">
+    <div>
+      <h1>The eyedia Playground</h1>
+      <p class="tagline">Eyedia — reasoning you can see.</p>
+      <p>Write facts and rules, see what follows, and check the proof of every conclusion — in your browser.
+        <a href="https://github.com/eyereasoner/eyedia/blob/main/make-reasoning-something-you-can-see.md">What is eyedia?</a></p>
+    </div>
   </header>
   <main>
     <section aria-labelledby="examples-heading">
@@ -270,7 +277,7 @@
         <div id="line-numbers" class="line-numbers" aria-hidden="true"><div class="line-numbers-inner"></div></div>
         <div id="error-line-marker" class="error-line-marker" aria-hidden="true"></div>
         <pre id="highlight" aria-hidden="true"><code></code></pre>
-        <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editable eyeris program"></textarea>
+        <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editable eyedia program"></textarea>
       </div>
       <div class="toolbar" aria-label="Run options">
         <label for="goal">Goal</label>
@@ -298,18 +305,18 @@
       <pre id="output" class="output">(no output yet)</pre>
       <div class="status">
         <span id="status">Ready.</span>
-        <span id="version">eyeris</span>
+        <span id="version">eyedia</span>
       </div>
       <div class="panel-body">
         <p class="hint">Serve the checkout over HTTP to use the playground — for example <code>npx serve .</code> or
           <code>python3 -m http.server</code> — then open <code>/playground/</code>, or use the hosted copy at
-          <a href="https://eyereasoner.github.io/eyeris/playground/">eyereasoner.github.io/eyeris/playground</a>. Browsers do not run module
+          <a href="https://eyereasoner.github.io/eyedia/playground/">eyereasoner.github.io/eyedia/playground</a>. Browsers do not run module
           workers or load examples from <code>file://</code>.</p>
       </div>
     </section>
   </main>
   <footer>
-    Powered by <a href="https://github.com/eyereasoner/eyeris">eyeris</a>, a dependency-free Prolog rule language
+    Powered by <a href="https://github.com/eyereasoner/eyedia">eyedia</a>, a dependency-free Prolog rule language
     with forward and backward reasoning and checkable proofs.
   </footer>
 
@@ -547,7 +554,9 @@ true :+ ancestor(alice, Who).
       let text = result.output || (flags.proof.checked ? '' : '% no conclusions\n');
       if (result.report) text += `${text.endsWith('\n') || !text ? '' : '\n'}\n% C1-C7 check report\n${result.report.text}`;
       if (flags.stats.checked) text += `\n% stats\n${JSON.stringify(result.stats)}\n`;
-      output.textContent = text;
+      // Conclusions, proofs and check reports are all Prolog text, so they are
+      // colored as the editor is.
+      output.innerHTML = text.length > HIGHLIGHT_LIMIT ? escapeHtml(text) : colorize(text);
 
       const parts = [`${result.answers} ${result.answers === 1 ? 'conclusion' : 'conclusions'}`];
       if (result.haltCode === 65) parts.push('<span class="badge bad">integrity constraint violated (exit 65)</span>');
@@ -761,7 +770,7 @@ true :+ ancestor(alice, Who).
     async function loadVersion() {
       try {
         const pkg = JSON.parse(await fetchText(new URL('../package.json', location.href)));
-        $('#version').textContent = `eyeris v${pkg.version}`;
+        $('#version').textContent = `eyedia v${pkg.version}`;
       } catch { /* the version is decoration */ }
     }
 

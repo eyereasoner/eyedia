@@ -1,5 +1,5 @@
 % Complex numbers as ordinary terms: complex(Real, Imaginary).
-% eyeris has no complex primitives, so the whole domain is defined by clauses.
+% eyedia has no complex primitives, so the whole domain is defined by clauses.
 % Gaussian integer components stay exact, and the two places that leave the
 % integers - an inexact quotient and a modulus - are visible in the output.
 complex_add(complex(A, B), complex(C, D), complex(R, I)) :- R is A+C, I is B+D.

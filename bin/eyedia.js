@@ -9,7 +9,7 @@ import { readFile } from 'node:fs/promises';
 // as it was.
 module.enableCompileCache?.();
 
-// A reader that stops early, as in `eyeris --proof p.pl | head`, is a normal end
+// A reader that stops early, as in `eyedia --proof p.pl | head`, is a normal end
 // for a command line rather than a crash.
 process.stdout.on('error', (error) => {
   if (error?.code === 'EPIPE') process.exit(0);
@@ -18,7 +18,7 @@ process.stdout.on('error', (error) => {
 
 const { run, checkProof, checkReportTerms } = await import('../index.js');
 
-const help = `Usage: eyeris [--proof | --check-proof FILE] [--goal GOAL] [FILE ...]
+const help = `Usage: eyedia [--proof | --check-proof FILE] [--goal GOAL] [FILE ...]
 Facts and rules use Prolog syntax; :+ rules run to a fixpoint.
   --proof             Print claims and clause/3, step/4 proof records
   --check-proof FILE  Print a Prolog C1-C7 check report (- for stdin)
@@ -89,6 +89,6 @@ try {
     }
   }
 } catch (error) {
-  process.stderr.write(`eyeris: ${error.message}\n`);
+  process.stderr.write(`eyedia: ${error.message}\n`);
   process.exitCode = 1;
 }

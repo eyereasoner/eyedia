@@ -2,6 +2,8 @@
 
 ![EYE](https://josd.github.io/images/eye.png)
 
+*Eyedia — reasoning you can see.*
+
 There is a particular satisfaction in understanding *why* something is true.
 You can follow the steps. You can point at the assumptions. You can change one
 fact and watch what follows. The conclusion stops being something you have to
@@ -12,7 +14,7 @@ Most software does not work that way. A program computes an answer and the
 reasoning evaporates. If you want to know why the answer came out as it did,
 you read the code, or you add logging, or you ask the person who wrote it.
 
-Eyeris is a small rule language built on a different bargain: **an answer can
+Eyedia is a small rule language built on a different bargain: **an answer can
 arrive together with the reasoning that supports it, in a form another program
 can check.**
 
@@ -41,7 +43,7 @@ human(socrates).
 mortal(X) :+ human(X).
 ```
 
-A fact and a rule. Eyeris concludes `mortal(socrates)`. Ask for the reasoning and
+A fact and a rule. Eyedia concludes `mortal(socrates)`. Ask for the reasoning and
 you get a document that names the fact it used, the rule it applied, and the
 substitution that connects them:
 
@@ -65,7 +67,7 @@ Save the two-line program from above and try it:
 
 ```sh
 printf 'human(socrates).\nmortal(X) :+ human(X).\n' > socrates.pl
-node bin/eyeris.js --proof socrates.pl | node bin/eyeris.js --check-proof - socrates.pl
+node bin/eyedia.js --proof socrates.pl | node bin/eyedia.js --check-proof - socrates.pl
 ```
 
 The checker prints a report ending in `verdict(checked).`
@@ -100,7 +102,7 @@ settle the first question so you can spend your attention on the second.
 
 ## Two directions of reasoning
 
-Eyeris has two kinds of rule, and they compose.
+Eyedia has two kinds of rule, and they compose.
 
 **Forward rules** use `:+`. They materialize consequences until nothing new
 appears — a fixpoint. This is how you build a closure: everything that follows
@@ -226,7 +228,7 @@ before an integer of equal value. The Fibonacci example computes F(10000) — a
 ### Output you can read back
 
 Every term is written in one canonical spelling, chosen so that reading it back
-gives the same term in any ISO Prolog — not just in eyeris. Compound terms use
+gives the same term in any ISO Prolog — not just in eyedia. Compound terms use
 functional notation, `f(a, b)`, rather than operator notation, because operator
 notation depends on a table the reader has to agree with. Lists use list
 notation, `[a, b]` and `[a, b|T]`, because that is core syntax (ISO 6.3.5) and
@@ -239,7 +241,7 @@ read as a different term elsewhere. Written as `[a, b]`, it cannot.
 
 ### Representing a domain
 
-Eyeris has no built-in notion of RDF, or of anything else. Domains get
+Eyedia has no built-in notion of RDF, or of anything else. Domains get
 representations rather than syntax:
 
 ```prolog
@@ -333,7 +335,7 @@ Two things in the language cannot be certified the way a resolution step can.
 claims about the *absence* of further results, and a certificate cannot
 demonstrate an absence the way it demonstrates a derivation.
 
-Eyeris does not paper over this. Each one is recorded as an explicit `absent` or
+Eyedia does not paper over this. Each one is recorded as an explicit `absent` or
 `collected` boundary, listed in the report as an obligation, and
 `--strict-proof` rejects any proof that leans on one. What the checker can do is
 refute a boundary, and that is C6. An absence fails when a source fact, a step
@@ -396,7 +398,7 @@ hundred-thousand-step chain and produces a certificate in which every one of
 those 100,001 steps is independently verified.
 
 These are meant to be edited. Read one, change a fact, run it, look at what
-changed. The [playground](https://eyereasoner.github.io/eyeris/playground/) does that in a browser: load any
+changed. The [playground](https://eyereasoner.github.io/eyedia/playground/) does that in a browser: load any
 example, edit it, run it, check its proof, and copy a link that reopens exactly
 what you see. Add a clause. Ask a narrower question. Each example is a small
 repeatable experiment, and because the artifacts are saved, you can see exactly
@@ -452,7 +454,7 @@ there is no build step.
 | [src/builtins.js](src/builtins.js) | The pure primitive profile |
 | [src/engine.js](src/engine.js) | Backward resolution, forward fixpoints, proof recording |
 | [src/proof.js](src/proof.js) | Certificate rendering and checking, with no solver dependency |
-| [bin/eyeris.js](bin/eyeris.js) | Source loading and the command-line interface |
+| [bin/eyedia.js](bin/eyedia.js) | Source loading and the command-line interface |
 | [playground/](playground/), [src/playground-worker.js](src/playground-worker.js) | The browser playground, and the worker that runs each program off the page |
 | [tools/](tools/) | Regenerating the saved example output, proofs and check reports |
 

@@ -5,7 +5,7 @@ import { run, parseTermText, parseGoalText } from '../index.js';
 import { parseProgramText } from '../src/kernel/parser.js';
 import { text } from '../src/common.js';
 
-// eyeris has no directives, so no program can change how the rest of itself
+// eyedia has no directives, so no program can change how the rest of itself
 // is read: the operator table is fixed and the accepted syntax is a property
 // of the parser alone. These cases pin that surface, each stating the
 // canonical functional notation a source spelling reads as.
@@ -132,12 +132,12 @@ test('directives and DCGs parse as terms and are refused by the profile', () => 
     'a --> b.',
   ]) {
     assert.equal(parseProgramText(source).length, 1, source);
-    assert.throws(() => run(source), /directives and DCGs are outside eyeris/, source);
+    assert.throws(() => run(source), /directives and DCGs are outside eyedia/, source);
   }
   // op/3 cannot introduce syntax: the directive is refused where it stands, the
   // first problem in reading order, and the operator it would have declared is
   // still a syntax error wherever it is used.
-  assert.throws(() => run(':- op(700, xfx, ===).\na === b.\n'), /directives and DCGs are outside eyeris/);
+  assert.throws(() => run(':- op(700, xfx, ===).\na === b.\n'), /directives and DCGs are outside eyedia/);
   assert.throws(() => parseProgramText(':- op(700, xfx, ===).\na === b.\n'), /expected \., got ===/);
 });
 

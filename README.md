@@ -1,11 +1,13 @@
-# eyeris
+# eyedia
 
 ![EYE](https://josd.github.io/images/eye.png)
+
+*Eyedia — reasoning you can see.*
 
 A standalone, dependency-free **Prolog rule language** with forward and backward
 reasoning and checkable proofs.
 
-Eyeris turns explicit facts and rules into conclusions whose derivations can be
+Eyedia turns explicit facts and rules into conclusions whose derivations can be
 inspected and checked. An answer can arrive together with a certificate, and
 that certificate can be verified against the program that produced it.
 
@@ -26,16 +28,16 @@ reasoning established.
 Node.js 18 or newer. No install, no build step:
 
 ```sh
-node bin/eyeris.js examples/socrates.pl
-node bin/eyeris.js --proof examples/socrates.pl
-node bin/eyeris.js --proof examples/socrates.pl | node bin/eyeris.js --check-proof - examples/socrates.pl
+node bin/eyedia.js examples/socrates.pl
+node bin/eyedia.js --proof examples/socrates.pl
+node bin/eyedia.js --proof examples/socrates.pl | node bin/eyedia.js --check-proof - examples/socrates.pl
 npm test
 ```
 
-The executable becomes `eyeris` when the package is installed. Run `eyeris --help`
+The executable becomes `eyedia` when the package is installed. Run `eyedia --help`
 for the full command line.
 
-Or in the browser: the [playground](https://eyereasoner.github.io/eyeris/playground/) edits, runs and checks any
+Or in the browser: the [playground](https://eyereasoner.github.io/eyedia/playground/) edits, runs and checks any
 example. To run it from a checkout, serve it (`python3 -m http.server`) and open
 `/playground/`.
 
@@ -57,7 +59,7 @@ console.log(checkProof(source, result.proof).valid);    // true
   not establish, and how the engine works.
 - **[Examples](examples/README.md)** — 57 complete programs, each with its saved
   conclusions, proof and C1-C7 check report.
-- **[Playground](https://eyereasoner.github.io/eyeris/playground/)** — write a program in the browser, run it, check
+- **[Playground](https://eyereasoner.github.io/eyedia/playground/)** — write a program in the browser, run it, check
   its proof, and share a link to exactly what you see.
 
 ## License

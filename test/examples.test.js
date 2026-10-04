@@ -11,15 +11,15 @@ const read = (path) => readFileSync(new URL(path, examplesRoot), 'utf8');
 function cli(args) {
   // A deep derivation's certificate is tens of megabytes, well past the
   // default subprocess buffer.
-  const result = spawnSync(process.execPath, ['bin/eyeris.js', ...args],
+  const result = spawnSync(process.execPath, ['bin/eyedia.js', ...args],
     { cwd: root, encoding: 'utf8', maxBuffer: 1 << 28 });
   if (result.error) throw result.error;
   assert.equal(result.stderr, '', result.stderr);
   return result;
 }
 // npm test runs each of these tests in its own process, naming it in
-// EYERIS_EXAMPLE_TEST as manifest, NAME:snapshot or NAME:cli; without it, all run.
-const only = process.env.EYERIS_EXAMPLE_TEST;
+// EYEDIA_EXAMPLE_TEST as manifest, NAME:snapshot or NAME:cli; without it, all run.
+const only = process.env.EYEDIA_EXAMPLE_TEST;
 const selected = (id) => !only || only === id;
 if (selected('manifest')) test('example manifest covers every source and all three artifact directories', () => {
   const expected = manifest.map((entry) => `${entry.name}.pl`).sort();
@@ -47,17 +47,17 @@ for (const entry of manifest) {
   });
   if (selected(`${entry.name}:cli`)) test(`example ${entry.name}: CLI output, proof and saved-proof checking`, () => {
     const file = `examples/${entry.name}.pl`;
-    phase('eyeris FILE', () => {
+    phase('eyedia FILE', () => {
       const output = cli([file]);
       assert.equal(output.status, entry.haltCode ?? 0);
       assert.equal(output.stdout, read(`output/${entry.name}.pl`));
     });
-    phase('eyeris --proof FILE', () => {
+    phase('eyedia --proof FILE', () => {
       const proof = cli(['--proof', file]);
       assert.equal(proof.status, entry.haltCode ?? 0);
       assert.equal(proof.stdout, read(`proof/${entry.name}.pl`));
     });
-    phase('eyeris --check-proof PROOF FILE', () => {
+    phase('eyedia --check-proof PROOF FILE', () => {
       const check = cli(['--check-proof', `examples/proof/${entry.name}.pl`, file]);
       assert.equal(check.status, 0);
       assert.equal(check.stdout, read(`check/${entry.name}.pl`));
