@@ -279,6 +279,11 @@
     "trusted": []
   },
   {
+    "name": "aunt-agatha",
+    "description": "Who killed Aunt Agatha? A conclusion entailed by holding in every model of the premises",
+    "trusted": ["collected"]
+  },
+  {
     "name": "four-color",
     "description": "Four-colouring the map of the European Union",
     "trusted": [

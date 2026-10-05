@@ -68,6 +68,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [easter.pl](easter.pl) | Easter Sunday by the anonymous Gregorian algorithm, 2021 to 2050 |
 | [turing.pl](turing.pl) | A Turing machine interpreter running a binary incrementer |
 | [zebra.pl](zebra.pl) | The zebra puzzle solved by narrowing five partially known houses |
+| [aunt-agatha.pl](aunt-agatha.pl) | Who killed Aunt Agatha? A conclusion entailed by holding in every model of the premises |
 | [four-color.pl](four-color.pl) | Four-colouring the map of the European Union |
 | [wolf-goat-cabbage.pl](wolf-goat-cabbage.pl) | The river crossing, with seven crossings shown to be minimal |
 | [monkey-bananas.pl](monkey-bananas.pl) | Every plan of up to five moves that gets the monkey the bananas |
@@ -256,7 +257,15 @@ the year. `turing.pl` is a Turing machine interpreter running a machine that
 adds one to a binary number.
 
 `zebra.pl` solves Einstein's riddle by narrowing a list of five partially known
-houses with unification alone. `four-color.pl` colours the 27 countries of the
+houses with unification alone. `aunt-agatha.pl` is Pelletier's problem 55
+(TPTP PUZ001), a classic test for theorem provers: nine premises about the
+three residents of Dreadbury Mansion, and the claim that Agatha killed
+herself. A puzzle like the zebra asks for one solution; this one asks what
+follows, which is what holds in every situation the premises allow. The
+premises leave open who hates whom and who is richer than whom, so the program
+enumerates every model of them: Agatha is the killer in four, the butler and
+Charles in none. A full model is printed as a witness, with a proof that each
+premise holds in it. `four-color.pl` colours the 27 countries of the
 European Union so that no neighbours share a colour. `wolf-goat-cabbage.pl`
 shows that a safe crossing takes seven trips and that no shorter one exists,
 then prints both seven-trip plans. `monkey-bananas.pl` lists every plan of up
