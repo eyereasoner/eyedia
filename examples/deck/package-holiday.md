@@ -46,12 +46,16 @@ The terms are written in **ODRL**, the W3C language for machine-readable
 | 1 to 29 | 100 % |
 
 ```prolog
-conditions('ex:cancellation', ['ex:byLeadTraveller', 'ex:beforeDeparture']).
-request(c4, bk4, by(david), days(5), circumstances(at(departure, airport_closed_by_floods)), voucher(not_offered)).
+t('ex:cancellation', 'odrl:constraint', 'ex:conditions').
+t('ex:conditions', 'odrl:and', ['ex:byLeadTraveller', 'ex:beforeDeparture']).
+t('ex:beforeDeparture', 'odrl:leftOperand', 'ex:daysBeforeDeparture').
+t('ex:beforeDeparture', 'odrl:operator', 'odrl:gt').
+t('ex:beforeDeparture', 'odrl:rightOperand', 0).
 ```
 
-That is request c4: David cancels five days before departure, because floods
-have closed the airport he would fly from.
+The program reads these triples to decide: the policy is data, not a
+comment. Delete any one of its 15 triples and the outcome changes; a test
+checks exactly that.
 
 ---
 
@@ -108,27 +112,30 @@ acknowledgement within 7 days and a reasoned reply within 60.
 
 Take c4 under the revision. The proof records, step by step:
 
-1. David is the lead traveller of booking bk4, and five days are left before
-   departure: both conditions of the terms are met, so the terms **permit**
-   the cancellation.
+1. The booking is with SunTrips, the offer's assigner, and the request is the
+   offer's action, `ex:cancel`. Of its `odrl:and` constraint, both operands
+   hold: David is the lead traveller, and 5 days left is more than 0. So the
+   terms **permit** the cancellation.
 2. The floods struck at the point of departure, which the revision counts:
    the cancellation is **free**.
 3. So David gets the full price back, **€2,100 within 14 days**
    (Art. 12(4)).
 
 Under the 2015 rules, step 2 goes the other way: departure does not count,
-so the terms' fee for under 30 days applies, 100 %, computed as €2,100.
+so the fee band for 1 to 29 days in the duty's fee scale applies, 100 %,
+computed as €2,100.
 
 ---
 
 ## Checked, with nothing taken on trust
 
-A separate checker read all **148 steps**: 121 were matched to a program
-line, and 27 calculations, such as the fees and refunds, were redone and
-agreed. Verdict: **checked**.
+A separate checker read all **218 steps**: 185 were matched to a program
+line, and 33 comparisons and calculations, such as the fees and refunds,
+were redone and agreed. Verdict: **checked**.
 
-Nothing is taken on trust: every condition of the terms is checked one by
-one, so no step rests on "there is nothing else". The proof even passes
+Nothing is taken on trust: the policy's `odrl:and` constraint lists its
+conditions, and each is decided either way, so no step rests on "there is
+nothing else". The proof even passes
 `--strict-proof`, which rejects any trusted step.
 
 What the certificate does **not** show: that the law is modelled completely,
