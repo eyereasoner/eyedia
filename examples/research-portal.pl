@@ -13,7 +13,7 @@
 % https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng
 % https://eur-lex.europa.eu/eli/dir/2002/58/2009-12-19
 %
-% Local profile: all process/8 descriptions assert consent as legal basis;
+% Local profile: each process/10 states its data controller and legal basis;
 % operands have at most one value, valid YYYYMMDD dates and an acyclic purpose
 % taxonomy. Only odrl:prohibit is supported. Device accesses involve personal
 % data on a natural person's device; necessity and measurement aggregation/
@@ -49,7 +49,8 @@ t('dpv:PersonalisedAdvertising', 'skos:broader', 'dpv:Advertising').
 % Parties and data.
 t('ex:partnerBE', 'odrl:partOf', 'ex:consortium').
 t('ex:partnerUS', 'odrl:partOf', 'ex:consortium').
-t('ex:labResults', 'rdf:type', 'dpv:SpecialCategoryPersonalData').
+% The lab results are special-category personal data (dpv:SpecialCategoryPersonalData);
+% the policy's conditions, not a type triple, carry what that requires here.
 
 % The policy. The left operands ex:legalBasis, ex:consentStatus and
 % ex:technicalMeasure belong to a profile that reads them from the process.
@@ -85,25 +86,27 @@ constraint('ex:before2027', 'odrl:dateTime', 'odrl:lt', 20270101).
 constraint('ex:forMarketing', 'odrl:purpose', 'odrl:isA', 'dpv:Marketing').
 
 % The requests, as DPV processes.
-process('ex:r1', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
-process('ex:r2', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:PersonalisedAdvertising', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
-process('ex:r3', 'ex:partnerBE', 'dpv:Share', 'ex:labResults', 'dpv:Advertising', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
-process('ex:r4', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:CommercialResearch', 'dpv:ConsentWithdrawn', 'dpv:Pseudonymisation', 20261115).
-process('ex:r5', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:ConsentGiven', 'dpv:Encryption', 20270301).
-process('ex:r6', 'ex:partnerUS', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
-process('ex:r7', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
-process('ex:r8', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
-process('ex:r9', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
-process('ex:r10', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
-t(P, 'rdf:type', 'dpv:Process') :- process(P, _, _, _, _, _, _, _).
-t(P, 'ex:requestedBy', Who) :- process(P, Who, _, _, _, _, _, _).
-t(P, 'dpv:hasProcessing', X) :- process(P, _, X, _, _, _, _, _).
-t(P, 'dpv:hasPersonalData', X) :- process(P, _, _, X, _, _, _, _).
-t(P, 'dpv:hasPurpose', X) :- process(P, _, _, _, X, _, _, _).
-t(P, 'dpv:hasLegalBasis', 'dpv:Consent') :- process(P, _, _, _, _, _, _, _).
-t(P, 'dpv:hasConsentStatus', X) :- process(P, _, _, _, _, X, _, _).
-t(P, 'dpv:hasTechnicalMeasure', X) :- process(P, _, _, _, _, _, X, _).
-t(P, 'ex:requestDate', X) :- process(P, _, _, _, _, _, _, X).
+process('ex:r1', 'ex:hospital', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:Consent', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
+process('ex:r2', 'ex:hospital', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:PersonalisedAdvertising', 'dpv:LegitimateInterest', 'dpv:ConsentUnknown', 'dpv:Pseudonymisation', 20261115).
+process('ex:r3', 'ex:hospital', 'ex:partnerBE', 'dpv:Share', 'ex:labResults', 'dpv:Advertising', 'dpv:Consent', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
+process('ex:r4', 'ex:hospital', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:CommercialResearch', 'dpv:Consent', 'dpv:ConsentWithdrawn', 'dpv:Pseudonymisation', 20261115).
+process('ex:r5', 'ex:hospital', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:Consent', 'dpv:ConsentGiven', 'dpv:Encryption', 20270301).
+process('ex:r6', 'ex:hospital', 'ex:partnerUS', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:Consent', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
+process('ex:r7', 'ex:hospital', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:Consent', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
+process('ex:r8', 'ex:hospital', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:Consent', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
+process('ex:r9', 'ex:hospital', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:Consent', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
+process('ex:r10', 'ex:hospital', 'ex:partnerBE', 'dpv:Use', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:Consent', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
+process('ex:r11', 'ex:hospital', 'ex:partnerBE', 'dpv:Share', 'ex:labResults', 'dpv:AcademicResearch', 'dpv:Consent', 'dpv:ConsentGiven', 'dpv:Pseudonymisation', 20261115).
+t(P, 'rdf:type', 'dpv:Process') :- process(P, _, _, _, _, _, _, _, _, _).
+t(P, 'dpv:hasDataController', X) :- process(P, X, _, _, _, _, _, _, _, _).
+t(P, 'ex:requestedBy', Who) :- process(P, _, Who, _, _, _, _, _, _, _).
+t(P, 'dpv:hasProcessing', X) :- process(P, _, _, X, _, _, _, _, _, _).
+t(P, 'dpv:hasPersonalData', X) :- process(P, _, _, _, X, _, _, _, _, _).
+t(P, 'dpv:hasPurpose', X) :- process(P, _, _, _, _, X, _, _, _, _).
+t(P, 'dpv:hasLegalBasis', X) :- process(P, _, _, _, _, _, X, _, _, _).
+t(P, 'dpv:hasConsentStatus', X) :- process(P, _, _, _, _, _, _, X, _, _).
+t(P, 'dpv:hasTechnicalMeasure', X) :- process(P, _, _, _, _, _, _, _, X, _).
+t(P, 'ex:requestDate', X) :- process(P, _, _, _, _, _, _, _, _, X).
 
 % How a DPV processing reads as an ODRL action.
 action('dpv:Use', 'odrl:use').
@@ -141,24 +144,29 @@ unmet(P, Rule, missing_definition(C)) :-
     addresses(P, Rule), t(Rule, 'odrl:constraint', C),
     findall(definition(Left, Operator, Right), constraint(C, Left, Operator, Right), []).
 applies(P, Rule) :- addresses(P, Rule), findall(Why, unmet(P, Rule, Why), []).
-permitted(P, Rule) :- t('ex:policy', 'odrl:permission', Rule), applies(P, Rule).
-prohibited(P, Rule) :- t('ex:policy', 'odrl:prohibition', Rule), applies(P, Rule).
-candidate(P, Rule) :- t('ex:policy', 'odrl:permission', Rule), addresses(P, Rule).
-policy_ready :- findall(S, t('ex:policy', 'odrl:conflict', S), ['odrl:prohibit']).
+% A policy governs a process when it is an agreement assigned by the
+% process's data controller.
+governs(Policy, P) :-
+    t(Policy, 'rdf:type', 'odrl:Agreement'), t(Policy, 'odrl:assigner', Controller),
+    t(P, 'dpv:hasDataController', Controller).
+permitted(P, Rule) :- governs(Policy, P), t(Policy, 'odrl:permission', Rule), applies(P, Rule).
+prohibited(P, Rule) :- governs(Policy, P), t(Policy, 'odrl:prohibition', Rule), applies(P, Rule).
+candidate(P, Rule) :- governs(Policy, P), t(Policy, 'odrl:permission', Rule), addresses(P, Rule).
+policy_ready(P) :- governs(Policy, P), findall(S, t(Policy, 'odrl:conflict', S), ['odrl:prohibit']).
 
 % Policy outcomes are evaluated before considering the device step.
 policy_result(P, permit(Rule)) :-
-    policy_ready, permitted(P, Rule), findall(R, prohibited(P, R), []).
-policy_result(P, deny(prohibited_by(Rule))) :- policy_ready, prohibited(P, Rule).
+    policy_ready(P), permitted(P, Rule), findall(R, prohibited(P, R), []).
+policy_result(P, deny(prohibited_by(Rule))) :- policy_ready(P), prohibited(P, Rule).
 policy_result(P, deny(not_permitted(Reasons))) :-
-    policy_ready, t(P, 'rdf:type', 'dpv:Process'), candidate(P, _),
+    t(P, 'rdf:type', 'dpv:Process'), policy_ready(P), candidate(P, _),
     findall(R, permitted(P, R), []), findall(R, prohibited(P, R), []),
-    findall(Why, (t('ex:policy', 'odrl:permission', Rule), unmet(P, Rule, Why)), Reasons).
+    findall(Why, (governs(Policy, P), t(Policy, 'odrl:permission', Rule), unmet(P, Rule, Why)), Reasons).
 policy_result(P, deny(no_matching_permission)) :-
-    policy_ready, t(P, 'rdf:type', 'dpv:Process'),
+    t(P, 'rdf:type', 'dpv:Process'), policy_ready(P),
     findall(R, candidate(P, R), []), findall(R, prohibited(P, R), []).
 policy_result(P, deny(unsupported_conflict_strategy(Strategies))) :-
-    t(P, 'rdf:type', 'dpv:Process'), findall(S, t('ex:policy', 'odrl:conflict', S), Strategies),
+    t(P, 'rdf:type', 'dpv:Process'), governs(Policy, P), findall(S, t(Policy, 'odrl:conflict', S), Strategies),
     Strategies \== ['odrl:prohibit'].
 
 % Each research session specifies its device access and the visitor's choice.
@@ -172,6 +180,7 @@ session('ex:r7', advertising, browser_signal(refuse)).
 session('ex:r8', advertising, refused(completed_months(5))).
 session('ex:r9', advertising, refused(completed_months(6))).
 session('ex:r10', requested_service, first_visit).
+session('ex:r11', requested_service, first_visit).
 
 regime(in_force).
 regime(omnibus_proposal).
@@ -231,7 +240,7 @@ device_basis(P, P, ['ex:policy', P]).
 device_basis(P, Q, ['ex:policy', P, Q]) :- P \== Q.
 
 policy_conflict(P, resolved_by('odrl:prohibit', Prohibition, overrides(Permission))) :+
-    policy_ready, session(P, _, _), permitted(P, Permission), prohibited(P, Prohibition).
+    session(P, _, _), policy_ready(P), permitted(P, Permission), prohibited(P, Prohibition).
 
 % Duties attach to final permits, not to requests waiting for device consent.
 planned_duty(R, P, Action, within_days(Days)) :+

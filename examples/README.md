@@ -227,7 +227,7 @@ obligations, and policy findings also expose absence obligations.
 
 `research-portal.pl` evaluates a hospital research portal under two rulebooks.
 An ODRL/DPV policy decides research access first, then the baseline or
-original Digital Omnibus rulebook decides the device-consent step. Ten
+original Digital Omnibus rulebook decides the device-consent step. Eleven
 sessions produce permits with planned deletion duties, pending device consent,
 or explicit policy and device refusals. Three incidents have notification
 plans under both regimes, always retaining internal documentation. Changes

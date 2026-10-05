@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Helvetica, Arial, sans-serif" role="img" aria-labelledby="title desc">
   <title id="title">How the research portal decides a session</title>
-  <desc id="desc">A planned research session first meets the hospital's research policy. If the policy refuses it, it stops there with reasons: sessions r2 to r6, under both rulebooks. If the policy permits it, the device rules decide: go ahead with a duty to delete within 90 days (today r10; proposal r1 and r10), wait for device consent (today r1, r7, r8 and r9; proposal r9), or tracker blocked (today none; proposal r7 and r8).</desc>
+  <desc id="desc">A planned research session first meets the hospital's research policy. If the policy refuses it, it stops there with reasons: sessions r2 to r6 and r11, under both rulebooks. If the policy permits it, the device rules decide: go ahead with a duty to delete within 90 days (today r10; proposal r1 and r10), wait for device consent (today r1, r7, r8 and r9; proposal r9), or tracker blocked (today none; proposal r7 and r8).</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
@@ -11,7 +11,7 @@
   <!-- start -->
   <rect x="330" y="18" width="300" height="56" rx="28" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
   <text x="480" y="42" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">A planned research session</text>
-  <text x="480" y="62" text-anchor="middle" font-size="14" fill="#475569">ten of them: r1 – r10</text>
+  <text x="480" y="62" text-anchor="middle" font-size="14" fill="#475569">eleven of them: r1 – r11</text>
 
   <!-- gate 1 -->
   <line x1="480" y1="74" x2="480" y2="106" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
@@ -27,7 +27,7 @@
   <rect x="18" y="100" width="218" height="112" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
   <text x="127" y="126" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">Refused by the policy</text>
   <text x="127" y="146" text-anchor="middle" font-size="13" fill="#991b1b">with the reasons why</text>
-  <text x="127" y="174" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">r2  r3  r4  r5  r6</text>
+  <text x="127" y="174" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">r2  r3  r4  r5  r6  r11</text>
   <text x="127" y="196" text-anchor="middle" font-size="12" fill="#991b1b">the same under both rulebooks</text>
 
   <!-- gate 2 -->

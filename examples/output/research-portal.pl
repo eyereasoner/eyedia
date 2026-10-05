@@ -7,16 +7,18 @@ breach_plan(omnibus_proposal, b3, notify(authority(within_hours_via_single_entry
 changed(breach(b2), from(notify(authority(within_hours(72)), people(none))), to(notify(authority(none), people(none)))).
 changed(breach(b3), from(notify(authority(within_hours(72)), people(without_undue_delay))), to(notify(authority(within_hours_via_single_entry_point(96)), people(without_undue_delay)))).
 policy_conflict('ex:r6', resolved_by('odrl:prohibit', 'ex:noTransferUS', overrides('ex:research'))).
-assessment(in_force, 'ex:r2', deny_policy(not_permitted([unmet('ex:forResearch', 'odrl:purpose', 'dpv:PersonalisedAdvertising', 'odrl:isA', 'dpv:ResearchAndDevelopment')])), basis(['ex:policy'])).
+assessment(in_force, 'ex:r2', deny_policy(not_permitted([unmet('ex:forResearch', 'odrl:purpose', 'dpv:PersonalisedAdvertising', 'odrl:isA', 'dpv:ResearchAndDevelopment'), unmet('ex:underConsent', 'ex:legalBasis', 'dpv:LegitimateInterest', 'odrl:eq', 'dpv:Consent'), unmet('ex:consentGiven', 'ex:consentStatus', 'dpv:ConsentUnknown', 'odrl:eq', 'dpv:ConsentGiven')])), basis(['ex:policy'])).
 assessment(in_force, 'ex:r3', deny_policy(prohibited_by('ex:noMarketing')), basis(['ex:policy'])).
 assessment(in_force, 'ex:r4', deny_policy(not_permitted([unmet('ex:consentGiven', 'ex:consentStatus', 'dpv:ConsentWithdrawn', 'odrl:eq', 'dpv:ConsentGiven')])), basis(['ex:policy'])).
 assessment(in_force, 'ex:r5', deny_policy(not_permitted([unmet('ex:pseudonymised', 'ex:technicalMeasure', 'dpv:Encryption', 'odrl:eq', 'dpv:Pseudonymisation'), unmet('ex:before2027', 'odrl:dateTime', 20270301, 'odrl:lt', 20270101)])), basis(['ex:policy'])).
 assessment(in_force, 'ex:r6', deny_policy(prohibited_by('ex:noTransferUS')), basis(['ex:policy'])).
-assessment(omnibus_proposal, 'ex:r2', deny_policy(not_permitted([unmet('ex:forResearch', 'odrl:purpose', 'dpv:PersonalisedAdvertising', 'odrl:isA', 'dpv:ResearchAndDevelopment')])), basis(['ex:policy'])).
+assessment(in_force, 'ex:r11', deny_policy(no_matching_permission), basis(['ex:policy'])).
+assessment(omnibus_proposal, 'ex:r2', deny_policy(not_permitted([unmet('ex:forResearch', 'odrl:purpose', 'dpv:PersonalisedAdvertising', 'odrl:isA', 'dpv:ResearchAndDevelopment'), unmet('ex:underConsent', 'ex:legalBasis', 'dpv:LegitimateInterest', 'odrl:eq', 'dpv:Consent'), unmet('ex:consentGiven', 'ex:consentStatus', 'dpv:ConsentUnknown', 'odrl:eq', 'dpv:ConsentGiven')])), basis(['ex:policy'])).
 assessment(omnibus_proposal, 'ex:r3', deny_policy(prohibited_by('ex:noMarketing')), basis(['ex:policy'])).
 assessment(omnibus_proposal, 'ex:r4', deny_policy(not_permitted([unmet('ex:consentGiven', 'ex:consentStatus', 'dpv:ConsentWithdrawn', 'odrl:eq', 'dpv:ConsentGiven')])), basis(['ex:policy'])).
 assessment(omnibus_proposal, 'ex:r5', deny_policy(not_permitted([unmet('ex:pseudonymised', 'ex:technicalMeasure', 'dpv:Encryption', 'odrl:eq', 'dpv:Pseudonymisation'), unmet('ex:before2027', 'odrl:dateTime', 20270301, 'odrl:lt', 20270101)])), basis(['ex:policy'])).
 assessment(omnibus_proposal, 'ex:r6', deny_policy(prohibited_by('ex:noTransferUS')), basis(['ex:policy'])).
+assessment(omnibus_proposal, 'ex:r11', deny_policy(no_matching_permission), basis(['ex:policy'])).
 assessment(in_force, 'ex:r10', permit('ex:research'), basis(['ex:policy', 'ePrivacy Art. 5(3)'])).
 assessment(omnibus_proposal, 'ex:r1', permit('ex:research'), basis(['ex:policy', 'GDPR Art. 88a(3)(c)'])).
 assessment(omnibus_proposal, 'ex:r10', permit('ex:research'), basis(['ex:policy', 'GDPR Art. 88a(3)(b)'])).

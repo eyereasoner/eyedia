@@ -44,14 +44,19 @@ things are forbidden outright: passing the data on for **marketing**, and
 any use by the **US partner**.
 
 ```prolog
-process('ex:r1', 'ex:partnerBE', 'dpv:Use', 'ex:labResults',
-        'dpv:AcademicResearch', 'dpv:ConsentGiven',
+process('ex:r1', 'ex:hospital', 'ex:partnerBE', 'dpv:Use', 'ex:labResults',
+        'dpv:AcademicResearch', 'dpv:Consent', 'dpv:ConsentGiven',
         'dpv:Pseudonymisation', 20261115).
 ```
 
-This is session r1: the Belgian partner wants to use the lab results for
-academic research, consent given, pseudonymised, on 15 November 2026.
-DPV knows that academic research *is* research, so the purpose fits.
+This is session r1: for the hospital, the data controller, the Belgian
+partner wants to use the lab results for academic research, on consent,
+pseudonymised, on 15 November 2026. DPV knows that academic research *is*
+research, so the purpose fits.
+
+The policy is data the program reads, not a comment: it governs r1 because
+it is an ODRL agreement assigned by r1's data controller. Delete any one of
+its 26 triples and the outcome changes; a test checks exactly that.
 
 ---
 
@@ -69,12 +74,12 @@ needs no consent does **not** stand in for the patient's consent to research.
 
 ---
 
-## The ten sessions
+## The eleven sessions
 
 | Session | What is special about it | Today | Proposal |
 | --- | --- | --- | --- |
 | r1 | valid research; the portal's own statistics | wait for consent | **go ahead** |
-| r2 | purpose is personalised advertising, not research | refused | refused |
+| r2 | personalised advertising, on legitimate interest, not consent | refused | refused |
 | r3 | passing the data on for advertising | refused (forbidden) | refused (forbidden) |
 | r4 | the patient withdrew consent | refused | refused |
 | r5 | encrypted, not pseudonymised; after 2026 | refused | refused |
@@ -83,6 +88,7 @@ needs no consent does **not** stand in for the patient's consent to research.
 | r8 | valid research; ad tracker; refused 5 months ago | wait for consent | **blocked** |
 | r9 | valid research; ad tracker; refused 6 months ago | wait for consent | wait for consent |
 | r10 | valid research; only what the service needs | go ahead | go ahead |
+| r11 | passing the data to a partner, for research | refused (no permission) | refused (no permission) |
 
 "Wait for consent" means: ask first, and do nothing until the visitor agrees.
 
@@ -102,7 +108,8 @@ changed(session('ex:r8'), from(await_device_consent('ex:research')), to(deny_dev
 
 Just as telling: **r4** uses the same statistics as r1, but stays refused,
 because the patient withdrew consent to research. Easier device rules cannot
-fix that.
+fix that. And **r11** shows how precise the policy is: the marketing ban does
+not catch sharing for research, but nothing permits that sharing either.
 
 ---
 
@@ -139,11 +146,11 @@ articles it rests on.
 
 ## Checked, not just claimed
 
-A separate checker read all **223 steps**: 185 were matched to a program
+A separate checker read all **273 steps**: 225 were matched to a program
 line, and 15 calculations were redone and agreed. Verdict:
 **checked_with_obligations**.
 
-The **23 obligations** are statements of the form "there is no prohibition
+The **33 obligations** are statements of the form "there is no prohibition
 for this session" or "no condition failed". Eyedia found these by searching
 everything it knows; the checker records them rather than proving them, and
 found nothing in the proof that contradicts them.
