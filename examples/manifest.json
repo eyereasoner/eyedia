@@ -225,6 +225,13 @@
     ]
   },
   {
+    "name": "odrl-dpv",
+    "description": "An ODRL policy decides DPV access requests, with duties, reasons and conflict resolution",
+    "trusted": [
+      "collected"
+    ]
+  },
+  {
     "name": "queens",
     "description": "Configurable N-queens search with diagonal constraints",
     "trusted": []
@@ -281,7 +288,9 @@
   {
     "name": "aunt-agatha",
     "description": "Who killed Aunt Agatha? A conclusion entailed by holding in every model of the premises",
-    "trusted": ["collected"]
+    "trusted": [
+      "collected"
+    ]
   },
   {
     "name": "four-color",

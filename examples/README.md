@@ -58,6 +58,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [interval-relations.pl](interval-relations.pl) | All thirteen interval relations and endpoint completion |
 | [bayes-diagnosis.pl](bayes-diagnosis.pl) | Normalized probabilities for illustrative printer faults |
 | [policy-risk.pl](policy-risk.pl) | Ranked findings with explanations and suggested mitigations |
+| [odrl-dpv.pl](odrl-dpv.pl) | An ODRL policy decides DPV access requests, with duties, reasons and conflict resolution |
 | [queens.pl](queens.pl) | Configurable N-queens search with diagonal constraints |
 | [age.pl](age.pl) | Calendar-year and elapsed-day age checks at an explicit reference date |
 | [ackermann.pl](ackermann.pl) | The Ackermann function through the hyperoperation sequence, exactly |
@@ -219,6 +220,18 @@ mitigation. Rank 1 has the highest score; equal scores share a rank. Output
 follows inference order, with ranks recorded explicitly. Adding the missing
 safeguards removes the affected findings. Both examples expose their collection
 obligations, and policy findings also expose absence obligations.
+
+`odrl-dpv.pl` evaluates an ODRL policy against access requests described with
+the Data Privacy Vocabulary (DPV). A hospital lets a research consortium use
+lab results for research and development, under given consent, pseudonymised
+and before 2027, with a duty to delete them within 90 days; sharing for
+marketing is prohibited, and so is any use by one member. Each request is a
+DPV process, and each gets a decision: a permit with its duties, a refusal by
+the prohibition that applies, or a refusal listing every constraint left
+unmet. Purposes match through the DPV taxonomy, so academic research counts
+as research and development and advertising as marketing. One request is both
+permitted and prohibited, and the policy's `odrl:prohibit` conflict strategy
+decides it.
 
 `age.pl` checks whether a person's age strictly exceeds `years(N)` or `days(N)`.
 It uses `as_of(date(2026, 10, 1))` for reproducible output and proofs. Edit that

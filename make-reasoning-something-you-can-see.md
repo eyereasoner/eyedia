@@ -355,7 +355,7 @@ language does not hand you a certificate it has not verified.
 
 ## The examples
 
-The [example collection](examples/README.md) is 57 complete programs. Each one
+The [example collection](examples/README.md) is 58 complete programs. Each one
 ships with its conclusions, its proof and its C1–C7 check report, all saved to
 disk:
 
@@ -381,6 +381,7 @@ examples/check/socrates.pl     C1-C7 proof-check report
 | `good-cobbler`, `peano`, `expression-eval`, `complex`, `polynomial` | Structured descriptions, symbolic arithmetic, expression graphs, a complex-number domain and polynomial roots |
 | `queens`, `interval-relations` | Constraint search and all thirteen interval relations |
 | `bayes-diagnosis`, `policy-risk` | Normalized fault scores and ranked policy findings |
+| `odrl-dpv` | An ODRL policy deciding DPV-described data requests, with reasons |
 | `ackermann`, `peasant`, `sieve`, `goldbach`, `kaprekar` | Exact hyperoperations, ancient arithmetic and number-theory checks |
 | `easter`, `turing`, `superdense-coding`, `teleportation` | Calendar arithmetic, a Turing machine interpreter and discrete quantum protocols |
 | `zebra`, `four-color`, `wolf-goat-cabbage`, `monkey-bananas`, `gps` | Classic constraint puzzles and planning problems |
