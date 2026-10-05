@@ -28,6 +28,7 @@ can check.**
 - [What you can say](#what-you-can-say)
 - [Proofs, and what checking one means](#proofs-and-what-checking-one-means)
 - [Where it is honest about not knowing](#where-it-is-honest-about-not-knowing)
+- [Checking the translation, not just the reasoning](#checking-the-translation-not-just-the-reasoning)
 - [The examples](#the-examples)
 - [Using it from JavaScript](#using-it-from-javascript)
 - [How it works inside](#how-it-works-inside)
@@ -352,6 +353,52 @@ The same honesty applies elsewhere. A mode test such as `var(X)` followed by
 substitution, so proof generation refuses rather than emitting something
 misleading. And every generated proof is checked before it is returned — the
 language does not hand you a certificate it has not verified.
+
+## Checking the translation, not just the reasoning
+
+A checked proof shows that the conclusions follow from the program. It cannot
+show that the program says what the law, the policy or the textbook says. Someone
+turned that text into facts and rules, and that translation can be wrong while
+every proof checks. No tool can certify it; the person who knows the source has
+to judge. Eyedia helps in two ways: it tests the translation against outcomes
+known from elsewhere, and it shows which parts of the translation no conclusion
+actually used.
+
+**Expected cases.** Write down, from the sources and without reading the
+program, what should come out for a few cases, each with where that expectation
+comes from. Run them with the program; the program has to reproduce them.
+[examples/cases/](https://github.com/eyereasoner/eyedia/tree/main/examples/cases)
+does this for two examples:
+
+```prolog
+% Revision: circumstances at the point of departure count too.
+expected(revised_2026, c4, refund(2100, within_days(14)), 'EP 12 March 2026: point of departure').
+```
+
+```sh
+node bin/eyedia.js examples/package-holiday.pl examples/cases/package-holiday.pl
+```
+
+Each case reports `pass`, or `fail` with what was expected and what came out.
+The cases are only as independent as their author; they are worth most when
+someone other than the program's author writes them, from the same sources.
+
+**What the translation never uses.** `--unused` lists the clauses no conclusion
+rests on, by the clauses the proof records:
+
+```sh
+node bin/eyedia.js --unused examples/research-portal.pl
+```
+
+An `unused/2` clause takes part in no derivation: a table row no case
+exercises, a rule that never fires, or a fact nothing reads. Each is either
+untested, which a new case can fix, or not needed. A `trusted_only/2` clause is
+reached only by searches behind a negation or a collection, whose steps a proof
+does not record, so the proof cannot show what it contributes. The program
+can be restructured so the proof records it, as `package-holiday.pl` does, or
+its part confirmed another way: delete it and see whether the conclusions
+change. `test/policy-triples.test.js` does exactly that for the two policy
+examples, triple by triple.
 
 ## The examples
 

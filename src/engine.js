@@ -34,6 +34,53 @@ function resolveNode(node, env) {
 const BUILTIN = atom('builtin'), CONTROL = atom('control'), ABSENT = atom('absent'), COLLECTED = atom('collected');
 const primitiveNode = (goal, by = BUILTIN, children = []) => ({ goal, by, bindings: [], children });
 
+// The source clauses a set of proof nodes rests on. A collection has no
+// children in a proof, so its node keeps the clauses its answers used.
+function clausesUsed(nodes, used = new Set()) {
+  const pending = [...nodes];
+  while (pending.length) {
+    const node = pending.pop();
+    if (node.by.arity) used.add(Number(node.by.args[0].name));
+    if (node.collectedUses) for (const id of node.collectedUses) used.add(id);
+    pending.push(...node.children);
+  }
+  return used;
+}
+
+// The source clauses that searches behind a trusted boundary could consult.
+// A negation or a collection records no derivation in a proof, so follow its
+// goal through the program instead: every clause whose head could answer a
+// goal it reaches, and the goals in that clause's body, transitively.
+function clausesBehindBoundaries(program, roots) {
+  const byKey = new Map();
+  for (const clause of program.clauses) {
+    for (const head of clause.heads ?? [clause.head]) if (callable(head)) addTo(byKey, key(head), clause);
+  }
+  const pending = [];
+  const visit = (goal) => {
+    if (!callable(goal)) return;
+    if (is(goal, ',', 2) || is(goal, ';', 2)) { visit(goal.args[0]); visit(goal.args[1]); }
+    else if (is(goal, '\\+', 1) || is(goal, 'call', 1) || is(goal, 'once', 1)) visit(goal.args[0]);
+    else if (is(goal, 'findall', 3)) visit(goal.args[1]);
+    else if (!primitiveKeys.has(key(goal))) pending.push(key(goal));
+  };
+  const nodes = [...roots];
+  while (nodes.length) {
+    const node = nodes.pop();
+    if (node.by === ABSENT || node.by === COLLECTED) visit(node.goal);
+    nodes.push(...node.children);
+  }
+  const seen = new Set();
+  const reached = new Set();
+  while (pending.length) {
+    const id = pending.pop();
+    if (seen.has(id)) continue;
+    seen.add(id);
+    for (const clause of byKey.get(id) ?? []) { reached.add(clause.id); clause.body.forEach(visit); }
+  }
+  return reached;
+}
+
 // Proof nodes are recorded only when a proof is asked for. Without one, frames
 // share this empty list and a finished body has nothing to hand back, so the
 // search keeps only what it needs to find answers.
@@ -146,13 +193,16 @@ class Solver {
     }
     if (is(goal, 'findall', 3)) {
       const items = [];
+      const uses = recording ? new Set() : null;
       const mark = env.mark();
       for (const answer of this.solve([goal.args[1]], env, frame.depth + 1)) {
         items.push(freshTerm(copyResolved(goal.args[0], answer.env), `collection${++this.serial}`));
+        if (recording) clausesUsed(answer.nodes, uses);
       }
       env.undo(mark);
       if (!unify(goal.args[2], listFromItems(items), env)) { env.undo(mark); return null; }
-      return advance(frame, recording ? primitiveNode(goal, COLLECTED) : null, recording);
+      if (!recording) return advance(frame, null, recording);
+      return advance(frame, { ...primitiveNode(goal, COLLECTED), collectedUses: uses }, recording);
     }
     let point;
     const id = key(goal);
@@ -251,7 +301,7 @@ class Solver {
             for (const conclusion of conclusions) {
               if (is(conclusion, 'true', 0)) {
                 const id = text(claim);
-                if (!this.reported.has(id)) this.reported.set(id, { claim, children });
+                if (!this.reported.has(id)) this.reported.set(id, { claim, children, clause: clause.id });
                 continue;
               }
               const node = { goal: conclusion, by: compound('rule', [numberTerm(clause.id)]), bindings, children };
@@ -267,6 +317,21 @@ class Solver {
       }
     }
   }
+}
+
+// The clauses of a run's program that no conclusion rests on, given the run's
+// result with a proof. A clause that searches behind a trusted boundary could
+// consult is trusted_only/2: the proof cannot show its part. Any other is
+// unused/2. Each fact gives the clause's source line and the clause.
+export function unusedClauseTerms(program, result) {
+  const used = new Set(result.clausesUsed);
+  const behind = new Set(result.clausesBehindBoundaries);
+  return program.clauses.filter((clause) => !used.has(clause.id)).map((clause) => {
+    const written = clause.forward ? compound(':+', [clause.head, conjunction(clause.body)])
+      : clause.body.length ? compound(':-', [clause.head, conjunction(clause.body)]) : clause.head;
+    const kind = behind.has(clause.id) ? 'trusted_only' : 'unused';
+    return `${text(compound(kind, [compound('line', [numberTerm(clause.line)]), written]))}.\n`;
+  }).join('');
 }
 
 export function run(source, options = {}) {
@@ -317,6 +382,10 @@ function reason(source, options) {
   }
   const answers = claims.map((claim) => text(claim));
   const proof = options.proof ? renderProof(program, claims, roots) : null;
+  // A rule that reports a claim is used by it, though a proof records only
+  // the claim's support.
+  const used = options.proof ? clausesUsed(roots) : null;
+  if (used && solver.haltCode == null && !goals.length) for (const report of solver.reported.values()) used.add(report.clause);
   let proofReport = null;
   if (proof && claims.length) {
     proofReport = checkProof(program, proof, { goals });
@@ -324,6 +393,12 @@ function reason(source, options) {
   }
   return {
     answers, bindings, inferred: solver.derived.map((node) => text(node.goal)),
+    // With a proof, the ids of the source clauses its conclusions rest on.
+    clausesUsed: options.proof ? [...used].sort((a, b) => a - b) : null,
+    // With a proof, the ids of clauses only searches behind a trusted
+    // boundary could consult: the proof cannot show what they contribute.
+    clausesBehindBoundaries: options.proof
+      ? [...clausesBehindBoundaries(program, roots)].filter((id) => !used.has(id)).sort((a, b) => a - b) : null,
     stdout: proof ?? answers.map((answer) => `${answer}.\n`).join(''),
     // The generated proof is checked before it is returned, so hand back that
     // report rather than making a caller that wants it check the same document

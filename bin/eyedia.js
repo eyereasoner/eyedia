@@ -16,7 +16,7 @@ process.stdout.on('error', (error) => {
   throw error;
 });
 
-const { run, checkProof, checkReportTerms } = await import('../index.js');
+const { run, checkProof, checkReportTerms, Program, unusedClauseTerms } = await import('../index.js');
 
 const help = `Usage: eyedia [--proof | --check-proof FILE] [--goal GOAL] [FILE ...]
 Facts and rules use Prolog syntax; :+ rules run to a fixpoint.
@@ -26,6 +26,7 @@ Facts and rules use Prolog syntax; :+ rules run to a fixpoint.
   --goal GOAL         Ask a backward goal after forward reasoning; with
                       --check-proof, the goal the proof answers
   --strict-proof      Reject proofs relying on absence or collection
+  --unused            List the clauses no conclusion rests on
   --stats             Print reasoning statistics to stderr
   --max-depth N       Bound backward recursion (default 1000000)
   --max-iterations N  Bound forward rounds per stratum (default 1000)
@@ -47,6 +48,7 @@ try {
   let stats = false;
   let strict = false;
   let json = false;
+  let unused = false;
   let printed = false;
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -59,6 +61,7 @@ try {
     else if (arg === '--stats') stats = true;
     else if (arg === '--strict-proof') strict = true;
     else if (arg === '--json') json = true;
+    else if (arg === '--unused') unused = true;
     else if (['--check-proof', '--goal', '--max-depth', '--max-iterations', '--max-inferences'].includes(arg)) {
       const value = args[++i];
       if (value == null) throw new Error(`${arg} needs a value`);
@@ -75,6 +78,7 @@ try {
   if (!printed) {
     if (json && proofFile == null) throw new Error('--json requires --check-proof');
     if (proofFile != null && options.proof) throw new Error('--check-proof cannot be combined with --proof');
+    if (unused && (proofFile != null || options.proof)) throw new Error('--unused cannot be combined with --proof or --check-proof');
     if (proofFile === '-' && (!files.length || files.includes('-'))) throw new Error('stdin holds the proof; name the program as files');
     if (!files.length) files.push('-');
     if (files.filter((file) => file === '-').length > 1) throw new Error('stdin can only be read once');
@@ -86,6 +90,11 @@ try {
       const report = checkProof(source, document, { allowTrusted: !strict, goals: options.goals });
       process.stdout.write(json ? JSON.stringify(report, null, 2) + '\n' : checkReportTerms(report));
       process.exitCode = report.valid ? 0 : 1;
+    } else if (unused) {
+      const program = Program.parse(source);
+      const result = run(program, { ...options, proof: true });
+      process.stdout.write(unusedClauseTerms(program, result));
+      process.exitCode = result.haltCode ?? 0;
     } else {
       const result = run(source, options);
       process.stdout.write(result.stdout);
