@@ -360,22 +360,40 @@ A checked proof shows that the conclusions follow from the program. It cannot
 show that the program says what the law, the policy or the textbook says. Someone
 turned that text into facts and rules, and that translation can be wrong while
 every proof checks. No tool can certify it; the person who knows the source has
-to judge. Eyedia can point at where to look.
+to judge. What Eyedia can do is point at the parts of a program that make no
+difference to its conclusions, because those are where a translation is most
+likely to be decorative, incomplete or untested.
 
-`--unused` lists the clauses that make no difference to the conclusions:
+`--unused` lists those clauses. Take this program:
 
-```sh
-node bin/eyedia.js --unused examples/research-portal.pl
+```prolog
+p(a).
+q(b).
+s(X) :- q(X).
+z(c).
+ok :+ p(a), \+ s(a).
 ```
 
-A clause is listed when no conclusion's proof rests on it: a table row no case
-exercises, a rule that never fires, a fact nothing reads. Some clauses are only
-consulted by a negation or a collection, whose searches a proof does not record;
-for those, Eyedia leaves the clause out, runs the program again, and lists it
-only if the conclusions stay the same. Every listed clause is either untested,
-which a new case can fix, or encoding something nothing depends on, which is
-worth a second look against the source. This works for any program, without
-writing anything extra.
+```text
+$ eyedia --unused program.pl
+unused(line(2), q(b)).
+unused(line(3), ':-'(s(X), q(X))).
+unused(line(4), z(c)).
+```
+
+A clause is listed when no conclusion's proof uses it. Here `ok` rests on
+`p(a)` and on the rule that concludes it, so those two are not listed; nothing
+reads `z(c)`. One case needs more: a negation (`\+`) or a collection
+(`findall/3`) may consult a clause without its proof recording that search.
+`q(b)` and the rule for `s/1` are consulted by `\+ s(a)`, so for each of them
+Eyedia leaves the clause out, runs the program again, and lists it only because
+the conclusions stay the same.
+
+A listed clause deserves a look against its source: no fact in the program
+exercises it, or it encodes something no conclusion depends on. The check needs
+nothing but the program, and its answer is about the program's own facts; with
+other facts, a listed clause may matter. The example programs `research-portal.pl`
+and `package-holiday.pl` list no clauses.
 
 ## The examples
 

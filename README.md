@@ -48,9 +48,11 @@ than a classic proof checker:
 
 The report is itself Prolog, and every generated proof is checked before it is
 returned. Around that core, [59 examples](https://eyereasoner.github.io/eyedia/examples/)
-grew, from Socrates and the zebra puzzle to EU rules such as the Digital Omnibus
-proposal and the Package Travel Directive, each with a [deck](https://eyereasoner.github.io/eyedia/examples/deck/)
-for a wide audience and a [playground](https://eyereasoner.github.io/eyedia/playground/) in the browser.
+grew, from Socrates and the zebra puzzle to a hospital research portal decided
+under today's EU rules and under the Commission's Digital Omnibus proposal, and
+package holiday cancellations under the 2015 and the revised Package Travel
+Directive. Each has a [deck](https://eyereasoner.github.io/eyedia/examples/deck/)
+for a wide audience and can be run in the [playground](https://eyereasoner.github.io/eyedia/playground/).
 
 A proof guarantees that the conclusions follow from the rules, not that the
 rules say what the law or the policy says. So `eyedia --unused` shows which
