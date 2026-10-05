@@ -355,7 +355,7 @@ language does not hand you a certificate it has not verified.
 
 ## The examples
 
-The [example collection](https://eyereasoner.github.io/eyedia/examples/) is 58 complete programs. Each one
+The [example collection](https://eyereasoner.github.io/eyedia/examples/) is 59 complete programs. Each one
 ships with its conclusions, its proof and its C1–C7 check report, all saved to
 disk:
 
@@ -382,6 +382,7 @@ examples/check/socrates.pl     C1-C7 proof-check report
 | `queens`, `interval-relations` | Constraint search and all thirteen interval relations |
 | `bayes-diagnosis`, `policy-risk` | Normalized fault scores and ranked policy findings |
 | `odrl-dpv` | An ODRL policy deciding DPV-described data requests, with reasons |
+| `digital-omnibus` | An EU law proposal compared with the law in force, case by case, with cited provisions |
 | `ackermann`, `peasant`, `sieve`, `goldbach`, `kaprekar` | Exact hyperoperations, ancient arithmetic and number-theory checks |
 | `easter`, `turing`, `superdense-coding`, `teleportation` | Calendar arithmetic, a Turing machine interpreter and discrete quantum protocols |
 | `zebra`, `four-color`, `wolf-goat-cabbage`, `monkey-bananas`, `gps` | Classic constraint puzzles and planning problems |
@@ -391,7 +392,10 @@ A few are worth singling out. [Ackermann](examples/ackermann.pl) computes
 A(4, 2), a number with 19,729 digits, exactly. The [zebra puzzle](examples/zebra.pl)
 is Einstein's riddle solved by unification alone. [Who killed Aunt Agatha?](examples/aunt-agatha.pl)
 goes a step further: rather than find one solution, it enumerates every model
-of nine premises and shows that the killer is Agatha in all of them. The [airport search](examples/path-discovery.pl)
+of nine premises and shows that the killer is Agatha in all of them. The
+[Digital Omnibus example](examples/digital-omnibus.pl) decides the same cases
+under the GDPR as it stands and as the European Commission proposes to amend
+it, and lists what would change, each change with the article behind it. The [airport search](examples/path-discovery.pl)
 works over 7,698 airports and 37,505 connections; change the endpoints and the
 stopover budget and ask again. The [interval example](examples/interval-relations.pl)
 distinguishes all thirteen basic relations between two intervals. The

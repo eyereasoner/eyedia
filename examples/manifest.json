@@ -232,6 +232,11 @@
     ]
   },
   {
+    "name": "digital-omnibus",
+    "description": "The EU Digital Omnibus proposal: the same cases under the law in force and the proposal, with what would change and why",
+    "trusted": []
+  },
+  {
     "name": "queens",
     "description": "Configurable N-queens search with diagonal constraints",
     "trusted": []

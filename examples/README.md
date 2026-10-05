@@ -61,6 +61,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [interval-relations.pl](interval-relations.pl) | All thirteen interval relations and endpoint completion |
 | [bayes-diagnosis.pl](bayes-diagnosis.pl) | Normalized probabilities for illustrative printer faults |
 | [policy-risk.pl](policy-risk.pl) | Ranked findings with explanations and suggested mitigations |
+| [digital-omnibus.pl](digital-omnibus.pl) | The EU Digital Omnibus proposal: the same cases under the law in force and the proposal, with what would change and why |
 | [odrl-dpv.pl](odrl-dpv.pl) | An ODRL policy decides DPV access requests, with duties, reasons and conflict resolution |
 | [queens.pl](queens.pl) | Configurable N-queens search with diagonal constraints |
 | [age.pl](age.pl) | Calendar-year and elapsed-day age checks at an explicit reference date |
@@ -235,6 +236,19 @@ unmet. Purposes match through the DPV taxonomy, so academic research counts
 as research and development and advertising as marketing. One request is both
 permitted and prohibited, and the policy's `odrl:prohibit` conflict strategy
 decides it.
+
+`digital-omnibus.pl` takes the European Commission's Digital Omnibus proposal
+of November 2025, which would amend the GDPR among other laws and is still
+under negotiation, and decides the same cases under two rulebooks: the law in
+force and the proposal. Seven website visits test the rules on device access
+such as cookies, where the proposal would add a GDPR Art. 88a with an
+exception for a site's own aggregated audience measurement, a six-month pause
+after a refusal and binding browser signals; three data breaches test the
+proposed change to notifying the supervisory authority, from 72 hours unless
+a breach is unlikely to be risky to 96 hours for high-risk breaches only.
+Every decision cites the provision it rests on, and Eyedia lists what the
+proposal would change, case by case. The proof is checked without trusted
+steps.
 
 `age.pl` checks whether a person's age strictly exceeds `years(N)` or `days(N)`.
 It uses `as_of(date(2026, 10, 1))` for reproducible output and proofs. Edit that
