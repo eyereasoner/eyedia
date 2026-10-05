@@ -62,6 +62,9 @@ console.log(checkProof(source, result.proof).valid);    // true
   not establish, and how the engine works.
 - **[Examples](examples/README.md)** — 58 complete programs, each with its saved
   conclusions, proof and C1-C7 check report.
+- **[Example decks](examples/deck/README.md)** — a short card deck for every
+  example, explaining it for a wide audience: the question, what Eyedia
+  concludes, why, and what the proof checker confirms.
 - **[Playground](https://eyereasoner.github.io/eyedia/playground/)** — write a program in the browser, run it, check
   its proof, and share a link to exactly what you see.
 

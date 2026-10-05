@@ -4,6 +4,9 @@
 
 *Eyedia — reasoning you can see.*
 
+Every example also has a [card deck](deck/README.md) that explains it for a
+wide audience.
+
 Run a source, generate its proof, or check its saved proof:
 
 ```sh

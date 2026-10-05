@@ -28,12 +28,14 @@ const once = (make) => {
   let made = false, value;
   return () => { if (!made) { value = make(); made = true; } return value; };
 };
-if (selected('manifest')) test('example manifest covers every source and all three artifact directories', () => {
+if (selected('manifest')) test('example manifest covers every source, all three artifact directories and the decks', () => {
   const expected = manifest.map((entry) => `${entry.name}.pl`).sort();
   assert.deepEqual(readdirSync(examplesRoot).filter((file) => file.endsWith('.pl')).sort(), expected);
   for (const kind of ['output', 'proof', 'check']) {
     assert.deepEqual(readdirSync(new URL(`${kind}/`, examplesRoot)).sort(), expected);
   }
+  const decks = manifest.map((entry) => `${entry.name}.md`).concat('README.md').sort();
+  assert.deepEqual(readdirSync(new URL('deck/', examplesRoot)).sort(), decks);
 });
 const changed = (kind) => `${kind} changed; review before running npm run examples:update`;
 for (const entry of [...manifest].sort((a, b) => a.name.localeCompare(b.name))) {
