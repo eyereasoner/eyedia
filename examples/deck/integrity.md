@@ -2,7 +2,7 @@
 
 *A rule that should never fire, and a clear alarm when it does.*
 
-[integrity.pl](../integrity.pl) · [output](../output/integrity.pl) · [proof](../proof/integrity.pl) · [check](../check/integrity.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=integrity)
+[integrity.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/integrity.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/integrity.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/integrity.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/integrity.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=integrity)
 
 ---
 

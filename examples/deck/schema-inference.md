@@ -2,7 +2,7 @@
 
 *A few general statements about categories and relations, and the facts that follow from them.*
 
-[schema-inference.pl](../schema-inference.pl) · [output](../output/schema-inference.pl) · [proof](../proof/schema-inference.pl) · [check](../check/schema-inference.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=schema-inference)
+[schema-inference.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/schema-inference.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/schema-inference.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/schema-inference.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/schema-inference.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=schema-inference)
 
 ---
 

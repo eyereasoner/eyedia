@@ -2,7 +2,7 @@
 
 *Adding up a shopping bill, and being honest about what "all the lines" means.*
 
-[inventory.pl](../inventory.pl) · [output](../output/inventory.pl) · [proof](../proof/inventory.pl) · [check](../check/inventory.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=inventory)
+[inventory.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/inventory.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/inventory.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/inventory.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/inventory.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=inventory)
 
 ---
 

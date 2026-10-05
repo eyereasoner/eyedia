@@ -2,7 +2,7 @@
 
 *Gather every matching value from a list of things — and be honest about what "every" means.*
 
-[flat-map.pl](../flat-map.pl) · [output](../output/flat-map.pl) · [proof](../proof/flat-map.pl) · [check](../check/flat-map.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=flat-map)
+[flat-map.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/flat-map.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/flat-map.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/flat-map.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/flat-map.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=flat-map)
 
 ---
 

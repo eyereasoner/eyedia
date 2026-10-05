@@ -2,7 +2,7 @@
 
 *Sending a quantum state with two ordinary bits, checked for every case.*
 
-[teleportation.pl](../teleportation.pl) · [output](../output/teleportation.pl) · [proof](../proof/teleportation.pl) · [check](../check/teleportation.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=teleportation)
+[teleportation.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/teleportation.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/teleportation.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/teleportation.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/teleportation.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=teleportation)
 
 ---
 

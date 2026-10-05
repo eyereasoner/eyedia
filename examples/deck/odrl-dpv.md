@@ -2,7 +2,7 @@
 
 *A hospital's data-sharing policy, applied to six requests, with reasons.*
 
-[odrl-dpv.pl](../odrl-dpv.pl) · [output](../output/odrl-dpv.pl) · [proof](../proof/odrl-dpv.pl) · [check](../check/odrl-dpv.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=odrl-dpv)
+[odrl-dpv.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/odrl-dpv.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/odrl-dpv.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/odrl-dpv.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/odrl-dpv.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=odrl-dpv)
 
 ---
 

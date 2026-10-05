@@ -2,7 +2,7 @@
 
 *Building and taking apart text — accents and emoji included.*
 
-[strings.pl](../strings.pl) · [output](../output/strings.pl) · [proof](../proof/strings.pl) · [check](../check/strings.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=strings)
+[strings.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/strings.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/strings.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/strings.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/strings.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=strings)
 
 ---
 

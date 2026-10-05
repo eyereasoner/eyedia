@@ -2,7 +2,7 @@
 
 *Plan a trip from Gent to Oostende that stays within your time, budget and comfort limits.*
 
-[gps.pl](../gps.pl) · [output](../output/gps.pl) · [proof](../proof/gps.pl) · [check](../check/gps.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=gps)
+[gps.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/gps.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/gps.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/gps.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/gps.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=gps)
 
 ---
 

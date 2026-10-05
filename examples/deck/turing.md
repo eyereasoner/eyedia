@@ -2,7 +2,7 @@
 
 *The simplest model of a computer, adding one to a binary number, step by step.*
 
-[turing.pl](../turing.pl) · [output](../output/turing.pl) · [proof](../proof/turing.pl) · [check](../check/turing.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=turing)
+[turing.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/turing.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/turing.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/turing.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/turing.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=turing)
 
 ---
 

@@ -2,7 +2,7 @@
 
 *One set of facts, two rulebooks: what an EU law proposal would change, case by case, with every answer traced to an article.*
 
-[digital-omnibus.pl](../digital-omnibus.pl) · [output](../output/digital-omnibus.pl) · [proof](../proof/digital-omnibus.pl) · [check](../check/digital-omnibus.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=digital-omnibus)
+[digital-omnibus.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/digital-omnibus.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/digital-omnibus.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/digital-omnibus.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/digital-omnibus.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=digital-omnibus)
 
 ---
 

@@ -2,7 +2,7 @@
 
 *Place eight queens on a chessboard so that none can attack another.*
 
-[queens.pl](../queens.pl) · [output](../output/queens.pl) · [proof](../proof/queens.pl) · [check](../check/queens.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=queens)
+[queens.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/queens.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/queens.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/queens.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/queens.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=queens)
 
 ---
 

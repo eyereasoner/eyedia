@@ -183,8 +183,8 @@ the bitwise `/\`, `\/`, `xor`, `\`, `<<` and `>>`, the functions `abs`, `sign`,
 `float`, `truncate`, `round`, `ceiling`, `floor`, `float_integer_part`,
 `float_fractional_part`, `sqrt`, `exp`, `log`, `sin`, `cos`, `tan`, `asin`,
 `acos` and `atan`, and the constants `pi` and `e`. The definitions are in
-[src/builtins.js](src/builtins.js) and
-[src/kernel/iso-arithmetic.js](src/kernel/iso-arithmetic.js).
+[src/builtins.js](https://github.com/eyereasoner/eyedia/blob/main/src/builtins.js) and
+[src/kernel/iso-arithmetic.js](https://github.com/eyereasoner/eyedia/blob/main/src/kernel/iso-arithmetic.js).
 
 Everything else — membership, mapping, sorting, graph traversal, formula
 inspection — is written as ordinary clauses rather than added to the engine. A
@@ -286,7 +286,7 @@ Two properties make this worth more than a log.
 **The checker follows the certificate.** It never calls the solver to fill a
 gap. If a step is missing, the check fails; it does not quietly re-derive the
 answer. Checking is a genuinely separate activity from reasoning, and
-[src/proof.js](src/proof.js) has no dependency on the solver.
+[src/proof.js](https://github.com/eyereasoner/eyedia/blob/main/src/proof.js) has no dependency on the solver.
 
 **The source is the authority.** A certificate displays the clauses it used,
 but those display records cannot override the program. If they disagree with
@@ -388,20 +388,20 @@ examples/check/socrates.pl     C1-C7 proof-check report
 | `zebra`, `four-color`, `wolf-goat-cabbage`, `monkey-bananas`, `gps` | Classic constraint puzzles and planning problems |
 | `aunt-agatha` | Entailment: a conclusion that holds in every model of the premises |
 
-A few are worth singling out. [Ackermann](examples/ackermann.pl) computes
-A(4, 2), a number with 19,729 digits, exactly. The [zebra puzzle](examples/zebra.pl)
-is Einstein's riddle solved by unification alone. [Who killed Aunt Agatha?](examples/aunt-agatha.pl)
+A few are worth singling out. [Ackermann](https://github.com/eyereasoner/eyedia/blob/main/examples/ackermann.pl) computes
+A(4, 2), a number with 19,729 digits, exactly. The [zebra puzzle](https://github.com/eyereasoner/eyedia/blob/main/examples/zebra.pl)
+is Einstein's riddle solved by unification alone. [Who killed Aunt Agatha?](https://github.com/eyereasoner/eyedia/blob/main/examples/aunt-agatha.pl)
 goes a step further: rather than find one solution, it enumerates every model
 of nine premises and shows that the killer is Agatha in all of them. The
-[Digital Omnibus example](examples/digital-omnibus.pl) decides the same cases
+[Digital Omnibus example](https://github.com/eyereasoner/eyedia/blob/main/examples/digital-omnibus.pl) decides the same cases
 under the GDPR as it stands and as the European Commission proposes to amend
-it, and lists what would change, each change with the article behind it. The [airport search](examples/path-discovery.pl)
+it, and lists what would change, each change with the article behind it. The [airport search](https://github.com/eyereasoner/eyedia/blob/main/examples/path-discovery.pl)
 works over 7,698 airports and 37,505 connections; change the endpoints and the
-stopover budget and ask again. The [interval example](examples/interval-relations.pl)
+stopover budget and ask again. The [interval example](https://github.com/eyereasoner/eyedia/blob/main/examples/interval-relations.pl)
 distinguishes all thirteen basic relations between two intervals. The
-[policy example](examples/policy-risk.pl) carries scores, ranks, reasons and
+[policy example](https://github.com/eyereasoner/eyedia/blob/main/examples/policy-risk.pl) carries scores, ranks, reasons and
 suggested mitigations into its conclusions. The
-[deep-taxonomy benchmark](examples/deep-taxonomy-10000.pl) follows a
+[deep-taxonomy benchmark](https://github.com/eyereasoner/eyedia/blob/main/examples/deep-taxonomy-10000.pl) follows a
 ten-thousand-step chain and produces a certificate in which every one of
 those 10,001 steps is independently verified.
 
@@ -458,12 +458,12 @@ there is no build step.
 | File | Responsibility |
 | --- | --- |
 | [src/kernel/](src/kernel/) | Terms, unification, parsing, numeric semantics, writing |
-| [src/program.js](src/program.js) | Profile validation and dependency stratification |
-| [src/builtins.js](src/builtins.js) | The pure primitive profile |
-| [src/engine.js](src/engine.js) | Backward resolution, forward fixpoints, proof recording |
-| [src/proof.js](src/proof.js) | Certificate rendering and checking, with no solver dependency |
-| [bin/eyedia.js](bin/eyedia.js) | Source loading and the command-line interface |
-| [playground/](playground/), [src/playground-worker.js](src/playground-worker.js) | The browser playground, and the worker that runs each program off the page |
+| [src/program.js](https://github.com/eyereasoner/eyedia/blob/main/src/program.js) | Profile validation and dependency stratification |
+| [src/builtins.js](https://github.com/eyereasoner/eyedia/blob/main/src/builtins.js) | The pure primitive profile |
+| [src/engine.js](https://github.com/eyereasoner/eyedia/blob/main/src/engine.js) | Backward resolution, forward fixpoints, proof recording |
+| [src/proof.js](https://github.com/eyereasoner/eyedia/blob/main/src/proof.js) | Certificate rendering and checking, with no solver dependency |
+| [bin/eyedia.js](https://github.com/eyereasoner/eyedia/blob/main/bin/eyedia.js) | Source loading and the command-line interface |
+| [playground/](playground/), [src/playground-worker.js](https://github.com/eyereasoner/eyedia/blob/main/src/playground-worker.js) | The browser playground, and the worker that runs each program off the page |
 | [tools/](tools/) | Regenerating the saved example output, proofs and check reports |
 
 **Search is an explicit machine, not nested host calls.** A frame is one body
@@ -488,7 +488,7 @@ internal `X#1` can never be confused with a source variable named `X_1`.
 **The reader has a fixed operator table.** Because there are no directives,
 nothing in a program can change how the rest of itself — or any program loaded
 beside it — is read. A source text has exactly one reading, which is why
-[test/syntax.test.js](test/syntax.test.js) can state that reading case by case.
+[test/syntax.test.js](https://github.com/eyereasoner/eyedia/blob/main/test/syntax.test.js) can state that reading case by case.
 Large generated programs are mostly one-line clauses of plain names, variables
 and small integers, so those are read directly rather than token by token; the
 test suite checks that the direct reading and the general one agree on every

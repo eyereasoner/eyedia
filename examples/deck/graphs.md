@@ -2,7 +2,7 @@
 
 *Who is a child of whom, who is allowed, and how a "no" is handled honestly.*
 
-[graphs.pl](../graphs.pl) · [output](../output/graphs.pl) · [proof](../proof/graphs.pl) · [check](../check/graphs.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=graphs)
+[graphs.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/graphs.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/graphs.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/graphs.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/graphs.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=graphs)
 
 ---
 

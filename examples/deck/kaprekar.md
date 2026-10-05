@@ -2,7 +2,7 @@
 
 *A number trick that always lands on 6174 — checked for every case, with one honest caveat.*
 
-[kaprekar.pl](../kaprekar.pl) · [output](../output/kaprekar.pl) · [proof](../proof/kaprekar.pl) · [check](../check/kaprekar.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=kaprekar)
+[kaprekar.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/kaprekar.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/kaprekar.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/kaprekar.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/kaprekar.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=kaprekar)
 
 ---
 

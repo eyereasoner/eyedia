@@ -2,7 +2,7 @@
 
 *"Good at what?" A small lesson in not over-generalising.*
 
-[good-cobbler.pl](../good-cobbler.pl) · [output](../output/good-cobbler.pl) · [proof](../proof/good-cobbler.pl) · [check](../check/good-cobbler.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=good-cobbler)
+[good-cobbler.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/good-cobbler.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/good-cobbler.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/good-cobbler.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/good-cobbler.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=good-cobbler)
 
 ---
 

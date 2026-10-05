@@ -2,7 +2,7 @@
 
 *One rule that renames many fields at once, driven by a small mapping table.*
 
-[variable-predicates.pl](../variable-predicates.pl) · [output](../output/variable-predicates.pl) · [proof](../proof/variable-predicates.pl) · [check](../check/variable-predicates.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=variable-predicates)
+[variable-predicates.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/variable-predicates.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/variable-predicates.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/variable-predicates.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/variable-predicates.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=variable-predicates)
 
 ---
 

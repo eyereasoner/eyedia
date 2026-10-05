@@ -2,7 +2,7 @@
 
 *Thirty years of Easter Sundays, worked out by pure arithmetic.*
 
-[easter.pl](../easter.pl) · [output](../output/easter.pl) · [proof](../proof/easter.pl) · [check](../check/easter.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=easter)
+[easter.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/easter.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/easter.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/easter.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/easter.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=easter)
 
 ---
 

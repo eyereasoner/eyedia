@@ -2,7 +2,7 @@
 
 *Replay a bank account's history, one event at a time, to get today's balance.*
 
-[state-transitions.pl](../state-transitions.pl) · [output](../output/state-transitions.pl) · [proof](../proof/state-transitions.pl) · [check](../check/state-transitions.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=state-transitions)
+[state-transitions.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/state-transitions.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/state-transitions.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/state-transitions.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/state-transitions.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=state-transitions)
 
 ---
 

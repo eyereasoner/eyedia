@@ -2,7 +2,7 @@
 
 *When a rule creates something new, give it a name that says where it came from.*
 
-[witnesses.pl](../witnesses.pl) · [output](../output/witnesses.pl) · [proof](../proof/witnesses.pl) · [check](../check/witnesses.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=witnesses)
+[witnesses.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/witnesses.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/witnesses.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/witnesses.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/witnesses.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=witnesses)
 
 ---
 

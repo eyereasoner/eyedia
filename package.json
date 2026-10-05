@@ -1,6 +1,6 @@
 {
   "name": "eyedia",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Eyedia — reasoning you can see. A standalone, dependency-free Prolog rule language with forward and backward reasoning and checkable proofs.",
   "type": "module",
   "main": "./index.js",

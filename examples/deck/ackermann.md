@@ -2,7 +2,7 @@
 
 *A function that grows faster than you can imagine, computed exactly and checked step by step.*
 
-[ackermann.pl](../ackermann.pl) · [output](../output/ackermann.pl) · [proof](../proof/ackermann.pl) · [check](../check/ackermann.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=ackermann)
+[ackermann.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/ackermann.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/ackermann.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/ackermann.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/ackermann.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=ackermann)
 
 ---
 

@@ -2,7 +2,7 @@
 
 *Web data, quoted statements and placeholder names, without any new syntax.*
 
-[terms.pl](../terms.pl) · [output](../output/terms.pl) · [proof](../proof/terms.pl) · [check](../check/terms.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=terms)
+[terms.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/terms.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/terms.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/terms.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/terms.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=terms)
 
 ---
 

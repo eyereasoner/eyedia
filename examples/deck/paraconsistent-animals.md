@@ -2,7 +2,7 @@
 
 *When the facts disagree, say so, instead of pretending they don't.*
 
-[paraconsistent-animals.pl](../paraconsistent-animals.pl) · [output](../output/paraconsistent-animals.pl) · [proof](../proof/paraconsistent-animals.pl) · [check](../check/paraconsistent-animals.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=paraconsistent-animals)
+[paraconsistent-animals.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/paraconsistent-animals.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/paraconsistent-animals.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/paraconsistent-animals.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/paraconsistent-animals.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=paraconsistent-animals)
 
 ---
 

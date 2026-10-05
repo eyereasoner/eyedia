@@ -2,7 +2,7 @@
 
 *A rule that depends on counting, and an honest note about the count.*
 
-[dog-license.pl](../dog-license.pl) · [output](../output/dog-license.pl) · [proof](../proof/dog-license.pl) · [check](../check/dog-license.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=dog-license)
+[dog-license.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/dog-license.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/dog-license.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/dog-license.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/dog-license.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=dog-license)
 
 ---
 

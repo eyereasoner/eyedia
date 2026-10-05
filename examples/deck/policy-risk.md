@@ -2,7 +2,7 @@
 
 *Reviewing a contract's clauses: what is risky, how risky, and what to fix.*
 
-[policy-risk.pl](../policy-risk.pl) · [output](../output/policy-risk.pl) · [proof](../proof/policy-risk.pl) · [check](../check/policy-risk.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=policy-risk)
+[policy-risk.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/policy-risk.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/policy-risk.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/policy-risk.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/policy-risk.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=policy-risk)
 
 ---
 

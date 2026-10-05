@@ -2,7 +2,7 @@
 
 *The oldest example in logic, with the reasoning written down.*
 
-[socrates.pl](../socrates.pl) · [output](../output/socrates.pl) · [proof](../proof/socrates.pl) · [check](../check/socrates.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=socrates)
+[socrates.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/socrates.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/socrates.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/socrates.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/socrates.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=socrates)
 
 ---
 

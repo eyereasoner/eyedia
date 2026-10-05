@@ -2,7 +2,7 @@
 
 *Two bits through one qubit — a quantum protocol, reasoned out by counting paths.*
 
-[superdense-coding.pl](../superdense-coding.pl) · [output](../output/superdense-coding.pl) · [proof](../proof/superdense-coding.pl) · [check](../check/superdense-coding.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=superdense-coding)
+[superdense-coding.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/superdense-coding.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/superdense-coding.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/superdense-coding.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/superdense-coding.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=superdense-coding)
 
 ---
 
@@ -115,7 +115,7 @@ The second lists every way message 0 can travel: one to reading 0, two to
 reading 1, two to reading 3. Or open it in the
 [playground](https://eyereasoner.github.io/eyedia/playground/#example=superdense-coding).
 
-Its sibling, [teleportation.pl](../teleportation.pl), runs the companion
+Its sibling, [teleportation.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/teleportation.pl), runs the companion
 protocol, quantum teleportation, in the same theory with the same relations.
 
 ---

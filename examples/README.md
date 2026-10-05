@@ -21,65 +21,65 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 
 | Program | Demonstrates |
 | --- | --- |
-| [socrates.pl](socrates.pl) | Class membership derived through a subclass rule |
-| [deep-taxonomy-10.pl](deep-taxonomy-10.pl) | A ten-level subclass chain with branches that lead nowhere |
-| [deep-taxonomy-100.pl](deep-taxonomy-100.pl) | The same taxonomy benchmark at a hundred levels |
-| [deep-taxonomy-1000.pl](deep-taxonomy-1000.pl) | The same taxonomy benchmark at a thousand levels |
-| [deep-taxonomy-10000.pl](deep-taxonomy-10000.pl) | The same taxonomy benchmark at ten thousand levels |
-| [backward.pl](backward.pl) | Backward definitions inside forward bodies |
-| [fibonacci.pl](fibonacci.pl) | Fast doubling for exact Fibonacci numbers, and the golden ratio |
-| [graphs.pl](graphs.pl) | Base data, negation and collection |
-| [terms.pl](terms.pl) | Quoted graphs, triple terms and residual witnesses |
-| [reachability.pl](reachability.pl) | Finite closure in a graph containing a cycle |
-| [shortest-path.pl](shortest-path.pl) | Weighted paths and stratified minimum selection |
-| [path-discovery.pl](path-discovery.pl) | Full airport network with configurable endpoints and maximum stopovers |
-| [lists.pl](lists.pl) | Concatenation, mapping and summation |
-| [strings.pl](strings.pl) | Text construction and Unicode inspection |
-| [inventory.pl](inventory.pl) | An invoice from collected line totals |
-| [dog-license.pl](dog-license.pl) | A licensing threshold based on collected dog counts |
-| [permissions.pl](permissions.pl) | Role permissions with exclusions |
-| [witnesses.pl](witnesses.pl) | Structured witnesses and shared multi-head conclusions |
-| [state-transitions.pl](state-transitions.pl) | Account balances from an ordered event log |
-| [integrity.pl](integrity.pl) | A provable integrity violation |
-| [alternatives.pl](alternatives.pl) | Alternative routes, disjunction and once |
-| [unification.pl](unification.pl) | Open lists and repeated-variable constraints |
-| [schema-inference.pl](schema-inference.pl) | Subclasses, subproperties, domains and ranges |
-| [family-cousins.pl](family-cousins.pl) | Generations, family branches and cousin relationships |
-| [hanoi.pl](hanoi.pl) | Recursive construction of a disk-move sequence |
-| [collatz.pl](collatz.pl) | Parity-based recursive trajectories over a range of starts |
-| [flat-map.pl](flat-map.pl) | Predicate-based mapping with multiple or missing values |
-| [paraconsistent-animals.pl](paraconsistent-animals.pl) | Local summaries of conflicting observations |
-| [scoped-audit.pl](scoped-audit.pl) | Presence and absence within separate quoted graphs |
-| [control-system.pl](control-system.pl) | Feedforward and nonlinear feedback commands for two actuators |
-| [lldm.pl](lldm.pl) | Leg length discrepancy measured from radiograph landmarks, with an alarm and its reason |
-| [variable-predicates.pl](variable-predicates.pl) | Relations selected and renamed through data bindings |
-| [good-cobbler.pl](good-cobbler.pl) | Trade-specific classification from structured descriptions |
-| [peano.pl](peano.pl) | Symbolic arithmetic, relational addition and a chained derivation |
-| [expression-eval.pl](expression-eval.pl) | Recursive expression graphs used in forward inference |
-| [complex.pl](complex.pl) | Complex arithmetic, exact over Gaussian integers and polar beyond them |
-| [polynomial.pl](polynomial.pl) | Complex roots of polynomials up to degree 4 by Cardan and Lagrange |
-| [interval-relations.pl](interval-relations.pl) | All thirteen interval relations and endpoint completion |
-| [bayes-diagnosis.pl](bayes-diagnosis.pl) | Normalized probabilities for illustrative printer faults |
-| [policy-risk.pl](policy-risk.pl) | Ranked findings with explanations and suggested mitigations |
-| [digital-omnibus.pl](digital-omnibus.pl) | The EU Digital Omnibus proposal: the same cases under the law in force and the proposal, with what would change and why |
-| [odrl-dpv.pl](odrl-dpv.pl) | An ODRL policy decides DPV access requests, with duties, reasons and conflict resolution |
-| [queens.pl](queens.pl) | Configurable N-queens search with diagonal constraints |
-| [age.pl](age.pl) | Calendar-year and elapsed-day age checks at an explicit reference date |
-| [ackermann.pl](ackermann.pl) | The Ackermann function through the hyperoperation sequence, exactly |
-| [peasant.pl](peasant.pl) | Peasant multiplication and exponentiation by halving and doubling |
-| [sieve.pl](sieve.pl) | The sieve of Eratosthenes over an explicit list of integers |
-| [goldbach.pl](goldbach.pl) | Goldbach splits of every power of two up to 2^25 |
-| [kaprekar.pl](kaprekar.pl) | Every four-digit Kaprekar routine reaches 6174 within seven steps |
-| [easter.pl](easter.pl) | Easter Sunday by the anonymous Gregorian algorithm, 2021 to 2050 |
-| [turing.pl](turing.pl) | A Turing machine interpreter running a binary incrementer |
-| [zebra.pl](zebra.pl) | The zebra puzzle solved by narrowing five partially known houses |
-| [aunt-agatha.pl](aunt-agatha.pl) | Who killed Aunt Agatha? A conclusion entailed by holding in every model of the premises |
-| [four-color.pl](four-color.pl) | Four-colouring the map of the European Union |
-| [wolf-goat-cabbage.pl](wolf-goat-cabbage.pl) | The river crossing, with seven crossings shown to be minimal |
-| [monkey-bananas.pl](monkey-bananas.pl) | Every plan of up to five moves that gets the monkey the bananas |
-| [gps.pl](gps.pl) | Goal-driven parallel sequences: routes to a goal state within duration, cost, belief and comfort limits |
-| [superdense-coding.pl](superdense-coding.pl) | Superdense coding in discrete quantum theory, with interference as odd path counts |
-| [teleportation.pl](teleportation.pl) | Quantum teleportation in discrete quantum theory, checked for every state and outcome |
+| [socrates.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/socrates.pl) | Class membership derived through a subclass rule |
+| [deep-taxonomy-10.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/deep-taxonomy-10.pl) | A ten-level subclass chain with branches that lead nowhere |
+| [deep-taxonomy-100.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/deep-taxonomy-100.pl) | The same taxonomy benchmark at a hundred levels |
+| [deep-taxonomy-1000.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/deep-taxonomy-1000.pl) | The same taxonomy benchmark at a thousand levels |
+| [deep-taxonomy-10000.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/deep-taxonomy-10000.pl) | The same taxonomy benchmark at ten thousand levels |
+| [backward.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/backward.pl) | Backward definitions inside forward bodies |
+| [fibonacci.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/fibonacci.pl) | Fast doubling for exact Fibonacci numbers, and the golden ratio |
+| [graphs.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/graphs.pl) | Base data, negation and collection |
+| [terms.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/terms.pl) | Quoted graphs, triple terms and residual witnesses |
+| [reachability.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/reachability.pl) | Finite closure in a graph containing a cycle |
+| [shortest-path.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/shortest-path.pl) | Weighted paths and stratified minimum selection |
+| [path-discovery.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/path-discovery.pl) | Full airport network with configurable endpoints and maximum stopovers |
+| [lists.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/lists.pl) | Concatenation, mapping and summation |
+| [strings.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/strings.pl) | Text construction and Unicode inspection |
+| [inventory.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/inventory.pl) | An invoice from collected line totals |
+| [dog-license.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/dog-license.pl) | A licensing threshold based on collected dog counts |
+| [permissions.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/permissions.pl) | Role permissions with exclusions |
+| [witnesses.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/witnesses.pl) | Structured witnesses and shared multi-head conclusions |
+| [state-transitions.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/state-transitions.pl) | Account balances from an ordered event log |
+| [integrity.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/integrity.pl) | A provable integrity violation |
+| [alternatives.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/alternatives.pl) | Alternative routes, disjunction and once |
+| [unification.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/unification.pl) | Open lists and repeated-variable constraints |
+| [schema-inference.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/schema-inference.pl) | Subclasses, subproperties, domains and ranges |
+| [family-cousins.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/family-cousins.pl) | Generations, family branches and cousin relationships |
+| [hanoi.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/hanoi.pl) | Recursive construction of a disk-move sequence |
+| [collatz.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/collatz.pl) | Parity-based recursive trajectories over a range of starts |
+| [flat-map.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/flat-map.pl) | Predicate-based mapping with multiple or missing values |
+| [paraconsistent-animals.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/paraconsistent-animals.pl) | Local summaries of conflicting observations |
+| [scoped-audit.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/scoped-audit.pl) | Presence and absence within separate quoted graphs |
+| [control-system.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/control-system.pl) | Feedforward and nonlinear feedback commands for two actuators |
+| [lldm.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/lldm.pl) | Leg length discrepancy measured from radiograph landmarks, with an alarm and its reason |
+| [variable-predicates.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/variable-predicates.pl) | Relations selected and renamed through data bindings |
+| [good-cobbler.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/good-cobbler.pl) | Trade-specific classification from structured descriptions |
+| [peano.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/peano.pl) | Symbolic arithmetic, relational addition and a chained derivation |
+| [expression-eval.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/expression-eval.pl) | Recursive expression graphs used in forward inference |
+| [complex.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/complex.pl) | Complex arithmetic, exact over Gaussian integers and polar beyond them |
+| [polynomial.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/polynomial.pl) | Complex roots of polynomials up to degree 4 by Cardan and Lagrange |
+| [interval-relations.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/interval-relations.pl) | All thirteen interval relations and endpoint completion |
+| [bayes-diagnosis.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/bayes-diagnosis.pl) | Normalized probabilities for illustrative printer faults |
+| [policy-risk.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/policy-risk.pl) | Ranked findings with explanations and suggested mitigations |
+| [digital-omnibus.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/digital-omnibus.pl) | The EU Digital Omnibus proposal: the same cases under the law in force and the proposal, with what would change and why |
+| [odrl-dpv.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/odrl-dpv.pl) | An ODRL policy decides DPV access requests, with duties, reasons and conflict resolution |
+| [queens.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/queens.pl) | Configurable N-queens search with diagonal constraints |
+| [age.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/age.pl) | Calendar-year and elapsed-day age checks at an explicit reference date |
+| [ackermann.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/ackermann.pl) | The Ackermann function through the hyperoperation sequence, exactly |
+| [peasant.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/peasant.pl) | Peasant multiplication and exponentiation by halving and doubling |
+| [sieve.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/sieve.pl) | The sieve of Eratosthenes over an explicit list of integers |
+| [goldbach.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/goldbach.pl) | Goldbach splits of every power of two up to 2^25 |
+| [kaprekar.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/kaprekar.pl) | Every four-digit Kaprekar routine reaches 6174 within seven steps |
+| [easter.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/easter.pl) | Easter Sunday by the anonymous Gregorian algorithm, 2021 to 2050 |
+| [turing.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/turing.pl) | A Turing machine interpreter running a binary incrementer |
+| [zebra.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/zebra.pl) | The zebra puzzle solved by narrowing five partially known houses |
+| [aunt-agatha.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/aunt-agatha.pl) | Who killed Aunt Agatha? A conclusion entailed by holding in every model of the premises |
+| [four-color.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/four-color.pl) | Four-colouring the map of the European Union |
+| [wolf-goat-cabbage.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/wolf-goat-cabbage.pl) | The river crossing, with seven crossings shown to be minimal |
+| [monkey-bananas.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/monkey-bananas.pl) | Every plan of up to five moves that gets the monkey the bananas |
+| [gps.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/gps.pl) | Goal-driven parallel sequences: routes to a goal state within duration, cost, belief and comfort limits |
+| [superdense-coding.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/superdense-coding.pl) | Superdense coding in discrete quantum theory, with interference as odd path counts |
+| [teleportation.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/teleportation.pl) | Quantum teleportation in discrete quantum theory, checked for every state and outcome |
 
 `integrity.pl` intentionally exits with code 65 because it concludes `false`.
 Its proof-check report is valid: the certificate explains why the constraint was
@@ -348,4 +348,4 @@ results with saved artifacts and do not overwrite them.
 After an intentional behavior change, run `npm run examples:update` and review
 the source and artifact changes together. When adding an example, register its
 name, description, expected halt code (if any) and proof obligations in
-[manifest.json](manifest.json), then generate its artifacts.
+[manifest.json](https://github.com/eyereasoner/eyedia/blob/main/examples/manifest.json), then generate its artifacts.

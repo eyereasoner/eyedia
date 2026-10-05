@@ -2,7 +2,7 @@
 
 *Two ways out of Paris, and three ways of asking about them.*
 
-[alternatives.pl](../alternatives.pl) · [output](../output/alternatives.pl) · [proof](../proof/alternatives.pl) · [check](../check/alternatives.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=alternatives)
+[alternatives.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/alternatives.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/alternatives.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/alternatives.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/alternatives.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=alternatives)
 
 ---
 

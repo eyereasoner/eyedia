@@ -2,7 +2,7 @@
 
 *A printer shows two symptoms. Which fault is most likely, and by how much?*
 
-[bayes-diagnosis.pl](../bayes-diagnosis.pl) · [output](../output/bayes-diagnosis.pl) · [proof](../proof/bayes-diagnosis.pl) · [check](../check/bayes-diagnosis.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=bayes-diagnosis)
+[bayes-diagnosis.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/bayes-diagnosis.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/bayes-diagnosis.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/bayes-diagnosis.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/bayes-diagnosis.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=bayes-diagnosis)
 
 ---
 

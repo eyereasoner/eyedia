@@ -2,7 +2,7 @@
 
 *Two ways of reasoning in one tiny program: pushing facts forward, and asking questions backward.*
 
-[backward.pl](../backward.pl) · [output](../output/backward.pl) · [proof](../proof/backward.pl) · [check](../check/backward.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=backward)
+[backward.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/backward.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/backward.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/backward.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/backward.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=backward)
 
 ---
 

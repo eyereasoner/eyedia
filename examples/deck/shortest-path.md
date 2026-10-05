@@ -2,7 +2,7 @@
 
 *The cheapest way from A to D, and the honest fine print behind "cheapest".*
 
-[shortest-path.pl](../shortest-path.pl) · [output](../output/shortest-path.pl) · [proof](../proof/shortest-path.pl) · [check](../check/shortest-path.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=shortest-path)
+[shortest-path.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/shortest-path.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/shortest-path.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/shortest-path.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/shortest-path.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=shortest-path)
 
 ---
 
