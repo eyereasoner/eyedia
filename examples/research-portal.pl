@@ -165,9 +165,6 @@ policy_result(P, deny(not_permitted(Reasons))) :-
 policy_result(P, deny(no_matching_permission)) :-
     t(P, 'rdf:type', 'dpv:Process'), policy_ready(P),
     findall(R, candidate(P, R), []), findall(R, prohibited(P, R), []).
-policy_result(P, deny(unsupported_conflict_strategy(Strategies))) :-
-    t(P, 'rdf:type', 'dpv:Process'), governs(Policy, P), findall(S, t(Policy, 'odrl:conflict', S), Strategies),
-    Strategies \== ['odrl:prohibit'].
 
 % Each research session specifies its device access and the visitor's choice.
 session('ex:r1', own_audience_measurement, first_visit).
@@ -187,24 +184,16 @@ regime(omnibus_proposal).
 refusal_pause(months(6)).
 
 % Whether a kind of access needs consent, and on which provision.
-consent(in_force, transmission, not_needed, 'ePrivacy Art. 5(3)').
-consent(in_force, unaggregated_measurement, needed, 'ePrivacy Art. 5(3)').
 consent(in_force, requested_service, not_needed, 'ePrivacy Art. 5(3)').
 consent(in_force, own_audience_measurement, needed, 'ePrivacy Art. 5(3)').
-consent(in_force, shared_measurement, needed, 'ePrivacy Art. 5(3)').
 consent(in_force, advertising, needed, 'ePrivacy Art. 5(3)').
-consent(omnibus_proposal, transmission, not_needed, 'GDPR Art. 88a(3)(a)').
-consent(omnibus_proposal, unaggregated_measurement, needed, 'GDPR Art. 88a(1)').
 consent(omnibus_proposal, requested_service, not_needed, 'GDPR Art. 88a(3)(b)').
 consent(omnibus_proposal, own_audience_measurement, not_needed, 'GDPR Art. 88a(3)(c)').
-consent(omnibus_proposal, shared_measurement, needed, 'GDPR Art. 88a(1)').
 consent(omnibus_proposal, advertising, needed, 'GDPR Art. 88a(1)').
 
 % Where consent is needed: may the site ask, given what the visitor did?
 ask(in_force, _, _, ask_for_consent, 'ePrivacy Art. 5(3)').
-ask(omnibus_proposal, _, first_visit, ask_for_consent, 'GDPR Art. 88a(1)').
 ask(omnibus_proposal, media_service(no), browser_signal(refuse), refused_by_signal, 'GDPR Art. 88b(1)-(2)').
-ask(omnibus_proposal, media_service(yes), browser_signal(refuse), ask_for_consent, 'GDPR Art. 88b(3)').
 ask(omnibus_proposal, _, refused(completed_months(M)), do_not_ask_again, 'GDPR Art. 88a(4)(c)') :-
     integer(M), M >= 0, refusal_pause(months(Min)), M < Min.
 ask(omnibus_proposal, _, refused(completed_months(M)), ask_for_consent, 'GDPR Art. 88a(4)(c)') :-
