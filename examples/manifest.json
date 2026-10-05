@@ -225,16 +225,11 @@
     ]
   },
   {
-    "name": "odrl-dpv",
-    "description": "An ODRL policy decides DPV access requests, with duties, reasons and conflict resolution",
+    "name": "research-portal",
+    "description": "A hospital research portal combines ODRL/DPV policy decisions with Digital Omnibus device consent and breach plans",
     "trusted": [
       "collected"
     ]
-  },
-  {
-    "name": "digital-omnibus",
-    "description": "The EU Digital Omnibus proposal: the same cases under the law in force and the proposal, with what would change and why",
-    "trusted": []
   },
   {
     "name": "queens",

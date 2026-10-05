@@ -381,8 +381,7 @@ examples/check/socrates.pl     C1-C7 proof-check report
 | `good-cobbler`, `peano`, `expression-eval`, `complex`, `polynomial` | Structured descriptions, symbolic arithmetic, expression graphs, a complex-number domain and polynomial roots |
 | `queens`, `interval-relations` | Constraint search and all thirteen interval relations |
 | `bayes-diagnosis`, `policy-risk` | Normalized fault scores and ranked policy findings |
-| `odrl-dpv` | An ODRL policy deciding DPV-described data requests, with reasons |
-| `digital-omnibus` | An EU law proposal compared with the law in force, case by case, with cited provisions |
+| `research-portal` | ODRL/DPV research policy, device consent and breach plans compared under two EU rulebooks |
 | `ackermann`, `peasant`, `sieve`, `goldbach`, `kaprekar` | Exact hyperoperations, ancient arithmetic and number-theory checks |
 | `easter`, `turing`, `superdense-coding`, `teleportation` | Calendar arithmetic, a Turing machine interpreter and discrete quantum protocols |
 | `zebra`, `four-color`, `wolf-goat-cabbage`, `monkey-bananas`, `gps` | Classic constraint puzzles and planning problems |
@@ -393,9 +392,10 @@ A(4, 2), a number with 19,729 digits, exactly. The [zebra puzzle](https://github
 is Einstein's riddle solved by unification alone. [Who killed Aunt Agatha?](https://github.com/eyereasoner/eyedia/blob/main/examples/aunt-agatha.pl)
 goes a step further: rather than find one solution, it enumerates every model
 of nine premises and shows that the killer is Agatha in all of them. The
-[Digital Omnibus example](https://github.com/eyereasoner/eyedia/blob/main/examples/digital-omnibus.pl) decides the same cases
-under the GDPR as it stands and as the European Commission proposes to amend
-it, and lists what would change, each change with the article behind it. The [airport search](https://github.com/eyereasoner/eyedia/blob/main/examples/path-discovery.pl)
+[research portal](https://github.com/eyereasoner/eyedia/blob/main/examples/research-portal.pl) combines ODRL/DPV policy
+decisions with device-consent and breach plans under the EU baseline and the
+original Commission Digital Omnibus proposal. It lists changes while preserving
+policy refusals, planned duties and the provisions behind each assessment. The [airport search](https://github.com/eyereasoner/eyedia/blob/main/examples/path-discovery.pl)
 works over 7,698 airports and 37,505 connections; change the endpoints and the
 stopover budget and ask again. The [interval example](https://github.com/eyereasoner/eyedia/blob/main/examples/interval-relations.pl)
 distinguishes all thirteen basic relations between two intervals. The

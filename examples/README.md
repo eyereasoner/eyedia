@@ -61,8 +61,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [interval-relations.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/interval-relations.pl) | All thirteen interval relations and endpoint completion |
 | [bayes-diagnosis.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/bayes-diagnosis.pl) | Normalized probabilities for illustrative printer faults |
 | [policy-risk.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/policy-risk.pl) | Ranked findings with explanations and suggested mitigations |
-| [digital-omnibus.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/digital-omnibus.pl) | The EU Digital Omnibus proposal: the same cases under the law in force and the proposal, with what would change and why |
-| [odrl-dpv.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/odrl-dpv.pl) | An ODRL policy decides DPV access requests, with duties, reasons and conflict resolution |
+| [research-portal.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/research-portal.pl) | A hospital research portal combines ODRL/DPV policy decisions with Digital Omnibus device consent and breach plans |
 | [queens.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/queens.pl) | Configurable N-queens search with diagonal constraints |
 | [age.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/age.pl) | Calendar-year and elapsed-day age checks at an explicit reference date |
 | [ackermann.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/ackermann.pl) | The Ackermann function through the hyperoperation sequence, exactly |
@@ -225,30 +224,14 @@ follows inference order, with ranks recorded explicitly. Adding the missing
 safeguards removes the affected findings. Both examples expose their collection
 obligations, and policy findings also expose absence obligations.
 
-`odrl-dpv.pl` evaluates an ODRL policy against access requests described with
-the Data Privacy Vocabulary (DPV). A hospital lets a research consortium use
-lab results for research and development, under given consent, pseudonymised
-and before 2027, with a duty to delete them within 90 days; sharing for
-marketing is prohibited, and so is any use by one member. Each request is a
-DPV process, and each gets a decision: a permit with its duties, a refusal by
-the prohibition that applies, or a refusal listing every constraint left
-unmet. Purposes match through the DPV taxonomy, so academic research counts
-as research and development and advertising as marketing. One request is both
-permitted and prohibited, and the policy's `odrl:prohibit` conflict strategy
-decides it.
-
-`digital-omnibus.pl` takes the European Commission's Digital Omnibus proposal
-of November 2025, which would amend the GDPR among other laws and is still
-under negotiation, and decides the same cases under two rulebooks: the law in
-force and the proposal. Seven website visits test the rules on device access
-such as cookies, where the proposal would add a GDPR Art. 88a with an
-exception for a site's own aggregated audience measurement, a six-month pause
-after a refusal and binding browser signals; three data breaches test the
-proposed change to notifying the supervisory authority, from 72 hours unless
-a breach is unlikely to be risky to 96 hours for high-risk breaches only.
-Every decision cites the provision it rests on, and Eyedia lists what the
-proposal would change, case by case. The proof is checked without trusted
-steps.
+`research-portal.pl` evaluates a hospital research portal under two rulebooks.
+An ODRL/DPV policy decides research access first, then the baseline or
+original Digital Omnibus rulebook decides the device-consent step. Ten
+sessions produce permits with planned deletion duties, pending device consent,
+or explicit policy and device refusals. Three incidents have notification
+plans under both regimes, always retaining internal documentation. Changes
+compare final plans; a device exemption never overrides withdrawn research
+consent or a prohibition.
 
 `age.pl` checks whether a person's age strictly exceeds `years(N)` or `days(N)`.
 It uses `as_of(date(2026, 10, 1))` for reproducible output and proofs. Edit that

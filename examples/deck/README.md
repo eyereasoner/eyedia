@@ -21,7 +21,6 @@ Each example comes with a short card deck that explains it for a wide audience: 
 | [deep-taxonomy-100](https://eyereasoner.github.io/eyedia/examples/deck/deep-taxonomy-100.html) | The same taxonomy benchmark at a hundred levels |
 | [deep-taxonomy-1000](https://eyereasoner.github.io/eyedia/examples/deck/deep-taxonomy-1000.html) | The same taxonomy benchmark at a thousand levels |
 | [deep-taxonomy-10000](https://eyereasoner.github.io/eyedia/examples/deck/deep-taxonomy-10000.html) | The same taxonomy benchmark at ten thousand levels |
-| [digital-omnibus](https://eyereasoner.github.io/eyedia/examples/deck/digital-omnibus.html) | The EU Digital Omnibus proposal: the same cases under the law in force and the proposal, with what would change and why |
 | [dog-license](https://eyereasoner.github.io/eyedia/examples/deck/dog-license.html) | A licensing threshold based on collected dog counts |
 | [easter](https://eyereasoner.github.io/eyedia/examples/deck/easter.html) | Easter Sunday by the anonymous Gregorian algorithm, 2021 to 2050 |
 | [expression-eval](https://eyereasoner.github.io/eyedia/examples/deck/expression-eval.html) | Recursive expression graphs used in forward inference |
@@ -41,7 +40,6 @@ Each example comes with a short card deck that explains it for a wide audience: 
 | [lists](https://eyereasoner.github.io/eyedia/examples/deck/lists.html) | Concatenation, mapping and summation |
 | [lldm](https://eyereasoner.github.io/eyedia/examples/deck/lldm.html) | Leg length discrepancy measured from radiograph landmarks, with an alarm and its reason |
 | [monkey-bananas](https://eyereasoner.github.io/eyedia/examples/deck/monkey-bananas.html) | Every plan of up to five moves that gets the monkey the bananas |
-| [odrl-dpv](https://eyereasoner.github.io/eyedia/examples/deck/odrl-dpv.html) | An ODRL policy decides DPV access requests, with duties, reasons and conflict resolution |
 | [paraconsistent-animals](https://eyereasoner.github.io/eyedia/examples/deck/paraconsistent-animals.html) | Local summaries of conflicting observations |
 | [path-discovery](https://eyereasoner.github.io/eyedia/examples/deck/path-discovery.html) | Full airport network with configurable endpoints and maximum stopovers |
 | [peano](https://eyereasoner.github.io/eyedia/examples/deck/peano.html) | Symbolic arithmetic, relational addition and a chained derivation |
@@ -51,6 +49,7 @@ Each example comes with a short card deck that explains it for a wide audience: 
 | [polynomial](https://eyereasoner.github.io/eyedia/examples/deck/polynomial.html) | Complex roots of polynomials up to degree 4 by Cardan and Lagrange |
 | [queens](https://eyereasoner.github.io/eyedia/examples/deck/queens.html) | Configurable N-queens search with diagonal constraints |
 | [reachability](https://eyereasoner.github.io/eyedia/examples/deck/reachability.html) | Finite closure in a graph containing a cycle |
+| [research-portal](https://eyereasoner.github.io/eyedia/examples/deck/research-portal.html) | A hospital research portal combines ODRL/DPV policy decisions with Digital Omnibus device consent and breach plans |
 | [schema-inference](https://eyereasoner.github.io/eyedia/examples/deck/schema-inference.html) | Subclasses, subproperties, domains and ranges |
 | [scoped-audit](https://eyereasoner.github.io/eyedia/examples/deck/scoped-audit.html) | Presence and absence within separate quoted graphs |
 | [shortest-path](https://eyereasoner.github.io/eyedia/examples/deck/shortest-path.html) | Weighted paths and stratified minimum selection |
