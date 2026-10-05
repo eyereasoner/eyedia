@@ -1,4 +1,4 @@
-import test from './progress.js';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { run, checkProof, checkReportTerms, verdictTermText } from '../index.js';
 import { parseProgramText } from '../src/kernel/parser.js';

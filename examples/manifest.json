@@ -232,6 +232,11 @@
     ]
   },
   {
+    "name": "package-holiday",
+    "description": "Package holiday cancellations under the tour operator's ODRL terms and the 2015 and revised EU Package Travel Directive",
+    "trusted": []
+  },
+  {
     "name": "queens",
     "description": "Configurable N-queens search with diagonal constraints",
     "trusted": []

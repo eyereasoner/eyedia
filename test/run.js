@@ -103,7 +103,7 @@ function explain(text) {
     if (!diffLine && diff > DIFF_LINES) out.push(paint('2', `  … ${diff - DIFF_LINES} more diff lines`));
     diff = diffLine ? diff + 1 : 0;
     if (diffLine && diff > DIFF_LINES) continue;
-    if (/^test at /.test(line) || /^\s+at .*(node:internal|test\/progress\.js)/.test(line)) continue;
+    if (/^test at /.test(line) || /^\s+at .*\(?node:[a-z_]/.test(line)) continue;
     if (/^✖ /.test(line)) out.push(`${marks['✖']} ${paint('1', line.slice(2).replace(/ \(([\d.]+)ms\)$/, (_, ms) => `  ${Math.round(Number(ms))} ms`))}`);
     else if (/^\s+at /.test(line)) out.push(paint('2', line));
     else if (/^ {2}\+ /.test(line) && !/^ {2}\+ actual - expected$/.test(line)) out.push(paint('32', line));

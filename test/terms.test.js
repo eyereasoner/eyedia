@@ -1,4 +1,4 @@
-import test from './progress.js';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { atom, compound, numberTerm, variable, run } from '../index.js';
 import { text } from '../src/common.js';

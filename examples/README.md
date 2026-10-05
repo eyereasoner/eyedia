@@ -62,6 +62,7 @@ source: `lists.pl` has `output/lists.pl`, `proof/lists.pl` and `check/lists.pl`.
 | [bayes-diagnosis.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/bayes-diagnosis.pl) | Normalized probabilities for illustrative printer faults |
 | [policy-risk.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/policy-risk.pl) | Ranked findings with explanations and suggested mitigations |
 | [research-portal.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/research-portal.pl) | A hospital research portal combines ODRL/DPV policy decisions with Digital Omnibus device consent and breach plans |
+| [package-holiday.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/package-holiday.pl) | Package holiday cancellations under the tour operator's ODRL terms and the 2015 and revised EU Package Travel Directive |
 | [queens.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/queens.pl) | Configurable N-queens search with diagonal constraints |
 | [age.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/age.pl) | Calendar-year and elapsed-day age checks at an explicit reference date |
 | [ackermann.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/ackermann.pl) | The Ackermann function through the hyperoperation sequence, exactly |
@@ -232,6 +233,17 @@ or explicit policy and device refusals. Three incidents have notification
 plans under both regimes, always retaining internal documentation. Changes
 compare final plans; a device exemption never overrides withdrawn research
 consent or a prohibition.
+
+`package-holiday.pl` is the same pattern in the domain of leisure. A tour
+operator's cancellation terms, written as an ODRL offer, decide first who may
+cancel and at what fee; then the EU Package Travel Directive, in its 2015
+version and as revised in 2026, decides when a cancellation is free and how
+the money comes back. Eight cancellations and two complaints are decided
+under both versions, with fees and refunds computed in euro. The revision
+makes a cancellation free when floods close the departure airport, gives
+accepted vouchers statutory guarantees, and sets complaint deadlines. Every
+condition of the terms is checked one by one, so the proof passes
+`--strict-proof` with no trusted steps.
 
 `age.pl` checks whether a person's age strictly exceeds `years(N)` or `days(N)`.
 It uses `as_of(date(2026, 10, 1))` for reproducible output and proofs. Edit that

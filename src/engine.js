@@ -62,7 +62,7 @@ function closeFrame(frame, recording) {
 const alternativeCount = (point) =>
   (point.kind === 'branch' ? point.alternatives.length : point.facts.length + point.clauses.length);
 
-export class Solver {
+class Solver {
   constructor(program, options = {}) {
     this.program = program;
     this.options = options;

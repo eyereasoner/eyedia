@@ -40,6 +40,7 @@ Each example comes with a short card deck that explains it for a wide audience: 
 | [lists](https://eyereasoner.github.io/eyedia/examples/deck/lists) | Concatenation, mapping and summation |
 | [lldm](https://eyereasoner.github.io/eyedia/examples/deck/lldm) | Leg length discrepancy measured from radiograph landmarks, with an alarm and its reason |
 | [monkey-bananas](https://eyereasoner.github.io/eyedia/examples/deck/monkey-bananas) | Every plan of up to five moves that gets the monkey the bananas |
+| [package-holiday](https://eyereasoner.github.io/eyedia/examples/deck/package-holiday) | Package holiday cancellations under the tour operator's ODRL terms and the 2015 and revised EU Package Travel Directive |
 | [paraconsistent-animals](https://eyereasoner.github.io/eyedia/examples/deck/paraconsistent-animals) | Local summaries of conflicting observations |
 | [path-discovery](https://eyereasoner.github.io/eyedia/examples/deck/path-discovery) | Full airport network with configurable endpoints and maximum stopovers |
 | [peano](https://eyereasoner.github.io/eyedia/examples/deck/peano) | Symbolic arithmetic, relational addition and a chained derivation |

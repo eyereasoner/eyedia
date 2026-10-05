@@ -1,4 +1,4 @@
-import test from './progress.js';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { run, parseTermText, parseGoalText } from '../index.js';

@@ -382,6 +382,7 @@ examples/check/socrates.pl     C1-C7 proof-check report
 | `queens`, `interval-relations` | Constraint search and all thirteen interval relations |
 | `bayes-diagnosis`, `policy-risk` | Normalized fault scores and ranked policy findings |
 | `research-portal` | ODRL/DPV research policy, device consent and breach plans compared under two EU rulebooks |
+| `package-holiday` | A tour operator's ODRL terms and the 2015 and revised Package Travel Directive, compared |
 | `ackermann`, `peasant`, `sieve`, `goldbach`, `kaprekar` | Exact hyperoperations, ancient arithmetic and number-theory checks |
 | `easter`, `turing`, `superdense-coding`, `teleportation` | Calendar arithmetic, a Turing machine interpreter and discrete quantum protocols |
 | `zebra`, `four-color`, `wolf-goat-cabbage`, `monkey-bananas`, `gps` | Classic constraint puzzles and planning problems |
@@ -395,7 +396,11 @@ of nine premises and shows that the killer is Agatha in all of them. The
 [research portal](https://github.com/eyereasoner/eyedia/blob/main/examples/research-portal.pl) combines ODRL/DPV policy
 decisions with device-consent and breach plans under the EU baseline and the
 original Commission Digital Omnibus proposal. It lists changes while preserving
-policy refusals, planned duties and the provisions behind each assessment. The [airport search](https://github.com/eyereasoner/eyedia/blob/main/examples/path-discovery.pl)
+policy refusals, planned duties and the provisions behind each assessment.
+The [package holiday](https://github.com/eyereasoner/eyedia/blob/main/examples/package-holiday.pl) applies the same pattern to
+leisure: holiday cancellations under a tour operator's terms and the Package
+Travel Directive before and after its 2026 revision, checked with no trusted
+steps. The [airport search](https://github.com/eyereasoner/eyedia/blob/main/examples/path-discovery.pl)
 works over 7,698 airports and 37,505 connections; change the endpoints and the
 stopover budget and ask again. The [interval example](https://github.com/eyereasoner/eyedia/blob/main/examples/interval-relations.pl)
 distinguishes all thirteen basic relations between two intervals. The
