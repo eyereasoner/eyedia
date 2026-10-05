@@ -6,9 +6,6 @@
 
 Every example also has a [card deck](https://eyereasoner.github.io/eyedia/examples/deck/) that explains it for a
 wide audience.
-[cases/](https://github.com/eyereasoner/eyedia/tree/main/examples/cases) holds
-outcomes expected from the sources behind an example, which the example has to
-reproduce; see [checking the translation](https://eyereasoner.github.io/eyedia/make-reasoning-something-you-can-see#checking-the-translation-not-just-the-reasoning).
 
 Run a source, generate its proof, or check its saved proof:
 

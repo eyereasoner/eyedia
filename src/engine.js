@@ -319,19 +319,32 @@ class Solver {
   }
 }
 
-// The clauses of a run's program that no conclusion rests on, given the run's
-// result with a proof. A clause that searches behind a trusted boundary could
-// consult is trusted_only/2: the proof cannot show its part. Any other is
-// unused/2. Each fact gives the clause's source line and the clause.
-export function unusedClauseTerms(program, result) {
+// The clauses of a program that make no difference to its conclusions, one
+// unused/2 fact each with the clause's source line: clauses no conclusion's
+// proof rests on, unless leaving one out changes what the program concludes.
+export function unusedClauseTerms(source, options = {}) {
+  const program = Program.parse(source);
+  const result = run(program, { ...options, proof: true });
   const used = new Set(result.clausesUsed);
   const behind = new Set(result.clausesBehindBoundaries);
-  return program.clauses.filter((clause) => !used.has(clause.id)).map((clause) => {
-    const written = clause.forward ? compound(':+', [clause.head, conjunction(clause.body)])
-      : clause.body.length ? compound(':-', [clause.head, conjunction(clause.body)]) : clause.head;
-    const kind = behind.has(clause.id) ? 'trusted_only' : 'unused';
-    return `${text(compound(kind, [compound('line', [numberTerm(clause.line)]), written]))}.\n`;
-  }).join('');
+  // A clause only a negation or a collection consults may still decide a
+  // conclusion, which a proof does not record; so leave it out and compare.
+  const conclusions = (outcome) => JSON.stringify([[...outcome.answers].sort(), outcome.haltCode]);
+  const baseline = conclusions(result);
+  const matters = (clause) => {
+    try {
+      return conclusions(run(new Program(source, { without: clause.id }), options)) !== baseline;
+    } catch {
+      return true;
+    }
+  };
+  return program.clauses
+    .filter((clause) => !used.has(clause.id) && !(behind.has(clause.id) && matters(clause)))
+    .map((clause) => {
+      const written = clause.forward ? compound(':+', [clause.head, conjunction(clause.body)])
+        : clause.body.length ? compound(':-', [clause.head, conjunction(clause.body)]) : clause.head;
+      return `${text(compound('unused', [compound('line', [numberTerm(clause.line)]), written]))}.\n`;
+    }).join('');
 }
 
 export function run(source, options = {}) {

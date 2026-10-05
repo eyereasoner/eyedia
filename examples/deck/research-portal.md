@@ -56,7 +56,7 @@ research, so the purpose fits.
 
 The policy is data the program reads, not a comment: it governs r1 because
 it is an ODRL agreement assigned by r1's data controller. Delete any one of
-its 26 triples and the outcome changes; a test checks exactly that.
+its 26 triples and the outcome changes; `eyedia --unused` checks exactly that.
 
 ---
 

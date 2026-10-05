@@ -16,7 +16,7 @@ process.stdout.on('error', (error) => {
   throw error;
 });
 
-const { run, checkProof, checkReportTerms, Program, unusedClauseTerms } = await import('../index.js');
+const { run, checkProof, checkReportTerms, unusedClauseTerms } = await import('../index.js');
 
 const help = `Usage: eyedia [--proof | --check-proof FILE] [--goal GOAL] [FILE ...]
 Facts and rules use Prolog syntax; :+ rules run to a fixpoint.
@@ -26,7 +26,7 @@ Facts and rules use Prolog syntax; :+ rules run to a fixpoint.
   --goal GOAL         Ask a backward goal after forward reasoning; with
                       --check-proof, the goal the proof answers
   --strict-proof      Reject proofs relying on absence or collection
-  --unused            List the clauses no conclusion rests on
+  --unused            List the clauses that make no difference to the conclusions
   --stats             Print reasoning statistics to stderr
   --max-depth N       Bound backward recursion (default 1000000)
   --max-iterations N  Bound forward rounds per stratum (default 1000)
@@ -91,10 +91,7 @@ try {
       process.stdout.write(json ? JSON.stringify(report, null, 2) + '\n' : checkReportTerms(report));
       process.exitCode = report.valid ? 0 : 1;
     } else if (unused) {
-      const program = Program.parse(source);
-      const result = run(program, { ...options, proof: true });
-      process.stdout.write(unusedClauseTerms(program, result));
-      process.exitCode = result.haltCode ?? 0;
+      process.stdout.write(unusedClauseTerms(source, options));
     } else {
       const result = run(source, options);
       process.stdout.write(result.stdout);

@@ -43,11 +43,11 @@ test('CLI prints the package version with -v and --version', () => {
     assert.equal(result.stdout, `eyedia v${version}\n`);
   }
 });
-test('CLI lists unused clauses and those only trusted steps consult', () => {
+test('CLI lists the clauses that make no difference to the conclusions', () => {
   const result = cli(['--unused'], 'p(a).\nq(b).\ns(X) :- q(X).\nz(c).\nok :+ p(a), \\+ s(a).\n');
   assert.equal(result.status, 0);
   assert.equal(result.stdout, [
-    "trusted_only(line(2), q(b)).", "trusted_only(line(3), ':-'(s(X), q(X))).", 'unused(line(4), z(c)).', '',
+    'unused(line(2), q(b)).', "unused(line(3), ':-'(s(X), q(X))).", 'unused(line(4), z(c)).', '',
   ].join('\n'));
   assert.equal(cli(['--unused', 'examples/socrates.pl']).stdout, '');
   assert.equal(cli(['--unused', '--proof', 'examples/socrates.pl']).status, 1);

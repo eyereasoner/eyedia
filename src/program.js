@@ -17,12 +17,16 @@ function pushGoals(goal, out) {
   } else out.push(goal);
 }
 export class Program {
-  constructor(source) {
+  // options.without leaves out the clause with that number in source order,
+  // counting from 1, to see what the program concludes without it.
+  constructor(source, options = {}) {
     this.clauses = [];
     this.groups = new Map();
     this.forward = [];
     let stratifying = false;
+    let ordinal = 0;
     readProgramText(String(source), (parsed) => {
+      if (++ordinal === options.without) return;
       if (!parsed.head) throw new Error('only facts, :- rules and :+ rules are supported');
       if (is(parsed.head, ':-', 1) || is(parsed.head, '-->', 2)) throw new Error('directives and DCGs are outside eyedia');
       const forward = is(parsed.head, ':+', 2);

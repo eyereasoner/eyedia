@@ -125,7 +125,6 @@ fee_percent(Rule, D, Pct) :-
     t(Duty, 'ex:feeScale', Bands), band(D, Bands, Pct).
 band(D, [band(Min, Max, Pct)|_], Pct) :- Min =< D, D =< Max.
 band(D, [band(Min, _, _)|Bands], Pct) :- D < Min, band(D, Bands, Pct).
-band(D, [band(_, Max, _)|Bands], Pct) :- D > Max, band(D, Bands, Pct).
 
 % Gate 2: whether the circumstances make the cancellation free of charge.
 free_cancellation(directive_2015, none, no, 'PTD Art. 12(1)').

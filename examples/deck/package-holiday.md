@@ -54,8 +54,8 @@ t('ex:beforeDeparture', 'odrl:rightOperand', 0).
 ```
 
 The program reads these triples to decide: the policy is data, not a
-comment. Delete any one of its 15 triples and the outcome changes; a test
-checks exactly that.
+comment. Delete any one of its 15 triples and the outcome changes;
+`eyedia --unused` checks exactly that.
 
 ---
 

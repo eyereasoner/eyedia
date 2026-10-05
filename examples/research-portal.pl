@@ -44,7 +44,6 @@
 t('dpv:AcademicResearch', 'skos:broader', 'dpv:ResearchAndDevelopment').
 t('dpv:CommercialResearch', 'skos:broader', 'dpv:ResearchAndDevelopment').
 t('dpv:Advertising', 'skos:broader', 'dpv:Marketing').
-t('dpv:PersonalisedAdvertising', 'skos:broader', 'dpv:Advertising').
 
 % Parties and data.
 t('ex:partnerBE', 'odrl:partOf', 'ex:consortium').
@@ -137,12 +136,6 @@ met(P, C) :- constraint(C, Left, Operator, Right), value(P, Left, V), holds(Oper
 unmet(P, Rule, unmet(C, Left, V, Operator, Right)) :-
     addresses(P, Rule), t(Rule, 'odrl:constraint', C),
     constraint(C, Left, Operator, Right), value(P, Left, V), \+ met(P, C).
-unmet(P, Rule, missing_value(C, Left, Operator, Right)) :-
-    addresses(P, Rule), t(Rule, 'odrl:constraint', C),
-    constraint(C, Left, Operator, Right), findall(V, value(P, Left, V), []).
-unmet(P, Rule, missing_definition(C)) :-
-    addresses(P, Rule), t(Rule, 'odrl:constraint', C),
-    findall(definition(Left, Operator, Right), constraint(C, Left, Operator, Right), []).
 applies(P, Rule) :- addresses(P, Rule), findall(Why, unmet(P, Rule, Why), []).
 % A policy governs a process when it is an agreement assigned by the
 % process's data controller.
