@@ -57,7 +57,7 @@ console.log(checkProof(source, result.proof).valid);    // true
 
 ## Read on
 
-- **[Make reasoning something you can see](https://eyereasoner.github.io/eyedia/make-reasoning-something-you-can-see.html)** —
+- **[Make reasoning something you can see](https://eyereasoner.github.io/eyedia/make-reasoning-something-you-can-see)** —
   what the language is for, how to write it, what a checked proof does and does
   not establish, and how the engine works.
 - **[Examples](https://eyereasoner.github.io/eyedia/examples/)** — 59 complete programs, each with its saved

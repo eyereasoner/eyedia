@@ -1,154 +1,156 @@
 # A research portal under two rulebooks
 
-*One hospital. One research policy. What changes when the device rules change?*
+*One hospital, one research policy, two sets of device rules: which research sessions may go ahead, and what would change?*
 
-[program](https://github.com/eyereasoner/eyedia/blob/main/examples/research-portal.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/research-portal.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/research-portal.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/research-portal.pl) · [playground](https://eyereasoner.github.io/eyedia/playground/#example=research-portal)
-
----
-
-## The question
-
-A hospital's research portal serves sensitive lab records to consortium
-members. Its policy requires research purposes, consent, pseudonymisation,
-and access before 2027. Some sessions also involve audience measurement or
-advertising trackers.
-
-**If the digital rules change, which sessions can proceed, which still need
-consent, and which remain blocked? What happens if portal data is breached?**
-
-An ODRL/DPV research policy and a Digital Omnibus comparison form one
-self-contained decision process.
+[research-portal.pl](https://github.com/eyereasoner/eyedia/blob/main/examples/research-portal.pl) · [output](https://github.com/eyereasoner/eyedia/blob/main/examples/output/research-portal.pl) · [proof](https://github.com/eyereasoner/eyedia/blob/main/examples/proof/research-portal.pl) · [check](https://github.com/eyereasoner/eyedia/blob/main/examples/check/research-portal.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=research-portal)
 
 ---
 
-## Two gates, with different jobs
+## The situation
 
-```mermaid
-flowchart LR
-    R[Planned research session] --> P{ODRL / DPV policy}
-    P -->|Fails| X[Policy refusal with reasons]
-    P -->|Passes| D{Device rulebook}
-    D -->|Exempt| A[Permit with planned deletion duty]
-    D -->|Consent needed| C[Await device consent]
-    D -->|Binding refusal or pause| B[Block this tracker configuration]
-```
+A hospital runs a portal through which partners in a research consortium use
+patients' **lab results**: sensitive health data.
 
-Consent to research and consent to device access are separate inputs. An
-exemption for audience measurement cannot supply withdrawn research consent.
-A blocked tracker configuration can be changed; the model does not say the
-research itself must be refused when an optional tracker can be removed.
+Two different questions decide whether a planned session may go ahead:
+
+1. **Does the hospital's research policy allow this use of the data?**
+2. **The portal page also places a cookie or tracker on the visitor's device.
+   Is that allowed, and does it need the visitor's consent?**
+
+The second question is about to get new rules: the European Commission's
+**Digital Omnibus proposal** (19 November 2025) would change them. So we ask
+both questions twice: under the rules **today** and under the **proposal**.
 
 ---
 
-## The hospital policy stays fixed
+## The whole decision on one page
 
-The ODRL agreement permits consortium members to use lab results for DPV
-research purposes when consent is given and pseudonymisation is in place.
-It prohibits marketing distribution and all use by the US partner. If a
-permission and prohibition overlap, `odrl:prohibit` wins.
+![How the research portal decides a session](research-portal-flow.svg)
 
-The facts carry the meanings:
+Each session passes two gates, in order. A "no" at the first gate ends it,
+whatever the device rules say. The picture already shows every result;
+the rest of this deck explains why.
+
+---
+
+## Gate 1: the hospital's research policy
+
+The policy is written in **ODRL**, the W3C language for machine-readable
+"who may do what with which data" rules, using terms from **DPV**, the Data
+Privacy Vocabulary. In plain words, consortium partners may use the lab
+results **for research**, only with the patient's **consent**, only
+**pseudonymised** (names replaced by codes), and only **before 2027**. Two
+things are forbidden outright: passing the data on for **marketing**, and
+any use by the **US partner**.
 
 ```prolog
 process('ex:r1', 'ex:partnerBE', 'dpv:Use', 'ex:labResults',
         'dpv:AcademicResearch', 'dpv:ConsentGiven',
         'dpv:Pseudonymisation', 20261115).
-session('ex:r1', own_audience_measurement, first_visit).
 ```
 
-The process describes the research use. The session describes the device
-access that accompanies it. DPV purpose matching follows `skos:broader`.
-Missing constraint values or definitions prevent a policy permit.
+This is session r1: the Belgian partner wants to use the lab results for
+academic research, consent given, pseudonymised, on 15 November 2026.
+DPV knows that academic research *is* research, so the purpose fits.
 
 ---
 
-## The device rulebook changes
+## Gate 2: the device rules, today and proposed
 
-The baseline applies the general ePrivacy consent rule. The comparison uses
-the **original Commission proposal of 19 November 2025**, COM(2025) 837 final,
-as a hypothetical rulebook after the relevant provisions become applicable.
+| | Today (ePrivacy Directive) | Proposal (new GDPR Art. 88a–b) |
+| --- | --- | --- |
+| The portal's own visitor statistics | consent needed | **no consent needed** |
+| The visitor's browser says "no tracking" | not binding | **must be respected** |
+| The visitor refused earlier | may ask again | **not again within 6 months** |
+| Strictly needed to run the requested service | no consent needed | no consent needed |
 
-Its modelled changes include an exception for necessary, aggregated audience
-measurement solely for the controller's own use; respect for browser signals;
-and a pause of at least six months after a same-purpose refusal.
-
-The hospital portal is not a media service provider. Completed calendar
-months are supplied as input. National exceptions, transitional dates and
-later negotiating texts are outside this comparison.
+The device question is separate from the research question. A tracker that
+needs no consent does **not** stand in for the patient's consent to research.
 
 ---
 
-## Ten sessions, twenty assessments
+## The ten sessions
 
-| Session | What matters | EU baseline | Original proposal |
+| Session | What is special about it | Today | Proposal |
 | --- | --- | --- | --- |
-| r1 | Valid research; own aggregated audience measurement | Await device consent | Permit with duty |
-| r2 | Personalised advertising as the data-use purpose | Policy refusal | Policy refusal |
-| r3 | Share records for marketing | Prohibited | Prohibited |
-| r4 | Research consent withdrawn; own audience measurement | Policy refusal | Policy refusal |
-| r5 | Encryption instead of pseudonymisation; expired date | Policy refusal | Policy refusal |
-| r6 | US partner; otherwise valid research | Prohibited | Prohibited |
-| r7 | Valid research; advertising tracker; browser refusal | Await device consent | Block by signal |
-| r8 | Valid research; advertising tracker; refusal 5 months ago | Await device consent | Do not ask again |
-| r9 | Valid research; advertising tracker; refusal 6 months ago | Await device consent | May ask again |
-| r10 | Valid research; strictly necessary requested-service access | Permit with duty | Permit with duty |
+| r1 | valid research; the portal's own statistics | wait for consent | **go ahead** |
+| r2 | purpose is personalised advertising, not research | refused | refused |
+| r3 | passing the data on for advertising | refused (forbidden) | refused (forbidden) |
+| r4 | the patient withdrew consent | refused | refused |
+| r5 | encrypted, not pseudonymised; after 2026 | refused | refused |
+| r6 | the US partner | refused (forbidden) | refused (forbidden) |
+| r7 | valid research; ad tracker; browser says no | wait for consent | **blocked** |
+| r8 | valid research; ad tracker; refused 5 months ago | wait for consent | **blocked** |
+| r9 | valid research; ad tracker; refused 6 months ago | wait for consent | wait for consent |
+| r10 | valid research; only what the service needs | go ahead | go ahead |
 
-“Await device consent” never authorises processing without consent. It is the
-baseline next step, not a finding that an existing refusal may be ignored.
+"Wait for consent" means: ask first, and do nothing until the visitor agrees.
 
 ---
 
-## The change that connects both examples
+## What the proposal changes
 
 ```prolog
-changed(session('ex:r1'),
-        from(await_device_consent('ex:research')),
-        to(permit('ex:research'))).
-planned_duty(omnibus_proposal, 'ex:r1', 'odrl:delete', within_days(90)).
+changed(session('ex:r1'), from(await_device_consent('ex:research')), to(permit('ex:research'))).
+changed(session('ex:r7'), from(await_device_consent('ex:research')), to(deny_device(refused_by_signal))).
+changed(session('ex:r8'), from(await_device_consent('ex:research')), to(deny_device(do_not_ask_again))).
 ```
 
-The policy already permits r1's research use. The proposal changes its device
-step, so the combined plan can proceed and carries the deletion obligation.
+- **r1** may now go ahead: the portal's own statistics need no consent.
+- **r7** is blocked: the browser's "no" now has to be respected.
+- **r8** is blocked: the visitor said no five months ago, too recently to ask.
 
-Compare r4: the same device exemption applies, but research consent was
-withdrawn. The policy refusal remains in both regimes. Compare r6: its policy
-permission is overridden by the prohibition, which `policy_conflict/2` records.
+Just as telling: **r4** uses the same statistics as r1, but stays refused,
+because the patient withdrew consent to research. Easier device rules cannot
+fix that.
 
 ---
 
-## Incidents are a separate responsibility
+## Data breaches: a separate duty
 
-Three incidents concern data already held by the portal. They are evaluated
-even when a planned session is refused.
+The hospital already holds data, so it also plans what to do if that data
+leaks. Here too the proposal changes the rules:
 
-| Assessed risk | EU baseline authority notification | Original proposal authority notification | Affected people |
+| What leaked (assessed risk) | Tell the regulator: today | Tell the regulator: proposal | Tell the patients |
 | --- | --- | --- | --- |
-| Unlikely | None | None | None |
-| Some | 72-hour limit | None | None |
-| High | 72-hour limit | 96-hour limit via single entry point | Without undue delay in both |
+| encrypted laptop, key safe (unlikely) | no | no | no |
+| researchers' contact addresses (some) | within 72 hours | **no** | no |
+| patients' lab records (high) | within 72 hours | **within 96 hours, via one EU entry point** | without undue delay, in both |
 
-Every `breach_plan/5` includes `document_breach`, even when no recipient must
-be notified. Deadlines run from awareness, apply where feasible and accompany
-the duty to act without undue delay. No Art. 34(3) exception applies to the
-high-risk case. Risk is an assessed input, not inferred from the incident name.
+Every breach is recorded internally, even when nobody must be told.
 
 ---
 
-## What the certificate establishes
+## Why: the proof in plain words
 
-The output has **35 claims**: 20 assessments, three planned duties, one policy
-conflict, six breach plans and five changes.
+Take r1 under the proposal. The proof records, step by step:
 
-The checker checks **223 steps**: 185 verified rule steps, 15 recomputed steps
-and **23 trusted collection obligations**. Verdict:
-**`checked_with_obligations`**. The collection obligations cover complete
-lists of matching permissions, prohibitions and failed constraints.
+1. r1's purpose, academic research, falls under research (DPV).
+2. Each of the policy's five conditions holds for r1, and no prohibition
+   applies, so the policy **permits** r1.
+3. r1's tracker is the portal's own statistics; under the proposal that
+   needs no consent: **GDPR Art. 88a(3)(c)**.
+4. So r1 may go ahead, with the policy's duty to **delete within 90 days**.
 
-The certificate checks reasoning from the supplied facts and rules. It does
-not establish legal accuracy, valid consent or completed deletion. `permit`
-is a planning result; fulfilment of ODRL duty preconditions is outside this
-local profile. Only the declared `odrl:prohibit` strategy is supported; other
-or missing strategies produce explicit configuration refusals.
+Every step names the program line it used, and every result carries the
+articles it rests on.
+
+---
+
+## Checked, not just claimed
+
+A separate checker read all **223 steps**: 185 were matched to a program
+line, and 15 calculations were redone and agreed. Verdict:
+**checked_with_obligations**.
+
+The **23 obligations** are statements of the form "there is no prohibition
+for this session" or "no condition failed". Eyedia found these by searching
+everything it knows; the checker records them rather than proving them, and
+found nothing in the proof that contradicts them.
+
+What the certificate does **not** show: that the rules are legally correct,
+that consent was really given, or that the data was really deleted. It shows
+that the conclusions follow from these rules and these facts.
 
 ---
 
@@ -156,31 +158,37 @@ or missing strategies produce explicit configuration refusals.
 
 ```sh
 node bin/eyedia.js examples/research-portal.pl
-node bin/eyedia.js --proof examples/research-portal.pl
-node bin/eyedia.js --check-proof examples/proof/research-portal.pl examples/research-portal.pl
 node bin/eyedia.js --goal "policy_result('ex:r4', Result)" examples/research-portal.pl
 ```
 
-Change r4's research consent to `dpv:ConsentGiven`: its proposal assessment
-becomes a permit. Change r7's tracker kind to `requested_service`: its device
-access becomes exempt. These are different changes at different gates.
-Regenerate the proof after editing; `--strict-proof` rejects the collection
-obligations in this example.
+Or open it in the [playground](https://eyereasoner.github.io/eyedia/playground/#example=research-portal).
+Two experiments, one at each gate:
+
+- give r4 consent again (`'dpv:ConsentWithdrawn'` → `'dpv:ConsentGiven'`):
+  it now passes gate 1, and the proposal lets it go ahead;
+- change r7's tracker to `requested_service`: gate 2 no longer needs
+  consent, so r7 goes ahead under both rulebooks.
 
 ---
 
-## Sources and profile
+## Takeaway
 
-[ODRL Information Model 2.2](https://www.w3.org/TR/odrl-model/) ·
-[ODRL Vocabulary 2.2](https://www.w3.org/TR/odrl-vocab/) ·
+When rules change, the question is never just "is this allowed?" but
+"what changes, for whom, and why?" Here every answer is traced to a policy
+condition or an article, and a machine has checked the reasoning.
+
+---
+
+## Sources and assumptions
+
+[ODRL 2.2](https://www.w3.org/TR/odrl-model/) ·
 [DPV 2.3](https://w3id.org/dpv/2.3/dpv/) ·
-[Commission proposal](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52025PC0837) ·
-[ePrivacy Art. 5(3)](https://eur-lex.europa.eu/eli/dir/2002/58/2009-12-19) ·
-[GDPR Arts. 33–34](https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng).
+[the Commission proposal, COM(2025) 837](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52025PC0837) ·
+[ePrivacy Directive Art. 5(3)](https://eur-lex.europa.eu/eli/dir/2002/58/2009-12-19) ·
+[GDPR Arts. 33–34](https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng)
 
-The program uses local `ex:` operands and action mappings, single-valued
-constraint inputs, valid integer dates and an acyclic purpose taxonomy.
-`process/8` asserts consent as the research legal basis. Device scope is
-personal data on a natural person's device, with necessity and aggregation
-assessed in advance. This is an inspectable comparison of a limited policy
-profile and a fixed proposal, rather than a complete compliance evaluator.
+The proposal is under negotiation, not law; it is modelled as if its
+provisions applied, without later amendments, national exceptions or
+transition dates. The portal is not a media service. Whether a tracker is
+strictly necessary, aggregated or for the portal's own use, how many months
+ago a visitor refused, and the risk of a breach are given as inputs.

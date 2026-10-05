@@ -28,6 +28,17 @@
 % Breach risk is supplied, deadlines run from awareness without undue delay
 % and where feasible; no Art. 34(3) exception applies to the high-risk case.
 % Every breach must be documented, even when notification is not required.
+%
+% Reading guide. The program runs top to bottom as one decision process:
+%   1. the ODRL/DPV research policy, as triples t(Subject, Predicate, Object);
+%   2. the planned research uses, as DPV processes;
+%   3. gate 1, the policy: policy_result/2 permits a use or refuses it with
+%      the reasons;
+%   4. gate 2, the device rules: session/3, then the consent/4 and ask/5
+%      tables, one row per regime;
+%   5. assessment/4 combines both gates per regime, with the basis cited;
+%   6. breaches are planned per regime with breach_plan/5;
+%   7. changed/3 lists every outcome the proposal would change.
 
 % A small excerpt of the DPV purpose taxonomy.
 t('dpv:AcademicResearch', 'skos:broader', 'dpv:ResearchAndDevelopment').

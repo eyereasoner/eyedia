@@ -35,7 +35,7 @@ if (selected('manifest')) test('example manifest covers every source, all three 
     assert.deepEqual(readdirSync(new URL(`${kind}/`, examplesRoot)).sort(), expected);
   }
   const decks = manifest.map((entry) => `${entry.name}.md`).concat('README.md').sort();
-  assert.deepEqual(readdirSync(new URL('deck/', examplesRoot)).sort(), decks);
+  assert.deepEqual(readdirSync(new URL('deck/', examplesRoot)).filter((file) => file.endsWith('.md')).sort(), decks);
 });
 const changed = (kind) => `${kind} changed; review before running npm run examples:update`;
 for (const entry of [...manifest].sort((a, b) => a.name.localeCompare(b.name))) {
