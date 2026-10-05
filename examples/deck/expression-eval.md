@@ -2,7 +2,7 @@
 
 *Working out (2 × 3) + (10 − 4), and showing every intermediate result.*
 
-[expression-eval.pl](../expression-eval.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=expression-eval)
+[expression-eval.pl](../expression-eval.pl) · [output](../output/expression-eval.pl) · [proof](../proof/expression-eval.pl) · [check](../check/expression-eval.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=expression-eval)
 
 ---
 

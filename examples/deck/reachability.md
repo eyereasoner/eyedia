@@ -2,7 +2,7 @@
 
 *Where can you get to from here — even when the roads go in circles?*
 
-[reachability.pl](../reachability.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=reachability)
+[reachability.pl](../reachability.pl) · [output](../output/reachability.pl) · [proof](../proof/reachability.pl) · [check](../check/reachability.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=reachability)
 
 ---
 

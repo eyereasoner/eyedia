@@ -2,7 +2,7 @@
 
 *Einstein's riddle: fifteen clues, five houses, one answer you can check.*
 
-[zebra.pl](../zebra.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=zebra)
+[zebra.pl](../zebra.pl) · [output](../output/zebra.pl) · [proof](../proof/zebra.pl) · [check](../check/zebra.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=zebra)
 
 ---
 

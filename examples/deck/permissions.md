@@ -2,7 +2,7 @@
 
 *Who may read and write, and why a suspended editor may not.*
 
-[permissions.pl](../permissions.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=permissions)
+[permissions.pl](../permissions.pl) · [output](../output/permissions.pl) · [proof](../proof/permissions.pl) · [check](../check/permissions.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=permissions)
 
 ---
 

@@ -2,7 +2,7 @@
 
 *Find flight routes from Ostend to Prague in a network of 7,698 airports.*
 
-[path-discovery.pl](../path-discovery.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=path-discovery)
+[path-discovery.pl](../path-discovery.pl) · [output](../output/path-discovery.pl) · [proof](../proof/path-discovery.pl) · [check](../check/path-discovery.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=path-discovery)
 
 ---
 

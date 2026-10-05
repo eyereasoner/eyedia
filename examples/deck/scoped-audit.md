@@ -2,7 +2,7 @@
 
 *Checking each record on its own, so one file cannot fill gaps in another.*
 
-[scoped-audit.pl](../scoped-audit.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=scoped-audit)
+[scoped-audit.pl](../scoped-audit.pl) · [output](../output/scoped-audit.pl) · [proof](../proof/scoped-audit.pl) · [check](../check/scoped-audit.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=scoped-audit)
 
 ---
 

@@ -2,7 +2,7 @@
 
 *Matching shapes: how Eyedia fills in the blanks by fitting patterns together.*
 
-[unification.pl](../unification.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=unification)
+[unification.pl](../unification.pl) · [output](../output/unification.pl) · [proof](../proof/unification.pl) · [check](../check/unification.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=unification)
 
 ---
 

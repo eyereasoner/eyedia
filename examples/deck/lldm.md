@@ -2,7 +2,7 @@
 
 *From four dots on an X-ray to an alarm — with the reason it fired, and every calculation rechecked.*
 
-[lldm.pl](../lldm.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=lldm)
+[lldm.pl](../lldm.pl) · [output](../output/lldm.pl) · [proof](../proof/lldm.pl) · [check](../check/lldm.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=lldm)
 
 ---
 

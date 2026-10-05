@@ -2,7 +2,7 @@
 
 *Teaching a reasoner a kind of number it has never heard of.*
 
-[complex.pl](../complex.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=complex)
+[complex.pl](../complex.pl) · [output](../output/complex.pl) · [proof](../proof/complex.pl) · [check](../check/complex.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=complex)
 
 ---
 

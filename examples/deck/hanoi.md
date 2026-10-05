@@ -2,7 +2,7 @@
 
 *A classic puzzle solved by thinking smaller — with every move accounted for.*
 
-[hanoi.pl](../hanoi.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=hanoi)
+[hanoi.pl](../hanoi.pl) · [output](../output/hanoi.pl) · [proof](../proof/hanoi.pl) · [check](../check/hanoi.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=hanoi)
 
 ---
 

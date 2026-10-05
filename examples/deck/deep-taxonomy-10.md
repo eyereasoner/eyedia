@@ -2,7 +2,7 @@
 
 *Ten levels down a family tree of categories, ignoring every dead end on the way.*
 
-[deep-taxonomy-10.pl](../deep-taxonomy-10.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=deep-taxonomy-10)
+[deep-taxonomy-10.pl](../deep-taxonomy-10.pl) · [output](../output/deep-taxonomy-10.pl) · [proof](../proof/deep-taxonomy-10.pl) · [check](../check/deep-taxonomy-10.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=deep-taxonomy-10)
 
 ---
 

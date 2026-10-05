@@ -2,7 +2,7 @@
 
 *Ten thousand steps of reasoning, every one written down and checked.*
 
-[deep-taxonomy-10000.pl](../deep-taxonomy-10000.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=deep-taxonomy-10000)
+[deep-taxonomy-10000.pl](../deep-taxonomy-10000.pl) · [output](../output/deep-taxonomy-10000.pl) · [proof](../proof/deep-taxonomy-10000.pl) · [check](../check/deep-taxonomy-10000.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=deep-taxonomy-10000)
 
 ---
 

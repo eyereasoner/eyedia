@@ -2,7 +2,7 @@
 
 *A famous unsolved question, tested on numbers up to 33 million.*
 
-[goldbach.pl](../goldbach.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=goldbach)
+[goldbach.pl](../goldbach.pl) · [output](../output/goldbach.pl) · [proof](../proof/goldbach.pl) · [check](../check/goldbach.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=goldbach)
 
 ---
 

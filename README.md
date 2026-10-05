@@ -57,12 +57,12 @@ console.log(checkProof(source, result.proof).valid);    // true
 
 ## Read on
 
-- **[Make reasoning something you can see](make-reasoning-something-you-can-see.md)** —
+- **[Make reasoning something you can see](https://eyereasoner.github.io/eyedia/make-reasoning-something-you-can-see.html)** —
   what the language is for, how to write it, what a checked proof does and does
   not establish, and how the engine works.
-- **[Examples](examples/README.md)** — 58 complete programs, each with its saved
+- **[Examples](https://eyereasoner.github.io/eyedia/examples/)** — 58 complete programs, each with its saved
   conclusions, proof and C1-C7 check report.
-- **[Example decks](examples/deck/README.md)** — a short card deck for every
+- **[Example decks](https://eyereasoner.github.io/eyedia/examples/deck/)** — a short card deck for every
   example, explaining it for a wide audience: the question, what Eyedia
   concludes, why, and what the proof checker confirms.
 - **[Playground](https://eyereasoner.github.io/eyedia/playground/)** — write a program in the browser, run it, check
@@ -70,4 +70,4 @@ console.log(checkProof(source, result.proof).valid);    // true
 
 ## License
 
-[MIT](LICENSE.md)
+[MIT](https://eyereasoner.github.io/eyedia/LICENSE.md)

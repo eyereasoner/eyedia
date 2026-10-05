@@ -2,7 +2,7 @@
 
 *Exact Fibonacci numbers — one of them 2090 digits long — with every calculation on the record.*
 
-[fibonacci.pl](../fibonacci.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=fibonacci)
+[fibonacci.pl](../fibonacci.pl) · [output](../output/fibonacci.pl) · [proof](../proof/fibonacci.pl) · [check](../check/fibonacci.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=fibonacci)
 
 ---
 

@@ -2,7 +2,7 @@
 
 *A simple game with numbers that nobody has managed to fully explain — played out, with every move justified.*
 
-[collatz.pl](../collatz.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=collatz)
+[collatz.pl](../collatz.pl) · [output](../output/collatz.pl) · [proof](../proof/collatz.pl) · [check](../check/collatz.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=collatz)
 
 ---
 

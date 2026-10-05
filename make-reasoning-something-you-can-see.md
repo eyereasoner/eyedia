@@ -355,7 +355,7 @@ language does not hand you a certificate it has not verified.
 
 ## The examples
 
-The [example collection](examples/README.md) is 58 complete programs. Each one
+The [example collection](https://eyereasoner.github.io/eyedia/examples/) is 58 complete programs. Each one
 ships with its conclusions, its proof and its C1–C7 check report, all saved to
 disk:
 

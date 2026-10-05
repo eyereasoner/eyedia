@@ -2,7 +2,7 @@
 
 *Work out who belongs to which generation, and who counts as a cousin.*
 
-[family-cousins.pl](../family-cousins.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=family-cousins)
+[family-cousins.pl](../family-cousins.pl) · [output](../output/family-cousins.pl) · [proof](../proof/family-cousins.pl) · [check](../check/family-cousins.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=family-cousins)
 
 ---
 

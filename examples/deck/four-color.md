@@ -2,7 +2,7 @@
 
 *Colouring the map of the European Union so that no neighbours match.*
 
-[four-color.pl](../four-color.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=four-color)
+[four-color.pl](../four-color.pl) · [output](../output/four-color.pl) · [proof](../proof/four-color.pl) · [check](../check/four-color.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=four-color)
 
 ---
 

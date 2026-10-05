@@ -2,7 +2,7 @@
 
 *Two bits through one qubit — a quantum protocol, reasoned out by counting paths.*
 
-[superdense-coding.pl](../superdense-coding.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=superdense-coding)
+[superdense-coding.pl](../superdense-coding.pl) · [output](../output/superdense-coding.pl) · [proof](../proof/superdense-coding.pl) · [check](../check/superdense-coding.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=superdense-coding)
 
 ---
 

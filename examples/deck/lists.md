@@ -2,7 +2,7 @@
 
 *Joining, squaring and adding up lists — one small step at a time.*
 
-[lists.pl](../lists.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=lists)
+[lists.pl](../lists.pl) · [output](../output/lists.pl) · [proof](../proof/lists.pl) · [check](../check/lists.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=lists)
 
 ---
 

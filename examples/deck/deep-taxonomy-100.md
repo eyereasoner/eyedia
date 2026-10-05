@@ -2,7 +2,7 @@
 
 *A hundred-step chain of "every A is a B", with dead ends at every turn.*
 
-[deep-taxonomy-100.pl](../deep-taxonomy-100.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=deep-taxonomy-100)
+[deep-taxonomy-100.pl](../deep-taxonomy-100.pl) · [output](../output/deep-taxonomy-100.pl) · [proof](../proof/deep-taxonomy-100.pl) · [check](../check/deep-taxonomy-100.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=deep-taxonomy-100)
 
 ---
 

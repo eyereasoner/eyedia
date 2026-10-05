@@ -2,7 +2,7 @@
 
 *A classic planning puzzle: how does the monkey reach the bananas?*
 
-[monkey-bananas.pl](../monkey-bananas.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=monkey-bananas)
+[monkey-bananas.pl](../monkey-bananas.pl) · [output](../output/monkey-bananas.pl) · [proof](../proof/monkey-bananas.pl) · [check](../check/monkey-bananas.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=monkey-bananas)
 
 ---
 

@@ -2,7 +2,7 @@
 
 *Multiplying huge numbers with nothing but halving, doubling and adding — the way ancient scribes did.*
 
-[peasant.pl](../peasant.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=peasant)
+[peasant.pl](../peasant.pl) · [output](../output/peasant.pl) · [proof](../proof/peasant.pl) · [check](../check/peasant.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=peasant)
 
 ---
 

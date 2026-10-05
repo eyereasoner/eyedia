@@ -2,7 +2,7 @@
 
 *Counting with nothing but zero and "one more" — and getting 5! = 120 out of it.*
 
-[peano.pl](../peano.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=peano)
+[peano.pl](../peano.pl) · [output](../output/peano.pl) · [proof](../proof/peano.pl) · [check](../check/peano.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=peano)
 
 ---
 

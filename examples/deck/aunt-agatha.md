@@ -2,7 +2,7 @@
 
 *A murder mystery where the answer has to hold no matter how the gaps are filled.*
 
-[aunt-agatha.pl](../aunt-agatha.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=aunt-agatha)
+[aunt-agatha.pl](../aunt-agatha.pl) · [output](../output/aunt-agatha.pl) · [proof](../proof/aunt-agatha.pl) · [check](../check/aunt-agatha.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=aunt-agatha)
 
 ---
 

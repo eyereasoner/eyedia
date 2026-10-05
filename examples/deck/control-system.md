@@ -2,7 +2,7 @@
 
 *Two machine settings computed from sensor readings, with every sum shown.*
 
-[control-system.pl](../control-system.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=control-system)
+[control-system.pl](../control-system.pl) · [output](../output/control-system.pl) · [proof](../proof/control-system.pl) · [check](../check/control-system.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=control-system)
 
 ---
 

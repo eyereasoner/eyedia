@@ -2,7 +2,7 @@
 
 *Solving equations up to x⁴ with formulas from the 1500s and 1700s.*
 
-[polynomial.pl](../polynomial.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=polynomial)
+[polynomial.pl](../polynomial.pl) · [output](../output/polynomial.pl) · [proof](../proof/polynomial.pl) · [check](../check/polynomial.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=polynomial)
 
 ---
 

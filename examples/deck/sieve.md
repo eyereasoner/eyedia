@@ -2,7 +2,7 @@
 
 *A 2,200-year-old recipe for prime numbers, with every crossed-out number on record.*
 
-[sieve.pl](../sieve.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=sieve)
+[sieve.pl](../sieve.pl) · [output](../output/sieve.pl) · [proof](../proof/sieve.pl) · [check](../check/sieve.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=sieve)
 
 ---
 

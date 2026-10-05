@@ -2,7 +2,7 @@
 
 *Is someone over 80? A calendar question, answered with every day counted.*
 
-[age.pl](../age.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=age)
+[age.pl](../age.pl) · [output](../output/age.pl) · [proof](../proof/age.pl) · [check](../check/age.pl) · [try it in the playground](https://eyereasoner.github.io/eyedia/playground/#example=age)
 
 ---
 
