@@ -76,14 +76,14 @@ booking(bk8, operator('ex:sunTrips'), lead(ivy), price(1300)).
 % Cancellation requests: booking, who asks, the action, days before
 % departure, what happened, and whether a voucher is offered and how the
 % traveller answers.
-request(c1, bk1, by(anna), 'ex:cancel', days(90), circumstances(none), voucher(not_offered)).
-request(c2, bk2, by(ben), 'ex:cancel', days(20), circumstances(none), voucher(not_offered)).
-request(c3, bk3, by(chloe), 'ex:cancel', days(10), circumstances(at(destination, hurricane)), voucher(not_offered)).
-request(c4, bk4, by(david), 'ex:cancel', days(5), circumstances(at(departure, airport_closed_by_floods)), voucher(not_offered)).
-request(c5, bk5, by(emma), 'ex:cancel', days(12), circumstances(at(destination, hurricane)), voucher(offered(refused))).
-request(c6, bk6, by(farid), 'ex:cancel', days(12), circumstances(at(destination, hurricane)), voucher(offered(accepted))).
-request(c7, bk7, by(gina), 'ex:cancel', days(-2), circumstances(none), voucher(not_offered)).
-request(c8, bk8, by(hugo), 'ex:cancel', days(40), circumstances(none), voucher(not_offered)).
+request(r1, bk1, by(anna), 'ex:cancel', days(90), circumstances(none), voucher(not_offered)).
+request(r2, bk2, by(ben), 'ex:cancel', days(20), circumstances(none), voucher(not_offered)).
+request(r3, bk3, by(chloe), 'ex:cancel', days(10), circumstances(at(destination, hurricane)), voucher(not_offered)).
+request(r4, bk4, by(david), 'ex:cancel', days(5), circumstances(at(departure, airport_closed_by_floods)), voucher(not_offered)).
+request(r5, bk5, by(emma), 'ex:cancel', days(12), circumstances(at(destination, hurricane)), voucher(offered(refused))).
+request(r6, bk6, by(farid), 'ex:cancel', days(12), circumstances(at(destination, hurricane)), voucher(offered(accepted))).
+request(r7, bk7, by(gina), 'ex:cancel', days(-2), circumstances(none), voucher(not_offered)).
+request(r8, bk8, by(hugo), 'ex:cancel', days(40), circumstances(none), voucher(not_offered)).
 
 % What a left operand is for a request.
 value(C, 'ex:requesterRole', 'ex:leadTraveller') :-

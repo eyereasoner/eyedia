@@ -77,14 +77,14 @@ comment. Delete any one of its 15 triples and the outcome changes;
 
 | Request | What happened | 2015 rules | Revision |
 | --- | --- | --- | --- |
-| c1 | changed plans, 90 days ahead (€2,400) | fee €600, €1,800 back | the same |
-| c2 | changed plans, 20 days ahead (€1,800) | fee €1,800, nothing back | the same |
-| c3 | hurricane at the destination (€1,500) | free, €1,500 back | the same |
-| c4 | departure airport closed by floods (€2,100) | fee €2,100, nothing back | **free, €2,100 back** |
-| c5 | hurricane; refuses the voucher offered (€1,200) | free, €1,200 back | the same |
-| c6 | hurricane; accepts the voucher (€1,600) | voucher, on agreed terms | **voucher with guarantees** |
-| c7 | asks two days into the trip | refused by the terms | the same |
-| c8 | Hugo asks, but Ivy booked the trip | refused by the terms | the same |
+| r1 | changed plans, 90 days ahead (€2,400) | fee €600, €1,800 back | the same |
+| r2 | changed plans, 20 days ahead (€1,800) | fee €1,800, nothing back | the same |
+| r3 | hurricane at the destination (€1,500) | free, €1,500 back | the same |
+| r4 | departure airport closed by floods (€2,100) | fee €2,100, nothing back | **free, €2,100 back** |
+| r5 | hurricane; refuses the voucher offered (€1,200) | free, €1,200 back | the same |
+| r6 | hurricane; accepts the voucher (€1,600) | voucher, on agreed terms | **voucher with guarantees** |
+| r7 | asks two days into the trip | refused by the terms | the same |
+| r8 | Hugo asks, but Ivy booked the trip | refused by the terms | the same |
 
 Every refund is due within 14 days.
 
@@ -93,14 +93,14 @@ Every refund is due within 14 days.
 ## What the revision changes
 
 ```prolog
-changed(cancellation(c4), from(pay_fee(percent(100), fee(2100), refund(0), within_days(14))), to(refund(2100, within_days(14)))).
-changed(cancellation(c6), from(voucher(value(1600), terms(as_agreed))), to(voucher(value(1600), valid_months(12), unused_value_refunded))).
+changed(cancellation(r4), from(pay_fee(percent(100), fee(2100), refund(0), within_days(14))), to(refund(2100, within_days(14)))).
+changed(cancellation(r6), from(voucher(value(1600), terms(as_agreed))), to(voucher(value(1600), valid_months(12), unused_value_refunded))).
 ```
 
-- **c4**: the floods were at the airport of departure, not at the
+- **r4**: the floods were at the airport of departure, not at the
   destination. Under the 2015 rules David loses all €2,100; under the
   revision he cancels for free.
-- **c6**: Farid's voucher now comes with guarantees: worth the full €1,600,
+- **r6**: Farid's voucher now comes with guarantees: worth the full €1,600,
   valid for at most 12 months, and any unused value is paid back.
 
 Both complaints change as well: from "whatever national law says" to an
@@ -110,7 +110,7 @@ acknowledgement within 7 days and a reasoned reply within 60.
 
 ## Why: the proof in plain words
 
-Take c4 under the revision. The proof records, step by step:
+Take r4 under the revision. The proof records, step by step:
 
 1. The booking is with SunTrips, the offer's assigner, and the request is the
    offer's action, `ex:cancel`. Of its `odrl:and` constraint, both operands
@@ -155,9 +155,9 @@ node bin/eyedia.js --strict-proof --check-proof /tmp/holiday-proof.pl examples/p
 Or open it in the [playground](https://eyereasoner.github.io/eyedia/playground/#example=package-holiday).
 Two experiments, one at each gate:
 
-- let Ivy ask instead of Hugo (`by(hugo)` → `by(ivy)` in c8): the terms
+- let Ivy ask instead of Hugo (`by(hugo)` → `by(ivy)` in r8): the terms
   now permit it, and at 40 days the fee is 50 %, €650 of €1,300;
-- move c1's request to 45 days (`days(90)` → `days(45)`): the fee rises
+- move r1's request to 45 days (`days(90)` → `days(45)`): the fee rises
   from 25 % to 50 %, €1,200 of €2,400.
 
 ---
