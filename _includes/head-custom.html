@@ -1,0 +1,9 @@
+<!-- Color the Prolog code blocks of the documentation pages as the playground
+     colors its editor, with the same tokenizer and palette. -->
+<link rel="stylesheet" href="{{ '/playground/prolog-highlight.css' | relative_url }}">
+<script type="module">
+  import { colorize } from '{{ "/playground/prolog-highlight.js" | relative_url }}';
+  for (const code of document.querySelectorAll('div.language-prolog pre code')) {
+    code.innerHTML = colorize(code.textContent);
+  }
+</script>

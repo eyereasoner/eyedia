@@ -1,6 +1,7 @@
 import test from './progress.js';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -33,6 +34,14 @@ test('a proof document given as a program says how to check it instead', () => {
   assert.equal(ran.status, 1);
   assert.match(ran.stderr, /this is a proof document, not a program: check it with --check-proof PROOF PROGRAM/);
   assert.match(cli([], 'clause(a, b, c).').stderr, /unsupported or reserved head clause\(a, b, c\)/);
+});
+test('CLI prints the package version with -v and --version', () => {
+  const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  for (const flag of ['-v', '--version']) {
+    const result = cli([flag, 'examples/socrates.pl']);
+    assert.equal(result.status, 0);
+    assert.equal(result.stdout, `eyedia v${version}\n`);
+  }
 });
 test('CLI reports help, errors, stats and fuse exit codes', () => {
   assert.match(cli(['--help']).stdout, /Usage: eyedia/);

@@ -30,6 +30,7 @@ Facts and rules use Prolog syntax; :+ rules run to a fixpoint.
   --max-depth N       Bound backward recursion (default 1000000)
   --max-iterations N  Bound forward rounds per stratum (default 1000)
   --max-inferences N  Bound reasoning work (default 1000000)
+  --version           Print the version
   --help              Print this help
 Source defaults to stdin; multiple files form one program.
 `;
@@ -46,10 +47,14 @@ try {
   let stats = false;
   let strict = false;
   let json = false;
-  let printedHelp = false;
+  let printed = false;
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg === '--help' || arg === '-h') { process.stdout.write(help); printedHelp = true; break; }
+    if (arg === '--help' || arg === '-h') { process.stdout.write(help); printed = true; break; }
+    if (arg === '--version' || arg === '-v') {
+      const { version } = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
+      process.stdout.write(`eyedia v${version}\n`); printed = true; break;
+    }
     if (arg === '--proof' || arg === '-p') options.proof = true;
     else if (arg === '--stats') stats = true;
     else if (arg === '--strict-proof') strict = true;
@@ -67,7 +72,7 @@ try {
     } else if (arg.startsWith('-') && arg !== '-') throw new Error(`unknown option ${arg}`);
     else files.push(arg);
   }
-  if (!printedHelp) {
+  if (!printed) {
     if (json && proofFile == null) throw new Error('--json requires --check-proof');
     if (proofFile != null && options.proof) throw new Error('--check-proof cannot be combined with --proof');
     if (proofFile === '-' && (!files.length || files.includes('-'))) throw new Error('stdin holds the proof; name the program as files');
