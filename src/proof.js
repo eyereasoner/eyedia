@@ -1,5 +1,5 @@
 import {
-  Env, VAR, ATOM, COMPOUND, NUMBER, atom, compound, numberTerm, unify, deref,
+  Env, VAR, ATOM, COMPOUND, NUMBER, atom, compound, numberTerm, variable, unify, deref,
   freshTerm, copyResolved, properListItems, listFromItems, flattenConjunction, termIsGround,
 } from './kernel/term.js';
 import { parseProgramText, parseGoalText } from './kernel/parser.js';
@@ -362,7 +362,24 @@ export function checkReportTerms(report) {
     ['composed', report.composed], ['trusted', report.trusted.length], ['claims', report.claims],
   ]) facts.push(compound(name, [numberTerm(count)]));
   facts.push(compound('verdict', [verdictTerm(report)]));
-  return facts.map((fact) => `${text(fact)}.\n`).join('');
+  return facts.map((fact) => `${text(lettered(fact))}.\n`).join('');
+}
+
+// Each report fact stands alone, so its variables can be renamed A, B, C, ...
+// in order of appearance, whatever names the proof gave them.
+function lettered(term) {
+  const names = new Map();
+  const visit = (t) => {
+    if (t.type === VAR) {
+      if (!names.has(t.name)) {
+        const n = names.size;
+        names.set(t.name, variable(String.fromCharCode(65 + (n % 26)) + (n >= 26 ? Math.floor(n / 26) : '')));
+      }
+      return names.get(t.name);
+    }
+    return t.type === COMPOUND ? compound(t.name, t.args.map(visit)) : t;
+  };
+  return visit(term);
 }
 
 export function verdictTermText(report) {

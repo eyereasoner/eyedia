@@ -18,12 +18,17 @@ export function freshClause(clause, suffix) {
   const body = clause.body.map((item) => freshTerm(item, suffix, names));
   return { head, body, names };
 }
+// A variable name that is not a valid source name, such as the X#12 a clause
+// renamed apart gets, is written under a reserved prefix: letters and digits
+// stay, an underscore doubles and any other character becomes _hex_, so X#12
+// is EYE_X_23_12. Sanitizing X#12 into X_12 would conflate it with a user's
+// actual X_12; names that already start with the prefix are encoded too, so
+// the mapping stays injective.
+const encodeName = (name) => 'EYE_' + Array.from(name, (ch) => (/[A-Za-z0-9]/.test(ch) ? ch
+  : ch === '_' ? '__' : `_${ch.codePointAt(0).toString(16)}_`)).join('');
 export function text(term, env = new Env()) {
-  // Sanitizing X#1 into X_1 would conflate it with a user's actual X_1.
-  // Reserve a prefix and encode it too, so this mapping is injective.
   const names = new Map([...variables(copyResolved(term, env))].map(([name]) => [name,
-    /^[A-Z_][A-Za-z0-9_]*$/.test(name) && !name.startsWith('EYE_') && name !== '_'
-      ? name : 'EYE_' + Array.from(name, (ch) => ch.codePointAt(0).toString(16)).join('_'),
+    /^[A-Z_][A-Za-z0-9_]*$/.test(name) && !name.startsWith('EYE_') && name !== '_' ? name : encodeName(name),
   ]));
   return writeCanonical(term, env, names);
 }

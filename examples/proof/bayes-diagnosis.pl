@@ -15,8 +15,8 @@ step(posterior(paper_jam, 18000, 37200, 0.4838709677419355), rule(8), [=('Fault'
 step(weight(paper_jam, 18000), rule(4), [=('Fault', paper_jam), =('Weight', 18000), =('Prior', 20), =('Jam', 90), =('Offline', 10)], [fault(paper_jam, 20, 90, 10), is(18000, *(*(20, 90), 10))]).
 step(fault(paper_jam, 20, 90, 10), fact(1), [], []).
 step(is(18000, *(*(20, 90), 10)), builtin, [], []).
-step(total(37200), rule(7), [=('Total', 37200), =('W', EYE_57_23_39), =('Fault', EYE_46_61_75_6c_74_23_39), =('Weights', [18000, 14250, 4950])], [findall(EYE_57_23_39, weight(EYE_46_61_75_6c_74_23_39, EYE_57_23_39), [18000, 14250, 4950]), sum_weights([18000, 14250, 4950], 37200)]).
-step(findall(EYE_57_23_39, weight(EYE_46_61_75_6c_74_23_39, EYE_57_23_39), [18000, 14250, 4950]), collected, [], []).
+step(total(37200), rule(7), [=('Total', 37200), =('W', EYE_W_23_9), =('Fault', EYE_Fault_23_9), =('Weights', [18000, 14250, 4950])], [findall(EYE_W_23_9, weight(EYE_Fault_23_9, EYE_W_23_9), [18000, 14250, 4950]), sum_weights([18000, 14250, 4950], 37200)]).
+step(findall(EYE_W_23_9, weight(EYE_Fault_23_9, EYE_W_23_9), [18000, 14250, 4950]), collected, [], []).
 step(sum_weights([18000, 14250, 4950], 37200), rule(6), [=('W', 18000), =('Ws', [14250, 4950]), =('Sum', 37200), =('Rest', 19200)], [sum_weights([14250, 4950], 19200), is(37200, +(18000, 19200))]).
 step(sum_weights([14250, 4950], 19200), rule(6), [=('W', 14250), =('Ws', [4950]), =('Sum', 19200), =('Rest', 4950)], [sum_weights([4950], 4950), is(19200, +(14250, 4950))]).
 step(sum_weights([4950], 4950), rule(6), [=('W', 4950), =('Ws', []), =('Sum', 4950), =('Rest', 0)], [sum_weights([], 0), is(4950, +(4950, 0))]).

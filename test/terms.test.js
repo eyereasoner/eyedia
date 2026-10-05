@@ -6,8 +6,9 @@ import { Env, unify, copyResolved, compareTerms } from '../src/kernel/term.js';
 
 test('fresh variable rendering cannot collide with source variable names', () => {
   assert.notEqual(text(variable('X#1')), text(variable('X_1')));
-  assert.notEqual(text(variable('X#1')), text(variable('EYE_58_23_31')));
-  assert.match(text(compound('p', [variable('X#1'), variable('X_1')])), /p\(EYE_58_23_31, X_1\)/);
+  assert.notEqual(text(variable('X#1')), text(variable('EYE_X_23_1')));
+  assert.match(text(compound('p', [variable('X#1'), variable('X_1')])), /p\(EYE_X_23_1, X_1\)/);
+  assert.equal(text(variable('EYE_X_23_1')), 'EYE_EYE__X__23__1');
 });
 test('the trail restores bindings and occurs checks use existing aliases', () => {
   const env = new Env();

@@ -6,7 +6,7 @@ condition('C5', re_decision, ok, 0).
 condition('C6', boundary_consistency, ok, 2).
 condition('C7', relevance, ok, 14).
 obligation(absent, theory_scoped, \+(t(carol, blocked, true))).
-obligation(collected, theory_scoped, findall(EYE_45_59_45_5f_34_33_5f_32_33_5f_33_31_5f_33_34, t(EYE_45_59_45_5f_34_33_5f_32_33_5f_33_31_5f_33_34, child_of, alice), [bob, carol])).
+obligation(collected, theory_scoped, findall(A, t(A, child_of, alice), [bob, carol])).
 steps(10).
 verified(8).
 recomputed(0).

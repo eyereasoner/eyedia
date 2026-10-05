@@ -7,11 +7,11 @@ condition('C6', boundary_consistency, ok, 7).
 condition('C7', relevance, ok, 61).
 obligation(absent, theory_scoped, \+(has_notice(c1))).
 obligation(absent, theory_scoped, \+(safeguard(c1, inform))).
-obligation(collected, theory_scoped, findall(EYE_45_59_45_5f_34_66_5f_37_34_5f_36_38_5f_36_35_5f_37_32_5f_32_33_5f_33_34_5f_33_35, higher(100, EYE_45_59_45_5f_34_66_5f_37_34_5f_36_38_5f_36_35_5f_37_32_5f_32_33_5f_33_34_5f_33_35), [])).
-obligation(collected, theory_scoped, findall(EYE_45_59_45_5f_34_66_5f_37_34_5f_36_38_5f_36_35_5f_37_32_5f_32_33_5f_33_34_5f_33_35, higher(85, EYE_45_59_45_5f_34_66_5f_37_34_5f_36_38_5f_36_35_5f_37_32_5f_32_33_5f_33_34_5f_33_35), [100, 97])).
-obligation(collected, theory_scoped, findall(EYE_45_59_45_5f_34_66_5f_37_34_5f_36_38_5f_36_35_5f_37_32_5f_32_33_5f_33_34_5f_33_35, higher(70, EYE_45_59_45_5f_34_66_5f_37_34_5f_36_38_5f_36_35_5f_37_32_5f_32_33_5f_33_34_5f_33_35), [100, 85, 97])).
+obligation(collected, theory_scoped, findall(A, higher(100, A), [])).
+obligation(collected, theory_scoped, findall(A, higher(85, A), [100, 97])).
+obligation(collected, theory_scoped, findall(A, higher(70, A), [100, 85, 97])).
 obligation(absent, theory_scoped, \+(safeguard(c3, consent))).
-obligation(collected, theory_scoped, findall(EYE_45_59_45_5f_34_66_5f_37_34_5f_36_38_5f_36_35_5f_37_32_5f_32_33_5f_33_34_5f_33_35, higher(97, EYE_45_59_45_5f_34_66_5f_37_34_5f_36_38_5f_36_35_5f_37_32_5f_32_33_5f_33_34_5f_33_35), [100])).
+obligation(collected, theory_scoped, findall(A, higher(97, A), [100])).
 steps(57).
 verified(32).
 recomputed(18).
